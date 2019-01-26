@@ -1,10 +1,18 @@
 {
     "compilerOptions": {
+      "moduleResolution": "node",
       "module": "commonjs",
       "target": "es5",
-      "sourceMap": true
+      "sourceMap": true,
+      "baseUrl": "./src",
+      "paths": {
+        "@core": ["./core"],
+        "@transport": ["./transport"],
+        "@auth": ["./authentification"],
+        "@handshake": ["./handshake"]
+      }
     },
     "exclude": [
       "node_modules"
-    ]
+    ],
 }

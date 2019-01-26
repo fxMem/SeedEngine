@@ -1,1 +1,3 @@
-console.log("piglet");
+import { Server } from "@transport";
+
+let server = new Server(null, null);

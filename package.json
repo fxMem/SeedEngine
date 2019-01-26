@@ -5,14 +5,22 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-	"build": "webpack"
+    "build": "webpack"
   },
   "author": "Mem",
   "license": "MIT",
   "devDependencies": {
+    "@types/es6-shim": "^0.31.39",
+    "@types/node": "^10.12.18",
     "ts-loader": "^5.3.3",
+    "ts-nameof": "^2.0.0",
     "typescript": "^3.2.4",
     "webpack": "^4.28.4",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.2.1",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "@types/socket.io": "^2.1.2",
+    "socket.io": "^2.2.0"
   }
 }
