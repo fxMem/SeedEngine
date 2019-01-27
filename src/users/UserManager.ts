@@ -1,4 +1,5 @@
-import { User } from "./Core";
+import { User } from "@core";
+import { UserStorage } from "./UserStorage";
 
 
 export interface UserManager {
@@ -12,7 +13,7 @@ export interface UserManager {
 export class DefaultUserManager implements UserManager {
     private users: Map<string, User> = new Map<string, User>();
 
-    constructor() {
+    constructor(private userStorage: UserStorage) {
 
     } 
 

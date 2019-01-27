@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 import * as socketIO from 'socket.io';
 import { MessageCallback } from "./MessagePipeline";
-import { HandshakeModule, HandshakeInvite } from '@handshake';
+import { AuthModule, AuthInvite } from '@users';
 
 export const messageHeader = 'seedMsg';
 
@@ -9,7 +9,7 @@ export class Server {
 
     private ioServer: socketIO.Server;
 
-    constructor(private pipeline: MessageCallback, private handshake: HandshakeModule) {
+    constructor(private pipeline: MessageCallback, private authModule: AuthModule) {
 
     }
 
@@ -20,23 +20,23 @@ export class Server {
             const userTransportId = client.id;
 
             client.on(messageHeader, async data => {
-                let handshakeResult = this.handshake.identifyUser(userTransportId);
-                if (handshakeResult instanceof HandshakeInvite) {
-                    client.emit('handshake', handshakeResult);
+                let authResult = this.authModule.identifyUser(userTransportId);
+                if (authResult instanceof AuthInvite) {
+                    client.emit('handshake', authResult);
                 }
                 else {
-                    let responce = await this.pipeline({ ...data, user: handshakeResult });
+                    let responce = await this.pipeline({ ...data, user: authResult });
                     client.emit('responce', responce);
                 }
             });
 
             client.on('authentificate', async data => {
-                let authResult = await this.handshake.authentificate(userTransportId, data);
+                let authResult = await this.authModule.authentificate(userTransportId, data);
                 client.emit('authentificate', authResult);
             });
 
             client.on('disconnect', () => { 
-                this.handshake.disconnectUser(userTransportId);
+                this.authModule.disconnectUser(userTransportId);
             });
         });
     }

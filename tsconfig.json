@@ -8,8 +8,9 @@
       "paths": {
         "@core": ["./core"],
         "@transport": ["./transport"],
-        "@auth": ["./authentification"],
-        "@handshake": ["./handshake"]
+        "@users": ["./users"],
+        
+        "@session": ["./session"]
       }
     },
     "exclude": [
