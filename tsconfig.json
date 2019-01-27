@@ -9,8 +9,8 @@
         "@core": ["./core"],
         "@transport": ["./transport"],
         "@users": ["./users"],
-        
-        "@session": ["./session"]
+        "@session": ["./session"],
+        "@log": ["./log"]
       }
     },
     "exclude": [
