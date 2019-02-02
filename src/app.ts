@@ -1,3 +1,14 @@
-import { Server } from "@transport";
+import { Bootstrapper, Instance } from "@core";
+import { SimpleIdentityChecker, SimpleAuthModule, InMemoryUserStorage } from "@users";
 
-let server = new Server(null, null);
+function buildTestServer(): Instance {
+    let bootstrapper = new Bootstrapper();
+    bootstrapper
+        .withAuthMethod(new SimpleAuthModule(new SimpleIdentityChecker()))
+        .withStorage(new InMemoryUserStorage());
+
+    return bootstrapper.build();
+}
+
+let instance = buildTestServer();
+instance.start();
