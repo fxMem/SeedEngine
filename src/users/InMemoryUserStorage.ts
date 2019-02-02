@@ -7,8 +7,8 @@ export class InMemoryUserStorage implements UserStorage {
         this.users = new Map();
     }
 
-    getData(nickname: string): UserInfo {
-        return this.users.get(nickname);
+    getData(nickname: string): Promise<UserInfo> {
+        return Promise.resolve(this.users.get(nickname));
     }
 
     setData(nickname: string, userInfo: UserInfo): void {

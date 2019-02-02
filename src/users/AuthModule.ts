@@ -7,13 +7,13 @@ export class AuthModule {
     constructor
         (
             private userManager: UserManager,
-            private authModules: AuthMethod[],
+            private authMethods: AuthMethod[],
             private userStorage: UserStorage
         ) { }
 
     identifyUser(userTransportId: string): User | AuthInvite {
         let user = this.getExistingUser(userTransportId);
-        return user || new AuthInvite(this.authModules.map((m, i) => ({
+        return user || new AuthInvite(this.authMethods.map((m, i) => ({
             id: i.toString(),
             description: m.getDescription()
         })));
@@ -24,7 +24,7 @@ export class AuthModule {
     }
 
     async authentificate(userTransportId: string, authData: { moduleId: string }): Promise<boolean> {
-        let selectedModule = this.authModules[+authData.moduleId];
+        let selectedModule = this.authMethods[+authData.moduleId];
         if (!selectedModule) {
             throw new Error(`Requested authentification module with id = ${authData.moduleId} is not found!`);
         }
