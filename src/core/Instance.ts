@@ -1,25 +1,20 @@
 import { Server } from "@transport";
 
 export interface InstanceOptions {
-    rootUser: string;
+    port?: number
 }
 
 export interface Instance {
     start(): void;
-
-    stop(): void;
 }
 
 export class DefaultInstance implements Instance {
     
-    constructor(private server: Server) {
+    constructor(private options: InstanceOptions, private server: Server) {
         
     }
 
-    start(): void {
-        throw new Error("Method not implemented.");
-    }
-    stop(): void {
-        throw new Error("Method not implemented.");
+    start(): Promise<boolean> {
+        return this.server.listen(this.options.port);
     }
 }

@@ -19,7 +19,7 @@ export class Server {
     listen(port: number): Promise<boolean> {
         this.ioServer = socketIO(this.httpFacade);
         this.ioServer.on('connection', this.handleClient.bind(this));
-
+        
         return new Promise<boolean>((resolve, reject) => {
             this.httpFacade.listen(port, (error) => {
                 if (error) {
