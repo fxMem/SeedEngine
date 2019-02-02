@@ -1,8 +1,8 @@
-import { createServer } from 'http';
 import * as socketIO from 'socket.io';
 import { MessageCallback } from "./MessagePipeline";
 import { AuthModule, AuthInvite } from '@users';
 import { Log } from '@log';
+import { HttpFacade } from './HttpFacade';
 
 export const messageHeader = 'seedMsg';
 
@@ -11,22 +11,33 @@ export class Server {
     private ioServer: socketIO.Server;
 
     constructor(
+        private httpFacade: HttpFacade,
         private pipeline: MessageCallback,
         private authModule: AuthModule,
-        private logger: Log) { }
+        private log: Log) { }
 
-    listen(port: number) {
-        let server = createServer();
-        this.ioServer = socketIO(server);
+    listen(port: number): Promise<boolean> {
+        this.ioServer = socketIO(this.httpFacade);
         this.ioServer.on('connection', this.handleClient.bind(this));
 
-        server.listen(port);
+        return new Promise<boolean>((resolve, reject) => {
+            this.httpFacade.listen(port, (error) => {
+                if (error) {
+                    this.log.error(error);
+                    reject();
+                }
+                else {
+                    this.log.info(`Server started, listening on ${port}`);
+                    resolve();
+                }
+            });
+        });
     }
 
     private handleClient(client: socketIO.Socket): void {
         const userTransportId = client.id;
         const info = (message: string): void => {
-            this.logger.info(`Client ${userTransportId} :: ${message}`);
+            this.log.info(`Client ${userTransportId} :: ${message}`);
         };
 
         info(`Connected!`);

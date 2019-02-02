@@ -1,10 +1,11 @@
 import { Instance, DefaultInstance } from "./Instance";
 import { DefaultUserManager, AuthMethod, AuthModule, UserStorage, InMemoryUserStorage } from "@users";
-import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler } from "@transport";
+import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory } from "@transport";
 import { Logger, Log, DefaultConsoleLogger } from "@log";
 
 
 export class Bootstrapper {
+    private facadeFactory: HttpFacadeFactory;
     private pipeline: MessagePipeline;
     private authMethods: AuthMethod[];
     private userStorage: UserStorage;
@@ -16,11 +17,16 @@ export class Bootstrapper {
         let log = new Log(this.loggers || [new DefaultConsoleLogger()]);
 
         let server = new Server(
+            this.facadeFactory.create(log),
             this.pipeline.build(),
             new AuthModule(userManager, this.authMethods, this.userStorage),
             log);
 
         return new DefaultInstance(server);
+    }
+
+    withHttpFacade(facadeFactory: HttpFacadeFactory): this {
+        return (this.facadeFactory = facadeFactory) && this;
     }
 
     withAuthMethod(method: AuthMethod): this {
