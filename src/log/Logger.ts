@@ -6,20 +6,26 @@ export enum LogLevel {
 
 export class Log {
 
-    constructor () {
-        
-    }
-
-    info(message: string) {
+    constructor(private loggers: Logger[]) {
 
     }
 
-    warn(message: string) {
-
+    info(message: string): void {
+        this.log(message, LogLevel.verbose);
     }
 
-    error(message: string) {
+    warn(message: string): void {
+        this.log(message, LogLevel.warn);
+    }
 
+    error(message: string): void {
+        this.log(message, LogLevel.error);
+    }
+
+    // Simple realization just delegates
+    // TODO: make it queue-style
+    log(message: string, level: LogLevel): void {
+        this.loggers.forEach(l => l.log(level, message));
     }
 }
 
