@@ -1,5 +1,5 @@
-import { User } from "@core";
 import { UserStorage } from "./UserStorage";
+import { User } from "./AuthMethod";
 
 
 export interface UserManager {

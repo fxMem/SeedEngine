@@ -29,8 +29,9 @@ module.exports = {
         alias: {
             '@core': path.join(__dirname, 'src/core'),
             '@transport': path.join(__dirname, 'src/transport'),
-            '@auth': path.join(__dirname, 'src/authentification'),
-            '@handshake': path.join(__dirname, 'src/handshake')
+            '@users': path.join(__dirname, 'src/users'),
+            '@log': path.join(__dirname, 'src/log'),
+            '@session': path.join(__dirname, 'src/session'),
         }
     },
 };

@@ -1,4 +1,4 @@
-import { User } from "@core";
+import { User } from "@users";
 
 export enum SessionState {
     waiting,
