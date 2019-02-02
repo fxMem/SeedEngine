@@ -1,4 +1,4 @@
-import { Claims, UserClaims } from "./Claims";
+import { UserClaims } from "./Claims";
 
 export interface UserInfo {
 

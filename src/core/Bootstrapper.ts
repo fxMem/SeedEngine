@@ -1,7 +1,6 @@
 import { Instance, DefaultInstance } from "./Instance";
-import { SimpleAuthModule, SimpleIdentityChecker, IdentityChecker, AuthMethod, AuthModule, UserStorage, InMemoryUserStorage } from "@users";
+import { DefaultUserManager, AuthMethod, AuthModule, UserStorage, InMemoryUserStorage } from "@users";
 import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler } from "@transport";
-import { DefaultUserManager } from "users/UserManager";
 import { Logger, Log, DefaultConsoleLogger } from "@log";
 
 

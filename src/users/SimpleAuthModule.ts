@@ -1,9 +1,7 @@
 import { AuthMethod } from "./AuthMethod";
 import { User } from "@core";
-import { UserStorage } from "@users";
 import { Claims } from "./Claims";
 import { IdentityChecker } from "./IdentityChecker";
-import { UserInfo } from "./UserStorage";
 
 export class SimpleAuthModule implements AuthMethod {
     constructor(private identityChecker: IdentityChecker) {
