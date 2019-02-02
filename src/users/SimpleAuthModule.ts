@@ -1,5 +1,4 @@
-import { AuthMethod } from "./AuthMethod";
-import { User } from "@core";
+import { AuthMethod, User } from "./AuthMethod";
 import { Claims } from "./Claims";
 import { IdentityChecker } from "./IdentityChecker";
 

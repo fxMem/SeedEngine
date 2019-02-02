@@ -1,6 +1,6 @@
-import { UserManager, User } from "@core";
-import { AuthMethod } from './AuthMethod';
+import { AuthMethod, User } from './AuthMethod';
 import { UserStorage } from "./UserStorage";
+import { UserManager } from './UserManager';
 
 export class AuthModule {
 
