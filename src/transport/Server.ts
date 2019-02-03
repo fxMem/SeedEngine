@@ -74,6 +74,10 @@ export class Server {
                 }
             }
 
+            if (!(header in handlers)) {
+                throw new Error(`Handler for message header ${header} is not found!`);
+            }
+
             return handlers[header](user, payload);
         });
 
