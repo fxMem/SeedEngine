@@ -9,7 +9,7 @@ export type ConnectedClient = {
     onDisconnected: (callback: () => void) => void;
 }
 
-type messageCallback = (data: { header: string, payload: any }) => any;
+type messageCallback = (data: { header: string, payload: any }) => Promise<any>;
 
 // Wraps socket.IO connection
 export class Connection {
@@ -36,16 +36,13 @@ export class Connection {
                 }
             });
 
-            socketClient.on(SeedMessage, this.enableRPC(async data => {
-                return messageCallback({ ...data });
-            }));
+            socketClient.on(SeedMessage, this.enableRPC(messageCallback));
 
             socketClient.on('disconnect', () => {
                 disconnectedCallback();
             });
         });
     }
-
 
     send(header: string, data: any, options: any): void {
         this.clientConnection.emit(SeedMessage, {
@@ -76,7 +73,7 @@ export class Connection {
 
     // This wrapper is for use with event listeners, like server.on('eventName', enableRPC(actualCallback))
     // It adds ability to return value which later on would be sent back to client
-    private enableRPC(callback: (data: any) => Promise<any>): (data: any) => void {
+    private enableRPC(callback: messageCallback): (data: any) => void {
         return (data) => {
             let { header, hash, payload } = data;
 
