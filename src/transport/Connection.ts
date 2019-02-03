@@ -1,5 +1,5 @@
 import * as socketIO from 'socket.io';
-import { SeedMessage, Header } from './Headers';
+import { SeedMessage } from './Headers';
 import { HttpFacade } from './HttpFacade';
 
 const responseTimeout = 1000 * 5;
@@ -88,7 +88,7 @@ export class Connection {
 
             // Case 2, it's a fresh invocation so we invoke user logic, 
             // then dispatch result to client, if any
-            callback(payload).then((result => {
+            callback(data).then((result => {
                 if (result) {
                     this.send(header, result, { hash });
                 }
