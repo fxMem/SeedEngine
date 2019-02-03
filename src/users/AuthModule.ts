@@ -11,9 +11,12 @@ export class AuthModule {
             private userStorage: UserStorage
         ) { }
 
-    identifyUser(userTransportId: string): User | AuthInvite {
-        let user = this.getExistingUser(userTransportId);
-        return user || new AuthInvite(this.authMethods.map((m, i) => ({
+    identifyUser(userTransportId: string): User {
+        return this.getExistingUser(userTransportId);
+    }
+
+    getInvitation(): AuthInvite {
+        return new AuthInvite(this.authMethods.map((m, i) => ({
             id: i.toString(),
             description: m.getDescription()
         })));

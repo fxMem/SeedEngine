@@ -21,6 +21,8 @@ export class ExpressFacadeFactory implements HttpFacadeFactory {
     }
 
     private setupExpress(app: express.Express): void {
+        app.get('/', (req, res) => {
 
+        });
     }
 }

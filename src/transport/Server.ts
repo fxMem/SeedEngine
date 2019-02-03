@@ -1,14 +1,12 @@
-import * as socketIO from 'socket.io';
 import { MessageCallback } from "./MessagePipeline";
-import { AuthModule, AuthInvite } from '@users';
+import { AuthModule, User } from '@users';
 import { Log } from '@log';
 import { HttpFacade } from './HttpFacade';
-
-export const messageHeader = 'seedMsg';
+import { Header } from './Headers';
+import { Connection, ConnectedClient } from './Connection';
 
 export class Server {
-
-    private ioServer: socketIO.Server;
+    private connection: Connection;
 
     constructor(
         private httpFacade: HttpFacade,
@@ -17,9 +15,9 @@ export class Server {
         private log: Log) { }
 
     listen(port: number): Promise<boolean> {
-        this.ioServer = socketIO(this.httpFacade);
-        this.ioServer.on('connection', this.handleClient.bind(this));
-        
+        this.connection = new Connection(this.httpFacade);
+        this.connection.onConnected(this.handleClient);
+
         return new Promise<boolean>((resolve, reject) => {
             this.httpFacade.listen(port, (error) => {
                 if (error) {
@@ -34,37 +32,53 @@ export class Server {
         });
     }
 
-    private handleClient(client: socketIO.Socket): void {
+    private handleClient(client: ConnectedClient): void {
         const userTransportId = client.id;
+
         const info = (message: string): void => {
             this.log.info(`Client ${userTransportId} :: ${message}`);
         };
 
-        info(`Connected!`);
+        const handlers: { [key: string]: (user: User, data: any) => Promise<any> } = {
+            [Header.Authenticate]: async (user: User, data: any) => {
 
-        client.on(messageHeader, async data => {
-            let authResult = this.authModule.identifyUser(userTransportId);
-            if (authResult instanceof AuthInvite) {
-                info(`User not recognised! Sent invitation to authenticate...`);
-                client.emit('handshake', authResult);
-            }
-            else {
-                info(`Message from user: ${authResult.nickname}`);
-                let responce = await this.pipeline({ ...data, user: authResult });
+                if (!data) {
+                    return this.authModule.getInvitation();
+                }
+
+                let authResult = await this.authModule.authentificate(userTransportId, data);
+                info(`Attempt to authenticate, result = ${authResult}`);
+
+                return authResult;
+            },
+            [Header.Message]: async (user: User, data: any) => {
+
+                info(`Message from user: ${user.nickname}`);
+                let responce = await this.pipeline({ ...data, user: user });
                 info(`Responce: ${responce}`);
 
-                client.emit('responce', responce);
+                return responce;
             }
+        };
+
+        info(`Connected!`);
+
+        client.onMessage(async data => {
+
+            let { header, ...payload } = data;
+            let user: User = null;
+            if (header != Header.Authenticate) {
+                let user = this.authModule.identifyUser(userTransportId);
+                if (!user) {
+                    header = Header.Authenticate;
+                }
+            }
+
+            return handlers[header](user, payload);
         });
 
-        client.on('authenticate', async data => {
-            let authResult = await this.authModule.authentificate(userTransportId, data);
-            client.emit('authenticate', authResult);
 
-            info(`Attempt to authenticate, result = ${authResult}`);
-        });
-
-        client.on('disconnect', () => {
+        client.onDisconnected(() => {
             this.authModule.disconnectUser(userTransportId);
 
             info(`Disconnected!`);
