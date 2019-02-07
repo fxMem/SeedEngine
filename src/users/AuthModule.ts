@@ -1,6 +1,7 @@
 import { AuthMethod, User } from './AuthMethod';
 import { UserStorage } from "./UserStorage";
 import { UserManager } from './UserManager';
+import { Log } from '@log';
 
 export class AuthModule {
 
@@ -8,7 +9,8 @@ export class AuthModule {
         (
             private userManager: UserManager,
             private authMethods: AuthMethod[],
-            private userStorage: UserStorage
+            private userStorage: UserStorage,
+            private log: Log
         ) { }
 
     identifyUser(userTransportId: string): User {
@@ -45,6 +47,7 @@ export class AuthModule {
             this.userStorage.setData(user.nickname, user.data);
         }
 
+        this.log.info(`Attempt to authenticate from client #${userTransportId}, result = ${!!user}`);
         return !!user;
     }
 

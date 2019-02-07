@@ -1,4 +1,5 @@
 import { User } from "@users";
+import { Log, LogFriendly } from "@log";
 
 export interface MessageCallback {
     (message: Message): Promise<any>;
@@ -20,15 +21,26 @@ export interface MessagePipeline {
     build(): MessageCallback;
 }
 
-export interface Message {
+export interface Message extends LogFriendly {
     user: User;
 }
 
 export class DefaulMessagePipeline implements MessagePipeline {
     private callbacks: MessageHandler[];
 
-    build(): MessageCallback {
+    build(log?: Log): MessageCallback {
         let result: MessageCallback = (_) => Promise.resolve();
+
+        if (log) {
+            let messageNumber = 0;
+            this.chain(async (message, next) => {
+                log.info(`#${messageNumber} Recieved message = ${message.GetDebugString()}`);
+                let result = await next(message);
+                log.info(`#${messageNumber++} procceded, result = ${result.GetDebugString()}`);
+    
+                return result;
+            });
+        }
 
         for (let i = this.callbacks.length - 1; i >= 0; i--) {
             let nextCallback = this.callbacks[i];

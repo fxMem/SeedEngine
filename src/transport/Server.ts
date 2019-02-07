@@ -46,19 +46,9 @@ export class Server {
                     return this.authModule.getInvitation();
                 }
 
-                let authResult = await this.authModule.authentificate(userTransportId, data);
-                info(`Attempt to authenticate, result = ${authResult}`);
-
-                return authResult;
+                return await this.authModule.authentificate(userTransportId, data);
             },
-            [Header.Message]: async (user: User, data: any) => {
-
-                info(`Message from user: ${user.nickname}`);
-                let responce = await this.pipeline({ ...data, user: user });
-                info(`Responce: ${responce}`);
-
-                return responce;
-            }
+            [Header.Message]: (user: User, data: any) => this.pipeline({ ...data, user: user })
         };
 
         info(`Connected!`);
