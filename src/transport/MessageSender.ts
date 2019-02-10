@@ -1,17 +1,7 @@
+import { Action } from "@utils";
+import { TransportMessageCallback, TransportMessageOptions, TransportMessageCallbackAsync } from "./Transport";
+
 const responseTimeout = 1000 * 5;
-
-export type TransportMessageCallbackAsync = (message: TransportMessage) => Promise<any>;
-export type TransportMessageCallback = (message: TransportMessage) => void;
-export type TransportLifetimeCallback = (TransportClientId: string) => Promise<void>;
-
-export type TransportMessage = {
-    header: string,
-    payload: any,
-} & TransportMessageOptions;
-
-export type TransportMessageOptions = {
-    hash?: string
-}
 
 // Wraps logic of remote calls
 export class MessageSender {

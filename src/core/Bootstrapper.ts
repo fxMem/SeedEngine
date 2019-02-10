@@ -1,6 +1,6 @@
 import { Instance, DefaultInstance, InstanceOptions } from "./Instance";
 import { DefaultUserManager, AuthMethod, AuthModule, UserStorage } from "@users";
-import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory } from "@transport";
+import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport } from "@transport";
 import { Logger, Log, DefaultConsoleLogger } from "@log";
 
 
@@ -20,8 +20,11 @@ export class Bootstrapper {
         let userManager = new DefaultUserManager(this.userStorage);
         let log = new Log(this.loggers || [new DefaultConsoleLogger()]);
 
+        let serverTransport = new SocketIOServerTransport(this.facadeFactory.create(log));
+        let connection = new Connection(serverTransport);
+
         let server = new Server(
-            this.facadeFactory.create(log),
+            connection,
             this.pipeline.build(),
             new AuthModule(userManager, this.authMethods, this.userStorage, log),
             log);

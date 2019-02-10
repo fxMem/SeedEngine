@@ -1,38 +1,25 @@
 import { MessagePipelineCallback } from "./MessagePipeline";
 import { AuthModule, User } from '@users';
 import { Log } from '@log';
-import { HttpFacade } from './HttpFacade';
 import { Header } from './Headers';
-import { ServerConnection, ConnectedClient } from './ServerConnection';
+import { Connection } from "./Connection";
+import { Connected } from "./Transport";
 
+// Facade class tying together connection, authentication and messaging logic
 export class Server {
-    private connection: ServerConnection;
 
     constructor(
-        private httpFacade: HttpFacade,
+        private connection: Connection,
         private pipeline: MessagePipelineCallback,
         private authModule: AuthModule,
         private log: Log) { }
 
-    listen(port: number): Promise<boolean> {
-        this.connection = new ServerConnection(this.httpFacade);
+    listen(port: number): void {
         this.connection.onConnected(this.handleClient);
-
-        return new Promise<boolean>((resolve, reject) => {
-            this.httpFacade.listen(port, (error) => {
-                if (error) {
-                    this.log.error(error);
-                    reject();
-                }
-                else {
-                    this.log.info(`Server started, listening on ${port}`);
-                    resolve();
-                }
-            });
-        });
+        this.connection.start();
     }
 
-    private handleClient(client: ConnectedClient): void {
+    private handleClient(client: Connected): void {
         const userTransportId = client.id;
 
         const info = (message: string): void => {
