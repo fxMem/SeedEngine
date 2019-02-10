@@ -1,4 +1,3 @@
-import { Action } from "@utils";
 import { TransportMessageCallback, TransportMessageOptions, TransportMessageCallbackAsync } from "./Transport";
 
 const responseTimeout = 1000 * 5;

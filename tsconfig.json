@@ -8,6 +8,7 @@
       "paths": {
         "@core": ["./core"],
         "@transport": ["./transport"],
+        "@transport/*": ["./transport/*"],
         "@users": ["./users"],
         "@session": ["./session"],
         "@log": ["./log"],
