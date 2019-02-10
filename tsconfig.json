@@ -10,7 +10,8 @@
         "@transport": ["./transport"],
         "@users": ["./users"],
         "@session": ["./session"],
-        "@log": ["./log"]
+        "@log": ["./log"],
+        "@utils": ["./utils"]
       }
     },
     "exclude": [
