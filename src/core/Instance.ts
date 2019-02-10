@@ -14,7 +14,7 @@ export class DefaultInstance implements Instance {
         
     }
 
-    start(): Promise<boolean> {
-        return this.server.listen(this.options.port);
+    start(): void {
+        this.server.listen(this.options.port);
     }
 }
