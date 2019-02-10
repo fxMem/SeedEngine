@@ -1,21 +1,21 @@
-import { MessageCallback } from "./MessagePipeline";
+import { MessagePipelineCallback } from "./MessagePipeline";
 import { AuthModule, User } from '@users';
 import { Log } from '@log';
 import { HttpFacade } from './HttpFacade';
 import { Header } from './Headers';
-import { Connection, ConnectedClient } from './Connection';
+import { ServerConnection, ConnectedClient } from './ServerConnection';
 
 export class Server {
-    private connection: Connection;
+    private connection: ServerConnection;
 
     constructor(
         private httpFacade: HttpFacade,
-        private pipeline: MessageCallback,
+        private pipeline: MessagePipelineCallback,
         private authModule: AuthModule,
         private log: Log) { }
 
     listen(port: number): Promise<boolean> {
-        this.connection = new Connection(this.httpFacade);
+        this.connection = new ServerConnection(this.httpFacade);
         this.connection.onConnected(this.handleClient);
 
         return new Promise<boolean>((resolve, reject) => {

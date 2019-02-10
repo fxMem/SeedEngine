@@ -1,61 +1,43 @@
-import * as socketIO from 'socket.io';
-import { SeedMessage } from './Headers';
-import { HttpFacade } from './HttpFacade';
-
 const responseTimeout = 1000 * 5;
-export type ConnectedClient = {
-    id: string;
-    onMessage: (callback: messageCallback) => void;
-    onDisconnected: (callback: () => void) => void;
+
+export type TransportMessageCallbackAsync = (message: TransportMessage) => Promise<any>;
+export type TransportMessageCallback = (message: TransportMessage) => void;
+export type TransportLifetimeCallback = (TransportClientId: string) => Promise<void>;
+
+export type TransportMessage = {
+    header: string,
+    payload: any,
+} & TransportMessageOptions;
+
+export type TransportMessageOptions = {
+    hash?: string
 }
 
-type messageCallback = (data: { header: string, payload: any }) => Promise<any>;
+// Wraps logic of remote calls
+export class MessageSender {
 
-// Wraps socket.IO connection
-export class Connection {
-    private clientConnection: socketIO.Socket;
     private returnHandles = new ReturnHandlesCollection();
-    private ioServer: socketIO.Server;
 
-    constructor(private httpFacade: HttpFacade) {
-        this.ioServer = socketIO(this.httpFacade);
+    constructor(private sendCallback: TransportMessageCallback) {
+
     }
 
-    onConnected(userCallback: (client: ConnectedClient) => void) {
-        let messageCallback: messageCallback;
-        let disconnectedCallback: () => void;
-
-        this.ioServer.on('connection', (socketClient) => {
-            userCallback({
-                id: socketClient.id,
-                onMessage: (callback) => {
-                    messageCallback = callback;
-                },
-                onDisconnected: (callback) => {
-                    disconnectedCallback = callback;
-                }
-            });
-
-            socketClient.on(SeedMessage, this.enableRPC(messageCallback));
-
-            socketClient.on('disconnect', () => {
-                disconnectedCallback();
-            });
-        });
-    }
-
-    send(header: string, data: any, options: any): void {
-        this.clientConnection.emit(SeedMessage, {
+    private internalSend(header: string, payload: any, options?: TransportMessageOptions): void {
+        this.sendCallback({
             header,
-            data,
+            payload,
             ...options
         });
+    }
+
+    send(header: string, payload: any): void {
+        this.internalSend(header, payload);
     }
 
     // This functions sends message and waits for responce
     sendAndGetResult(header: string, data: any): Promise<any> {
         let hash = Math.random() + '';
-        this.send(header, data, { hash });
+        this.internalSend(header, data, { hash });
 
         let timeoutHandle = setTimeout((header, hash) => {
             let callback = this.returnHandles.popCallbacks(header, hash);
@@ -73,7 +55,7 @@ export class Connection {
 
     // This wrapper is for use with event listeners, like server.on('eventName', enableRPC(actualCallback))
     // It adds ability to return value which later on would be sent back to client
-    private enableRPC(callback: messageCallback): (data: any) => void {
+    enableRPC(callback: TransportMessageCallbackAsync): TransportMessageCallbackAsync {
         return (data) => {
             let { header, hash, payload } = data;
 
@@ -85,9 +67,9 @@ export class Connection {
 
             // Case 2, it's a fresh invocation so we invoke user logic, 
             // then dispatch result to client, if any
-            callback(data).then((result => {
+            return callback(data).then((result => {
                 if (result) {
-                    this.send(header, result, { hash });
+                    this.internalSend(header, result, { hash });
                 }
             }), (error) => {
                 // TODO: log, etc

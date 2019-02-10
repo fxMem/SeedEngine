@@ -1,12 +1,12 @@
 import { User } from "@users";
 import { Log, LogFriendly } from "@log";
 
-export interface MessageCallback {
+export interface MessagePipelineCallback {
     (message: Message): Promise<any>;
 }
 
 export interface MessageHandler {
-    (message: Message, next: MessageCallback): Promise<any>;
+    (message: Message, next: MessagePipelineCallback): Promise<any>;
 }
 
 export interface SpecificMessageTypeHandler {
@@ -18,7 +18,7 @@ export interface SpecificMessageTypeHandler {
 export interface MessagePipeline {
     chain(handler: MessageHandler): MessagePipeline;
 
-    build(): MessageCallback;
+    build(): MessagePipelineCallback;
 }
 
 export interface Message extends LogFriendly {
@@ -28,8 +28,8 @@ export interface Message extends LogFriendly {
 export class DefaulMessagePipeline implements MessagePipeline {
     private callbacks: MessageHandler[];
 
-    build(log?: Log): MessageCallback {
-        let result: MessageCallback = (_) => Promise.resolve();
+    build(log?: Log): MessagePipelineCallback {
+        let result: MessagePipelineCallback = (_) => Promise.resolve();
 
         if (log) {
             let messageNumber = 0;
@@ -56,7 +56,7 @@ export class DefaulMessagePipeline implements MessagePipeline {
 
     private chainTyped(handler: SpecificMessageTypeHandler): void {
         this.callbacks.push(
-            (message: any, next: MessageCallback): Promise<any> => {
+            (message: any, next: MessagePipelineCallback): Promise<any> => {
                 if (handler.canHandle(message)) {
                     return handler.handle(message);
                 }

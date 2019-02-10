@@ -23,7 +23,7 @@ export class Bootstrapper {
         let server = new Server(
             this.facadeFactory.create(log),
             this.pipeline.build(),
-            new AuthModule(userManager, this.authMethods, this.userStorage),
+            new AuthModule(userManager, this.authMethods, this.userStorage, log),
             log);
 
         return new DefaultInstance(this.options, server);
