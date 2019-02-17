@@ -35,7 +35,7 @@ export interface Logger {
 
 export class DefaultConsoleLogger implements Logger {
     log(level: LogLevel, message: string) {
-        console.log("");
+        console.log(`${(new Date().toTimeString())} :: [${LogLevel[level]}] - ${message}`);
     }
 
 }

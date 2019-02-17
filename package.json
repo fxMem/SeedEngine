@@ -4,9 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open",
-    "build": "webpack"
+    "build": "webpack",
+    "bs": "config=server.js webpack",
+    "bc": "config=client.js webpack",
+    "bt": "config=test.js webpack",
+    "server": "node ./distr/server.js",
+    "client": "node ./distr/client.js",
+    "test": "node ./distr/test.js",
+    "sd": "npm run bs && npm run server",
+    "cd": "npm run bc && npm run client"
   },
   "author": "Mem",
   "license": "MIT",

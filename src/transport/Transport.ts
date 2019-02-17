@@ -3,6 +3,7 @@ import { Action } from "@utils";
 export type TransportMessageCallbackAsync = (message: TransportMessage) => Promise<any>;
 export type TransportMessageCallback = (message: TransportMessage) => void;
 export type TransportLifetimeCallback = (TransportClientId: string) => Promise<void>;
+export type ConnectedCallback = (client: Connected) => void;
 
 export type TransportMessage = {
     header: string,
@@ -14,10 +15,10 @@ export type TransportMessageOptions = {
 }
 
 export interface Transport {
-    start(): void;
+    start(options? : any): void;
     isStarted(): boolean;
 
-    onConnected(userCallback: (client: Connected) => void): void;
+    onConnected(userCallback: ConnectedCallback): void;
     send(message: TransportMessage): void;
 }
 

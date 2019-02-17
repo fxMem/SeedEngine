@@ -7,7 +7,7 @@ import { Logger, Log, DefaultConsoleLogger } from "@log";
 export class Bootstrapper {
     private facadeFactory: HttpFacadeFactory;
     private pipeline: MessagePipeline;
-    private authMethods: AuthMethod[];
+    private authMethods: AuthMethod[] = [];
     private userStorage: UserStorage;
     private loggers: Logger[];
     private options: InstanceOptions = {
