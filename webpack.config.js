@@ -36,7 +36,31 @@ let rules = [{
     },
 ];
 
-module.exports = [{
+
+module.exports = [
+    {
+        mode,
+        entry: path.join(__dirname, '/src/test/index.ts'),
+        output: {
+            filename: 'test.js',
+            path: outputDirectory
+        },
+        devtool: 'inline-source-map',
+        devServer: {
+            contentBase: 'distr',
+            port: 8081
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+              title: 'Development'
+            })
+          ],
+        module: {
+            rules
+        },
+        resolve
+    },
+    {
 	mode,
     entry: serverEntry,
     target: "node",
@@ -45,6 +69,7 @@ module.exports = [{
         filename: serverOutputFilename,
         path: outputDirectory
     },
+    devtool: 'inline-source-map',
     module: {
         rules
     },
@@ -57,28 +82,11 @@ module.exports = [{
         filename: clientOutputFilename,
         path: outputDirectory
     },
+    devtool: 'inline-source-map',
     module: {
         rules
     },
     resolve
-},
-{
-	mode,
-    entry: path.join(__dirname, '/src/test/index.ts'),
-    output: {
-        filename: 'test.js',
-        path: outputDirectory
-    },
-    devServer: {
-        contentBase: './distr'
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-          title: 'Development'
-        })
-      ],
-    module: {
-        rules
-    },
-    resolve
-}];
+}
+]
+//.filter(config => process.env.config && config.output.filename === process.env.config);

@@ -1,5 +1,7 @@
 import { Client } from "../client/Client";
 
+console.log('piglet');
+
 let client = new Client();
 client.connect((self) => {
 

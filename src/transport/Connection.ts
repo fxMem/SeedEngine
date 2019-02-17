@@ -1,4 +1,4 @@
-import {  MessageSender } from './MessageSender';
+import { MessageSender } from './MessageSender';
 import { Connected, Transport } from './Transport';
 
 // Adds RPC logic (MessageSender) on top of transport connection
@@ -11,7 +11,7 @@ export class Connection {
         this.sender = new MessageSender(this.transport.send.bind(this));
     }
 
-    start() {
+    start(options?: { port?: number }) {
         this.transport.start();
         this.userCallback && this.onConnected(this.userCallback);
     }
