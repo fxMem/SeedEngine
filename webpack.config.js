@@ -1,6 +1,7 @@
 const path = require('path');
 const tsNameof = require("ts-nameof");
 const nodeExternals = require('webpack-node-externals');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let resolve = {
     extensions: [".ts", ".js"],
@@ -56,6 +57,26 @@ module.exports = [{
         filename: clientOutputFilename,
         path: outputDirectory
     },
+    module: {
+        rules
+    },
+    resolve
+},
+{
+	mode,
+    entry: path.join(__dirname, '/src/test/index.ts'),
+    output: {
+        filename: 'test.js',
+        path: outputDirectory
+    },
+    devServer: {
+        contentBase: './distr'
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+          title: 'Development'
+        })
+      ],
     module: {
         rules
     },
