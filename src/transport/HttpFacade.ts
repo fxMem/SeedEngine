@@ -17,6 +17,10 @@ export class ExpressFacadeFactory implements HttpFacadeFactory {
         this.setupExpress(expressApp);
 
         let httpServer = createServer(expressApp);
+        httpServer.on('listening', () => {
+            log.info('ExpressFacade is listening');
+        });
+
         return httpServer;
     }
 

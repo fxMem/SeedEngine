@@ -26,7 +26,7 @@ export interface Message extends LogFriendly {
 }
 
 export class DefaulMessagePipeline implements MessagePipeline {
-    private callbacks: MessageHandler[];
+    private callbacks: MessageHandler[] = [];
 
     build(log?: Log): MessagePipelineCallback {
         let result: MessagePipelineCallback = (_) => Promise.resolve();

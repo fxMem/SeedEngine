@@ -1,5 +1,5 @@
 import * as socketIO from 'socket.io';
-import { SeedMessage } from './Headers';
+import { SeedMessage, DefaultSeedNamespace } from './Headers';
 import { HttpFacade } from './HttpFacade';
 import { Transport, TransportMessageCallbackAsync, TransportMessage, Connected } from './Transport';
 import { Action } from '@utils';
@@ -8,14 +8,15 @@ import { Action } from '@utils';
 // Wraps socket.IO connection (server)
 export class SocketIOServerTransport implements Transport {
     private clientConnection: socketIO.Socket;
-    private ioServer: socketIO.Server;
+    private ioServer: socketIO.Namespace;
 
     constructor(private httpFacade: HttpFacade) {
 
     }
 
-    start(): void {
-        this.ioServer = socketIO(this.httpFacade);
+    start(options?: any): void {
+        this.ioServer = socketIO(this.httpFacade).of(`/${DefaultSeedNamespace}`);
+        this.httpFacade.listen(options && options.port || 8080, (e) => { });
     }
 
     isStarted() {

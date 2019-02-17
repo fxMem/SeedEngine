@@ -10,8 +10,7 @@ export class SocketIOClientTransport implements Transport {
     private connected: ManualResetEvent;
 
     start(): void {
-        let connectAdress = (window as any).protocol + '//' + (window as any).host + ':80/' + DefaultSeedNamespace;
-        this.connection = io(connectAdress);
+        this.connection = io.connect(`/${DefaultSeedNamespace}`);
     }   
     
     isStarted(): boolean {
@@ -19,7 +18,7 @@ export class SocketIOClientTransport implements Transport {
     }
     
     onConnected(userCallback: (client: Connected) => void) {
-        this.connection.on('connect', () => {
+        this.connection.on('connection', () => {
             this.connected.set();
 
             userCallback({
