@@ -1,13 +1,14 @@
 import { Connection } from "@transport/Connection";
 import { SocketIOClientTransport } from "./SocketIOClientTransport";
-import { ConnectedCallback } from "@transport";
+import { Header } from "@transport/Headers";
+import { ConnectedCallback } from "@transport/Transport";
 
 export class Client {
     private connection: Connection;
 
-    
+
     constructor() {
-        this.connection = new Connection(new SocketIOClientTransport());        
+        this.connection = new Connection(new SocketIOClientTransport());
     }
 
     connect(callback: ConnectedCallback) {
@@ -15,7 +16,11 @@ export class Client {
         this.connection.start();
     }
 
-    async authenticate(): Promise<void> {
+    async getAvailableAuthMethods(): Promise<{ id: string, description: string }[]> {
+        return await this.connection.invoke(Header.Authenticate, null);
+    }
 
+    async authenticate(methodId: string, data: any): Promise<boolean> {
+        return await this.connection.invoke(Header.Authenticate, data);
     }
 }
