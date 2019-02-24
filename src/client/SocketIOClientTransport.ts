@@ -11,6 +11,7 @@ export class SocketIOClientTransport implements Transport {
 
     start(): void {
         this.connection = io.connect(`/${DefaultSeedNamespace}`);
+        this.connected = new ManualResetEvent();
     }   
     
     isStarted(): boolean {
@@ -18,7 +19,7 @@ export class SocketIOClientTransport implements Transport {
     }
     
     onConnected(userCallback: (client: Connected) => void) {
-        this.connection.on('connection', () => {
+        this.connection.on('connect', () => {
             this.connected.set();
 
             userCallback({

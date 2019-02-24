@@ -11,7 +11,7 @@ export class Bootstrapper {
     private userStorage: UserStorage;
     private loggers: Logger[];
     private options: InstanceOptions = {
-        port: 8181
+        port: 8080
     };
 
     build(): Instance {

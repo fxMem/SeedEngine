@@ -1,5 +1,8 @@
 import { Client } from "../client/Client";
 
+localStorage.debug = '*';
+
+
 console.log('piglet');
 
 let client = new Client();
