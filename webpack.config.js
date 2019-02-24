@@ -89,4 +89,4 @@ module.exports = [
     resolve
 }
 ]
-//.filter(config => process.env.config && config.output.filename === process.env.config);
+.filter(config => process.env.config ? config.output.filename === process.env.config : true);
