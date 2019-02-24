@@ -7,7 +7,7 @@ export class ManualResetEvent {
     private signaled: boolean;
 
     constructor() {
-        this.initializeNonSignaledStateState();
+        this.initializeNonSignaledState();
     }
 
     set() {
@@ -20,14 +20,14 @@ export class ManualResetEvent {
             throw new Error("Event is not signaled, can't reset!");
         }
         
-        this.initializeNonSignaledStateState();
+        this.initializeNonSignaledState();
     }
 
     wait(): Promise<void> {
         return this.waiter;
     }
 
-    private initializeNonSignaledStateState(): void {
+    private initializeNonSignaledState(): void {
         this.waiter = new Promise((resolve) => {
             this.resolve = resolve;
             this.signaled = false;
