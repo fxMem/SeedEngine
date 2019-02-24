@@ -16,7 +16,7 @@ export class Server {
 
     listen(port: number): void {
         this.connection.onConnected(this.handleClient.bind(this));
-        this.connection.start();
+        this.connection.start({ port });
     }
 
     private handleClient(client: Connected): void {

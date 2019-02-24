@@ -14,9 +14,9 @@ export class SocketIOServerTransport implements Transport {
 
     }
 
-    start(options?: any): void {
+    start(options: any): void {
         this.ioServer = socketIO(this.httpFacade).of(`/${DefaultSeedNamespace}`);
-        this.httpFacade.listen(options && options.port || 8080, (e) => { });
+        this.httpFacade.listen(options && options.port || 80, (e) => { });
     }
 
     isStarted() {

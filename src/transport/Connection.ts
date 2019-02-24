@@ -12,7 +12,7 @@ export class Connection {
     }
 
     start(options?: { port?: number }) {
-        this.transport.start();
+        this.transport.start(options);
         this.userCallback && this.onConnected(this.userCallback);
     }
 
