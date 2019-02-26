@@ -8,7 +8,7 @@ export class Connection {
     private userCallback: (client: Connected) => void;
 
     constructor(private transport: Transport) {
-        this.sender = new MessageSender(this.transport.send.bind(this));
+        this.sender = new MessageSender(this.transport.send.bind(transport));
     }
 
     start(options?: { port?: number }) {
