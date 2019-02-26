@@ -76,7 +76,7 @@ export class MessageSender {
 
 type promiseCallbacks = { resolve: (value: any) => void, reject: () => void };
 class ReturnHandlesCollection {
-    private returnHandles: Map<string, promiseCallbacks>;
+    private returnHandles = new Map<string, promiseCallbacks>();
 
     private getResolveCallbackKey(header: string, hash: string): string {
         return header + hash;
