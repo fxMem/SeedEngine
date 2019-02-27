@@ -1,7 +1,7 @@
 import * as socketIO from 'socket.io';
 import { SeedMessage, DefaultSeedNamespace } from './Headers';
 import { HttpFacade } from './HttpFacade';
-import { Transport, TransportMessageCallbackAsync, TransportMessage, Connected } from './Transport';
+import { Transport, TransportMessageCallbackAsync, TransportMessage, TransportClient } from './Transport';
 import { Action } from '@utils';
 
 
@@ -23,7 +23,12 @@ export class SocketIOServerTransport implements Transport {
         return !!this.ioServer;
     }
 
-    onConnected(userCallback: (client: Connected) => void) {
+    send(message: TransportMessage, options: any): void {
+        let { target } = options;
+        this.ioServer.to(target).emit(SeedMessage, message);
+    }
+
+    onConnected(userCallback: (client: TransportClient) => void) {
         this.ioServer.on('connection', (socketClient) => {
             userCallback({
                 id: socketClient.id,
@@ -35,9 +40,5 @@ export class SocketIOServerTransport implements Transport {
                 }
             });
         });
-    }
-
-    send(message: TransportMessage): void {
-        this.clientConnection.emit(SeedMessage, message);
     }
 }
