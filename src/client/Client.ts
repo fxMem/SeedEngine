@@ -1,26 +1,37 @@
-import { Connection } from "@transport/Connection";
+import { Connection, ClientConnectedCallback, ConnectedClient } from "@transport/Connection";
 import { SocketIOClientTransport } from "./SocketIOClientTransport";
 import { Header } from "@transport/Headers";
-import { ConnectedCallback } from "@transport/Transport";
+
+export type ServerApi = {
+    getAvailableAuthMethods: () => Promise<{ id: string, description: string }[]>;
+    authenticate: (moduleId: string, data: any) => Promise<boolean>;
+}
+export type Connect = ConnectedClient & ServerApi;
 
 export class Client {
     private connection: Connection;
-
 
     constructor() {
         this.connection = new Connection(new SocketIOClientTransport());
     }
 
-    connect(callback: ConnectedCallback) {
-        this.connection.onConnected(callback);
+    connect(callback: (connect: Connect) => Promise<void>) {
+        this.connection.onConnected((connectedClient) => {
+            let connect: Connect = { 
+                ...connectedClient,
+                getAvailableAuthMethods: () => connectedClient.invoke({
+                    header: Header.Authenticate, 
+                    payload: null
+                }),
+                authenticate: (moduleId, data) => connectedClient.invoke({
+                    header: Header.Authenticate, 
+                    payload: { moduleId, ...data }
+                })
+            };
+
+            callback(connect);
+        });
+
         this.connection.start();
-    }
-
-    async getAvailableAuthMethods(): Promise<{ id: string, description: string }[]> {
-        return await this.connection.invoke(Header.Authenticate, null);
-    }
-
-    async authenticate(methodId: string, data: any): Promise<boolean> {
-        return await this.connection.invoke(Header.Authenticate, data);
     }
 }

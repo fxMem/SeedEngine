@@ -2,8 +2,7 @@ import { MessagePipelineCallback } from "./MessagePipeline";
 import { AuthModule, User } from '@users';
 import { Log } from '@log';
 import { Header } from './Headers';
-import { Connection } from "./Connection";
-import { Connected } from "./Transport";
+import { Connection, ConnectedClient } from "./Connection";
 
 // Facade class tying together connection, authentication and messaging logic
 export class Server {
@@ -19,7 +18,7 @@ export class Server {
         this.connection.start({ port });
     }
 
-    private handleClient(client: Connected): void {
+    private handleClient(client: ConnectedClient): void {
         const userTransportId = client.id;
 
         const info = (message: string): void => {
@@ -42,7 +41,9 @@ export class Server {
 
         client.onMessage(async data => {
 
-            let { header, ...payload } = data;
+            info(JSON.stringify(data));
+
+            let { header, payload } = data;
             let user: User = null;
             if (header != Header.Authenticate) {
                 let user = this.authModule.identifyUser(userTransportId);
@@ -55,7 +56,14 @@ export class Server {
                 throw new Error(`Handler for message header ${header} is not found!`);
             }
 
-            return handlers[header](user, payload);
+            try {
+                let result = await handlers[header](user, payload);
+
+                info(`Sending a responce - ${JSON.stringify(result)}`);
+                return result;
+            } catch (e) {
+                this.log.error(e.toString());
+            }
         });
 
 
