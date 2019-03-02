@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open",
     "ba": "webpack",
     "bs": "config=server.js webpack",
     "bc": "config=client.js webpack",
@@ -12,8 +11,12 @@
     "server": "node ./distr/server.js",
     "client": "node ./distr/client.js",
     "test": "node ./distr/test.js",
-    "ds": "npm run bs && npm run server",
-    "dc": "npm run bc && npm run client"
+    "ds": "npm run bs && nodemon ./distr/server.js",
+    "dc": "npm run bc && npm run client",
+    "wbs": "config=server.js webpack --watch",
+    "ws" : "nodemon \"./distr/server.js\" --watch \"./distr/server.js\"",
+    "ss": "npm-run-all --parallel ws wbs",
+    "sc": "webpack-dev-server --open"
   },
   "author": "Mem",
   "license": "MIT",
@@ -24,6 +27,8 @@
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
     "html-webpack-plugin": "^3.2.0",
+    "nodemon": "^1.18.10",
+    "npm-run-all": "^4.1.5",
     "ts-loader": "^5.3.3",
     "ts-nameof": "^2.0.0",
     "typescript": "^3.2.4",
