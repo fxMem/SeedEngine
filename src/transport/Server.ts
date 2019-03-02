@@ -5,6 +5,7 @@ import { Header } from './Headers';
 import { Connection, ConnectedClient } from "./Connection";
 import { User } from "users/User";
 import { MessageSender } from "./MessageSender";
+import { ServerError } from "./ServerError";
 
 // Facade class tying together connection, authentication and messaging logic
 export class Server {
@@ -38,8 +39,8 @@ export class Server {
 
                 return await this.authModule.authentificate(userTransportId, data);
             },
-            [Header.Message]: (user: User, data: any) => this.pipeline({ 
-                message: { ...data }, 
+            [Header.Message]: (user: User, data: any) => this.pipeline({
+                message: { ...data },
                 from: user,
 
                 users: this.users,
@@ -73,6 +74,7 @@ export class Server {
                 return result;
             } catch (e) {
                 this.log.error(e.toString());
+                return new ServerError(e.message);
             }
         });
 
