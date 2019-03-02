@@ -2,6 +2,7 @@ import { Instance, DefaultInstance, InstanceOptions } from "./Instance";
 import { DefaultUserManager, AuthMethod, AuthModule, UserStorage } from "@users";
 import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport } from "@transport";
 import { Logger, Log, DefaultConsoleLogger } from "@log";
+import { MessageSender } from "@transport/MessageSender";
 
 
 export class Bootstrapper {
@@ -21,9 +22,12 @@ export class Bootstrapper {
         this.pipeline = new DefaulMessagePipeline();
         let userManager = new DefaultUserManager();
         let connection = new Connection(serverTransport);
+        let messageSender = new MessageSender(serverTransport);
 
         let server = new Server(
             connection,
+            userManager,
+            messageSender,
             this.pipeline.build(),
             new AuthModule(userManager, this.authMethods, this.userStorage, log),
             log);

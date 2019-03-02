@@ -1,4 +1,4 @@
-import { SpecificMessageTypeHandler, Message } from "@transport";
+import { SpecificMessageTypeHandler, Message, MessageContext } from "@transport";
 
 export enum SessionCommand {
     create,
@@ -17,13 +17,15 @@ function isSessionMessage(message: Message): message is SessionMessage {
 export class SessionPipeline implements SpecificMessageTypeHandler {
     canHandle(message: Message): boolean {
         return isSessionMessage(message);
-    }    
-    
-    handle(message: Message): Promise<any> {
+    }
+
+    handle(context: MessageContext): Promise<any> {
+        let { message } = context;
+        
         if (!isSessionMessage(message)) {
             throw new Error();
         }
-        
+
         return Promise.resolve();
     }
 }

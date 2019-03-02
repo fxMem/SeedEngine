@@ -1,6 +1,4 @@
-import { UserStorage } from "./UserStorage";
 import { User } from "./User";
-import { ClientMessage, TransportMessageSender } from "@transport";
 
 export interface Users {
     getUserById(userId: string): User;

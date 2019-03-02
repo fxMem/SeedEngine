@@ -1,18 +1,27 @@
-import { User } from "@users";
+import { User, Users } from "@users";
 import { Log, LogFriendly } from "@log";
+import { MessageSender } from "./MessageSender";
+
+export interface MessageContext {
+    message: Message;
+    from: User;
+
+    users: Users;
+    sender: MessageSender;
+}
 
 export interface MessagePipelineCallback {
-    (message: Message): Promise<any>;
+    (context: MessageContext): Promise<any>;
 }
 
 export interface MessageHandler {
-    (message: Message, next: MessagePipelineCallback): Promise<any>;
+    (context: MessageContext, next: MessagePipelineCallback): Promise<any>;
 }
 
 export interface SpecificMessageTypeHandler {
     canHandle(message: Message): boolean;
 
-    handle(message: Message): Promise<any>;
+    handle(context: MessageContext): Promise<any>;
 }
 
 export interface MessagePipeline {
@@ -22,7 +31,7 @@ export interface MessagePipeline {
 }
 
 export interface Message extends LogFriendly {
-    user: User;
+    
 }
 
 export class DefaulMessagePipeline implements MessagePipeline {
@@ -33,9 +42,9 @@ export class DefaulMessagePipeline implements MessagePipeline {
 
         if (log) {
             let messageNumber = 0;
-            this.chain(async (message, next) => {
-                log.info(`#${messageNumber} Recieved message = ${message.GetDebugString()}`);
-                let result = await next(message);
+            this.chain(async (context, next) => {
+                log.info(`#${messageNumber} Recieved message = ${context.message.GetDebugString()}`);
+                let result = await next(context);
                 log.info(`#${messageNumber++} procceded, result = ${result.GetDebugString()}`);
     
                 return result;
@@ -44,7 +53,7 @@ export class DefaulMessagePipeline implements MessagePipeline {
 
         for (let i = this.callbacks.length - 1; i >= 0; i--) {
             let nextCallback = this.callbacks[i];
-            result = (message) => nextCallback(message, result);
+            result = (context) => nextCallback(context, result);
         }
 
         return result;
@@ -56,12 +65,12 @@ export class DefaulMessagePipeline implements MessagePipeline {
 
     private chainTyped(handler: SpecificMessageTypeHandler): void {
         this.callbacks.push(
-            (message: any, next: MessagePipelineCallback): Promise<any> => {
-                if (handler.canHandle(message)) {
-                    return handler.handle(message);
+            (context: MessageContext, next: MessagePipelineCallback): Promise<any> => {
+                if (handler.canHandle(context.message)) {
+                    return handler.handle(context);
                 }
                 else {
-                    return next(message);
+                    return next(context);
                 }
             }
         );

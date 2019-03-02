@@ -1,15 +1,18 @@
 import { MessagePipelineCallback } from "./MessagePipeline";
-import { AuthModule } from '@users';
+import { AuthModule, Users } from '@users';
 import { Log } from '@log';
 import { Header } from './Headers';
 import { Connection, ConnectedClient } from "./Connection";
 import { User } from "users/User";
+import { MessageSender } from "./MessageSender";
 
 // Facade class tying together connection, authentication and messaging logic
 export class Server {
 
     constructor(
         private connection: Connection,
+        private users: Users,
+        private sender: MessageSender,
         private pipeline: MessagePipelineCallback,
         private authModule: AuthModule,
         private log: Log) { }
@@ -35,7 +38,13 @@ export class Server {
 
                 return await this.authModule.authentificate(userTransportId, data);
             },
-            [Header.Message]: (user: User, data: any) => this.pipeline({ ...data, user: user })
+            [Header.Message]: (user: User, data: any) => this.pipeline({ 
+                message: { ...data }, 
+                from: user,
+
+                users: this.users,
+                sender: this.sender
+            })
         };
 
         info(`Connected!`);
