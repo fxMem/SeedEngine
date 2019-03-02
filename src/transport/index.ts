@@ -3,6 +3,6 @@ export * from './Server';
 export * from './HttpFacade';
 export * from './Headers';
 export * from './SocketIOServerTransport';
-export * from './MessageSender';
+export * from './RpcWrapper';
 export * from './Connection';
 export * from './Transport';
