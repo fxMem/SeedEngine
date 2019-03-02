@@ -1,7 +1,4 @@
 import { UserInfo } from './UserStorage';
-import { User } from './User';
-
-
 
 export interface AuthMethod {
     getDescription(): string;
