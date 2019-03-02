@@ -3,4 +3,6 @@ import { Session } from "./Session";
 
 export interface SessionManager {
     createSession(options: { owner: User }): Session;
+
+    getSession(sessionId: string): Session;
 }
