@@ -2,7 +2,7 @@ import { AuthMethod } from './AuthMethod';
 import { UserStorage } from "./UserStorage";
 import { Users } from './Users';
 import { Log } from '@log';
-import { User } from './User';
+import { User, DefaultUser } from './User';
 
 export class AuthModule {
 
@@ -44,7 +44,7 @@ export class AuthModule {
         }
 
         if (user) {
-            this.userManager.connect(userTransportId, { ...user, id: userTransportId });
+            this.userManager.connect(userTransportId, new DefaultUser(userTransportId, user.nickname, user.data));
             this.userStorage.setData(user.nickname, user.data);
         }
 
