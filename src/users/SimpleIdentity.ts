@@ -1,9 +1,7 @@
 import { Claims } from "./Claims";
 import { UserStorage, UserInfo } from "./UserStorage";
-import { InMemoryUserStorage } from "./InMemoryUserStorage";
 import { IdentityChecker } from "./IdentityChecker";
 import { AuthMethod } from "./AuthMethod";
-import { User } from "./User";
 
 export namespace SimpleIdentity {
 
