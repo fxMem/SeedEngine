@@ -1,7 +1,9 @@
-import { IdentityChecker, AuthMethod, User } from "@users";
 import { Claims } from "./Claims";
 import { UserStorage, UserInfo } from "./UserStorage";
 import { InMemoryUserStorage } from "./InMemoryUserStorage";
+import { IdentityChecker } from "./IdentityChecker";
+import { AuthMethod } from "./AuthMethod";
+import { User } from "./User";
 
 export namespace SimpleIdentity {
 
@@ -28,7 +30,7 @@ export namespace SimpleIdentity {
             return "Simple authentification requiring only to provide nickname.";
         }
 
-        async tryAuthentificate(authData: any, storeLoader: (nickname: string) => any): Promise<User> {
+        async tryAuthentificate(authData: any, storeLoader: (nickname: string) => any): Promise<{ nickname: string, data: any }> {
             let { nickname } = authData;
             if (!nickname) {
                 throw new Error('Provided user information lacks nickname!');

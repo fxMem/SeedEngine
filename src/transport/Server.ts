@@ -1,8 +1,9 @@
 import { MessagePipelineCallback } from "./MessagePipeline";
-import { AuthModule, User } from '@users';
+import { AuthModule } from '@users';
 import { Log } from '@log';
 import { Header } from './Headers';
 import { Connection, ConnectedClient } from "./Connection";
+import { User } from "users/User";
 
 // Facade class tying together connection, authentication and messaging logic
 export class Server {

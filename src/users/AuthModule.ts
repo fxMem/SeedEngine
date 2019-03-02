@@ -1,13 +1,14 @@
-import { AuthMethod, User } from './AuthMethod';
+import { AuthMethod } from './AuthMethod';
 import { UserStorage } from "./UserStorage";
-import { UserManager } from './UserManager';
+import { Users } from './Users';
 import { Log } from '@log';
+import { User } from './User';
 
 export class AuthModule {
 
     constructor
         (
-            private userManager: UserManager,
+            private userManager: Users,
             private authMethods: AuthMethod[],
             private userStorage: UserStorage,
             private log: Log
@@ -43,7 +44,7 @@ export class AuthModule {
         }
 
         if (user) {
-            this.userManager.connect(userTransportId, user);
+            this.userManager.connect(userTransportId, { ...user, id: userTransportId });
             this.userStorage.setData(user.nickname, user.data);
         }
 
@@ -52,7 +53,7 @@ export class AuthModule {
     }
 
     private getExistingUser(userTransportId: string): User {
-        return this.userManager.getUser(userTransportId);
+        return this.userManager.getUserById(userTransportId);
     }
 }
 

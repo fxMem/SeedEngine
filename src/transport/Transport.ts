@@ -12,12 +12,15 @@ export type TransportMessageOptions = {
     hash?: string
 }
 
-export interface Transport {
+export interface TransportMessageSender {
+    send(message: TransportMessage, options: { broadcast?: boolean, targets: string[] }): void;
+}
+
+export interface Transport extends TransportMessageSender {
     start(options?: any): void;
     isStarted(): boolean;
 
     onConnected(userCallback: TransportConnectedCallback): void;
-    send(message: TransportMessage, options: any): void;
 }
 
 export type TransportClient = {

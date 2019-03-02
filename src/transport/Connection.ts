@@ -1,5 +1,5 @@
-import { MessageSender } from './MessageSender';
-import { TransportClient, Transport } from './Transport';
+import { RpcWrapper } from './RpcWrapper';
+import { Transport } from './Transport';
 import { Action } from '@utils';
 
 export type ClientCallback = (message: ClientMessage) => Promise<any>;
@@ -13,7 +13,7 @@ export type ConnectedClient = {
     onMessage: (callback: ClientCallback) => void;
     onDisconnected: (callback: Action) => void;
 
-    send: (message: ClientMessage) => void;
+    //send: (message: ClientMessage) => void;
     invoke: (message: ClientMessage) => Promise<any>;
 }
 
@@ -40,13 +40,13 @@ export class Connection {
         }
 
         this.transport.onConnected((transportClient) => {
-            let sender = new MessageSender((message) => this.transport.send(message, { target: transportClient.id }));
+            let sender = new RpcWrapper((message) => this.transport.send(message, { targets: [transportClient.id] }));
 
             userCallback({
                 id: transportClient.id,
                 onMessage: (userCallback) => transportClient.onMessage(sender.enableRPC(userCallback)),
                 onDisconnected: transportClient.onDisconnected,
-                send: (message) => sender.send(message.header, message.payload),
+                //send: (message) => sender.send(message.header, message.payload),
                 invoke: (message) => sender.sendAndGetResult(message.header, message.payload)
             })
         });

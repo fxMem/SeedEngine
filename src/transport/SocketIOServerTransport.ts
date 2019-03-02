@@ -7,7 +7,6 @@ import { Action } from '@utils';
 
 // Wraps socket.IO connection (server)
 export class SocketIOServerTransport implements Transport {
-    private clientConnection: socketIO.Socket;
     private ioServer: socketIO.Namespace;
 
     constructor(private httpFacade: HttpFacade) {
@@ -23,9 +22,16 @@ export class SocketIOServerTransport implements Transport {
         return !!this.ioServer;
     }
 
-    send(message: TransportMessage, options: any): void {
-        let { target } = options;
-        this.ioServer.to(target).emit(SeedMessage, message);
+    send(message: TransportMessage, options: { broadcast?: boolean, targets: string[] }): void {
+        let target = this.ioServer;
+
+        if (options.targets) {
+            for (let clientId of options.targets) {
+                target = target.to(clientId);
+            }
+        }
+        
+        target.emit(SeedMessage, message);
     }
 
     onConnected(userCallback: (client: TransportClient) => void) {

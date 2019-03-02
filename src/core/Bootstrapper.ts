@@ -15,12 +15,11 @@ export class Bootstrapper {
     };
 
     build(): Instance {
-        this.pipeline = new DefaulMessagePipeline();
-
-        let userManager = new DefaultUserManager(this.userStorage);
         let log = new Log(this.loggers || [new DefaultConsoleLogger()]);
-
         let serverTransport = new SocketIOServerTransport(this.facadeFactory.create(log));
+
+        this.pipeline = new DefaulMessagePipeline();
+        let userManager = new DefaultUserManager();
         let connection = new Connection(serverTransport);
 
         let server = new Server(
