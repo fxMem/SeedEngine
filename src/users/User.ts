@@ -1,5 +1,5 @@
 import { UserInfo } from "./UserStorage";
-import { UserClaims, Claims } from "./Claims";
+import { Claim, haveClaim } from "./Claims";
 
 export interface User {
     id: string;
@@ -8,7 +8,7 @@ export interface User {
 
     data: UserInfo;
 
-    haveClaim(claim: Claims): boolean;
+    haveClaim(claim: Claim): boolean;
 }
 
 export class DefaultUser implements User {
@@ -17,8 +17,8 @@ export class DefaultUser implements User {
 
     }
 
-    haveClaim(claim: Claims): boolean {
-        return claim in this.data.claims;
+    haveClaim(claim: Claim): boolean {
+        return haveClaim(this.data.claims, claim);
     }
 }
 
