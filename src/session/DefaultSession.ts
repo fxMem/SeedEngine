@@ -1,6 +1,6 @@
 import { Session } from "./Session";
-import { User } from "@users";
-import { TargetBuilder, ClientMessage } from "@transport";
+import { User, Claims } from "@users";
+import { TargetBuilder, ClientMessage, ServerError } from "@transport";
 import { EventEmitter } from "events";
 
 const playerJoined = 'playerJoined';
@@ -40,6 +40,11 @@ export class DefaultSession extends EventEmitter implements Session {
     }
 
     addPlayer(user: User): Promise<{ success: boolean, message?: string }> {
+
+        if (!user.haveClaim(Claims.joinSession)) {
+            throw new ServerError(`User ${user.nickname} can't join any sessions!`);
+        }
+
         this.connectedPlayers.push(user);
         this.emit(playerJoined, user);
 

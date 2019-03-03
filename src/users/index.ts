@@ -6,3 +6,4 @@ export * from './InMemoryUserStorage';
 export * from './Users';
 export * from './SimpleIdentity';
 export * from './User';
+export * from './Claims';
