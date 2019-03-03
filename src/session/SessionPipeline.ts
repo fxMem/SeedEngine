@@ -54,10 +54,6 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
 
     private createSession(message: SessionMessage, creator: User): any {
 
-        if (!creator.haveClaim(Claims.createSession)) {
-            return new ServerError(`User ${creator.nickname} does not have sufficient rights to create sessions!`);
-        }
-
         let session = this.sessionManager.createSession({
             owner: creator
         });
@@ -70,13 +66,9 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     private async joinSession(sessionId: string, applicant: User): Promise<any> {
 
         let session = this.getSession(sessionId);
-
         let result = await session.addPlayer(applicant);
-        if (!result.success) {
-            return new ServerError(`Can't connect to session with id ${sessionId}: ${result.message}`);
-        }
-
         applicant.data.sessionId = sessionId;
+
         return result;
     }
 
