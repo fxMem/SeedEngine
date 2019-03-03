@@ -1,20 +1,6 @@
 import { User } from "@users";
 import { ClientMessage, TargetBuilder } from "@transport";
-
-export enum SessionState {
-    waiting,
-    running,
-    finished
-}
-
-export interface SessionInfo {
-    id: string;
-    state: SessionState;
-
-    playersCount: number;
-    timePassed: Date;
-    description: string;
-}
+import { SessionInfo } from "./SessionInfo";
 
 export interface Session {
     id(): string;

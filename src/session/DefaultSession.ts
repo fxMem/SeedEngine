@@ -1,7 +1,8 @@
-import { Session, SessionInfo, SessionState } from "./Session";
+import { Session } from "./Session";
 import { User, Claims } from "@users";
 import { TargetBuilder, ClientMessage, ServerError } from "@transport";
 import { EventEmitter } from "events";
+import { SessionState, SessionInfo } from "./SessionInfo";
 
 const playerJoined = 'playerJoined';
 const playerLeft = 'playerLeft';

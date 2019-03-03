@@ -2,14 +2,8 @@ import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from
 import { User } from "@users";
 import { DefaultSessionManager } from "./DefaultSessionManager";
 import { DefaultSession } from "./DefaultSession";
-import { SessionInfo } from "./Session";
-
-export enum SessionCommand {
-    getList,
-    create,
-    join,
-    leave
-}
+import { SessionCommand } from "./SessionCommand";
+import { SessionInfo } from "./SessionInfo";
 
 interface SessionSelectionOptions {
     sessionId?: string;

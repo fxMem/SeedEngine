@@ -1,7 +1,8 @@
-import { Connection, ClientConnectedCallback, ConnectedClient } from "@transport/Connection";
+import { Connection, ConnectedClient } from "@transport/Connection";
 import { SocketIOClientTransport } from "./SocketIOClientTransport";
 import { Header } from "@transport/Headers";
-import { SessionCommand } from "session/SessionPipeline";
+import { SessionCommand } from "@session/SessionCommand";
+import { SessionInfo } from "@session/SessionInfo";
 
 export type ServerApi = {
     getAvailableAuthMethods: () => Promise<{ id: string, description: string }[]>;
@@ -44,8 +45,10 @@ export class Client {
         });
     }
 
-    joinSession() {
-        
+    allSessions(): Promise<SessionInfo[]> {
+        return this.invokeWithMessage({
+            command: SessionCommand.getList
+        });
     }
 
     authenticate(moduleId: string, data: any): Promise<any> {
