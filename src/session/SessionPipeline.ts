@@ -19,7 +19,7 @@ export interface SessionMessage extends Message, SessionSelectionOptions, Sessio
 }
 
 function isSessionMessage(message: Message): message is SessionMessage {
-    return (message as any).command;
+    return (message as any).command !== undefined;
 }
 
 export class SessionPipeline implements SpecificMessageTypeHandler {
