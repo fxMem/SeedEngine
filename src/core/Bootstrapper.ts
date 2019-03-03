@@ -28,7 +28,7 @@ export class Bootstrapper {
             connection,
             userManager,
             messageSender,
-            this.pipeline.build(),
+            this.pipeline.build(log),
             new AuthModule(userManager, this.authMethods, this.userStorage, log),
             log);
 
