@@ -3,6 +3,7 @@ import { DefaultUserManager, AuthMethod, AuthModule, UserStorage } from "@users"
 import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport, SpecificMessageTypeHandler } from "@transport";
 import { Logger, Log, DefaultConsoleLogger } from "@log";
 import { MessageSender } from "@transport/MessageSender";
+import { log } from "util";
 
 
 export class Bootstrapper {

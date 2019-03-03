@@ -1,6 +1,6 @@
 import { Bootstrapper, Instance } from "@core";
 import { InMemoryUserStorage, SimpleIdentity } from "@users";
-import { ExpressFacadeFactory, makeRegularHandler } from "@transport";
+import { ExpressFacadeFactory, makeRegularHandler, MessageHandler } from "@transport";
 import { SessionPipeline, DefaultSessionManager } from "@session";
 
 function buildTestServer(): Instance {
@@ -9,8 +9,14 @@ function buildTestServer(): Instance {
         .withHttpFacade(new ExpressFacadeFactory())
         .withAuthMethod(new SimpleIdentity.SimpleAuthModule())
         .withStorage(SimpleIdentity.WithSuperUser(new InMemoryUserStorage()))
-        .add(makeRegularHandler(new SessionPipeline(new DefaultSessionManager())));
+        .add(createSessionHandler());
 
+    function createSessionHandler(): MessageHandler {
+        let handler = makeRegularHandler(new SessionPipeline(new DefaultSessionManager()));
+        handler.handlerName = 'SessionHandler';
+
+        return handler;
+    }
     return bootstrapper.build();
 }
 
