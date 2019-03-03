@@ -4,9 +4,7 @@ export class Claim {
     name: string;
     claims: Claim[];
     constructor(name?: string) {
-        if (!name) {
-            name = claimId++ + '';
-        }
+        this.name = name || claimId++ + '';
     }
 
     subClaims(claims: Claim[]): this {
@@ -23,15 +21,15 @@ export class Claim {
     }
 }
 
-function claim(subClaims?: { [key: string]: Claim }) {
+function claim(subClaims?: { [key: string]: Claim }): Claim {
     let allSubClaims: Claim[] = [];
     if (subClaims) {
         for (let subClaim in subClaims) {
             allSubClaims.push(subClaims[subClaim]);
         }
-
-        return new Claim().subClaims(allSubClaims);
     }
+
+    return new Claim().subClaims(allSubClaims);
 }
 
 export function haveClaim(claims: Claim[], claim: Claim): boolean {
