@@ -8,3 +8,4 @@ export * from './Connection';
 export * from './Transport';
 export * from './MessageSender';
 export * from './ServerError';
+export * from './SpecificMessageTypeHandler';
