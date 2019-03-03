@@ -8,13 +8,18 @@ export enum SessionState {
 }
 
 export interface SessionInfo {
+    id: string;
     state: SessionState;
 
+    playersCount: number;
+    timePassed: Date;
     description: string;
 }
 
 export interface Session {
     id(): string;
+
+    getInfo(): SessionInfo;
 
     players(): User[];
 

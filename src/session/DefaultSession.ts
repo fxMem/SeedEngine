@@ -1,4 +1,4 @@
-import { Session } from "./Session";
+import { Session, SessionInfo, SessionState } from "./Session";
 import { User, Claims } from "@users";
 import { TargetBuilder, ClientMessage, ServerError } from "@transport";
 import { EventEmitter } from "events";
@@ -9,15 +9,30 @@ const messageRecieved = 'messageRecieved';
 const started = 'started';
 
 export class DefaultSession extends EventEmitter implements Session {
-
+    
+    private state: SessionState;
+    private startTime: Date;
     private connectedPlayers: User[] = [];
 
-    constructor(private sessionId: string) {
+    constructor(private sessionId: string, private description?: string) {
         super();
+
+        this.state = SessionState.waiting;
     }
 
     id() {
         return this.sessionId;
+    }
+
+    getInfo(): SessionInfo {
+        return {
+            id: this.sessionId,
+            state: this.state,
+
+            playersCount: this.connectedPlayers.length,
+            timePassed: this.startTime,
+            description: this.description || 'Just a regular gaming session'
+        }
     }
 
     players(): User[] {
@@ -33,8 +48,12 @@ export class DefaultSession extends EventEmitter implements Session {
         this.on(messageRecieved, callback);
     }
     onStarted(callback: () => void): void {
+
+        this.state = SessionState.running;
+        this.startTime = new Date();
         this.on(started, callback);
     }
+
     sendMessage(message: ClientMessage): TargetBuilder {
         throw new Error("Method not implemented.");
     }
