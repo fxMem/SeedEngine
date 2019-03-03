@@ -73,8 +73,14 @@ export class Server {
                 info(`Sending a responce - ${JSON.stringify(result)}`);
                 return result;
             } catch (e) {
-                this.log.error(e.toString());
-                return new ServerError(e.message);
+                if (e instanceof Error) {
+                    this.log.error(e.toString());
+                }
+                else if (e instanceof ServerError) {
+                    // This is expected exception, meant user did something wrong
+                }
+
+                return { failed: true, message: e.message };
             }
         });
 

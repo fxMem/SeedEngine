@@ -1,6 +1,6 @@
 import { SessionManager } from "./SessionManager";
 import { User, Claims } from "@users";
-import { Session } from "./Session";
+import { Session, SessionInfo } from "./Session";
 import { DefaultSession } from "./DefaultSession";
 import { ServerError } from "@transport";
 
@@ -14,8 +14,17 @@ export class DefaultSessionManager implements SessionManager {
         return this.sessions.get(sessionId);
     }
 
-    createSession(options: { owner: User }): Session {
-        let { owner } = options;
+    listAllSessions(): SessionInfo[] {
+        let result: SessionInfo[] = [];
+        for (let session of (this.sessions.values as any)) {
+            result.push(session);
+        }
+
+        return result;
+    }
+
+    createSession(options: { owner: User, description?: string }): Session {
+        let { owner, description } = options;
         if (!owner.haveClaim(Claims.createSession)) {
             throw new ServerError(`User ${owner.nickname} does not have sufficient rights to create sessions!`);
         }

@@ -1,21 +1,27 @@
-import { SpecificMessageTypeHandler, Message, MessageContext } from "@transport";
-import { SessionManager } from "./SessionManager";
+import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from "@transport";
 import { User } from "@users";
-import { Claims } from "users/Claims";
-import { ServerError } from "@transport/ServerError";
 import { DefaultSessionManager } from "./DefaultSessionManager";
 import { DefaultSession } from "./DefaultSession";
+import { SessionInfo } from "./Session";
 
 export enum SessionCommand {
+    getList,
     create,
     join,
     leave
 }
 
-export interface SessionMessage extends Message {
-    command: SessionCommand;
-
+interface SessionSelectionOptions {
     sessionId?: string;
+}
+
+interface SessionCreationOptions {
+    sessionDescription: string;
+}
+
+export interface SessionMessage extends Message, SessionSelectionOptions, SessionCreationOptions {
+    command: SessionCommand;
+    
 }
 
 function isSessionMessage(message: Message): message is SessionMessage {
@@ -40,27 +46,41 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
         }
 
         let { command } = message;
+        let result: any;
         switch (command) {
+            case SessionCommand.getList:
+                result = this.getList(from);
+                break;
             case SessionCommand.create:
-                return this.createSession(message, from);
+                result = this.createSession(message, from);
+                break;
             case SessionCommand.join:
-                return this.joinSession(message.sessionId, from);
+                result = this.joinSession(message.sessionId, from);
+                break;
             case SessionCommand.leave:
-                return this.leaveSession(from);
+                result = this.leaveSession(from);
+                break;
             default:
                 throw new ServerError(`Unknown session command: ${command}`);
         }
+
+        return Promise.resolve(result);
     }
 
-    private createSession(message: SessionMessage, creator: User): any {
+    private createSession(message: SessionMessage, creator: User): { sessionId: string } {
 
         let session = this.sessionManager.createSession({
-            owner: creator
+            owner: creator,
+            description: message.sessionDescription
         });
 
         return {
             sessionId: session.id()
         };
+    }
+
+    private getList(user: User): SessionInfo[] {
+        return this.sessionManager.listAllSessions();
     }
 
     private async joinSession(sessionId: string, applicant: User): Promise<any> {
@@ -75,7 +95,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     private leaveSession(applicant: User): any {
         let sessionId = applicant.data.sessionId;
         if (!sessionId) {
-            return new ServerError(`User ${applicant.nickname} hasn't joined any session!`);
+            throw new ServerError(`User ${applicant.nickname} hasn't joined any session!`);
         }
 
         let session = this.getSession(sessionId);
