@@ -12,6 +12,7 @@
         "@users": ["./users"],
         "@session": ["./session"],
         "@session/*": ["./session/*"],
+        "@game": ["./game"],
         "@log": ["./log"],
         "@utils": ["./utils"]
       }
