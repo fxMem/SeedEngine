@@ -1,8 +1,4 @@
-import { UserClaims } from "./Claims";
-
 export interface UserInfo {
-
-    claims: UserClaims;
     [key: string]: any;
 }
 

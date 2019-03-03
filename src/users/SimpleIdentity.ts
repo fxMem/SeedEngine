@@ -1,4 +1,4 @@
-import { Claims } from "./Claims";
+import { Claims, haveClaim } from "./Claims";
 import { UserStorage, UserInfo } from "./UserStorage";
 import { IdentityChecker } from "./IdentityChecker";
 import { AuthMethod } from "./AuthMethod";
@@ -6,7 +6,7 @@ import { AuthMethod } from "./AuthMethod";
 export namespace SimpleIdentity {
 
     export function WithSuperUser(storage: UserStorage): UserStorage {
-        storage.setData('root', { password: 'root', claims: { [Claims.rootUser]: 1 } } as UserInfo);
+        storage.setData('root', { password: 'root', claims: [Claims.rootUser] } as UserInfo);
         return storage;
     }
 
@@ -36,7 +36,7 @@ export namespace SimpleIdentity {
 
             let userData = await storeLoader(nickname);
 
-            if (userData && userData.claims && Claims.rootUser in userData.claims) {
+            if (userData && userData.claims && haveClaim(userData.claims, Claims.rootUser)) {
                 let realRoot = await this.identityChecker.check(authData, userData);
                 if (realRoot) {
                     return { nickname: nickname, data: userData };
