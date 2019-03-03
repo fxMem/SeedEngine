@@ -27,33 +27,34 @@ export interface SpecificMessageTypeHandler {
 export interface MessagePipeline {
     chain(handler: MessageHandler): MessagePipeline;
 
-    build(): MessagePipelineCallback;
+    build(log?: Log): MessagePipelineCallback;
 }
 
-export interface Message extends LogFriendly {
-    
+export interface Message {
+
 }
 
 export class DefaulMessagePipeline implements MessagePipeline {
     private callbacks: MessageHandler[] = [];
 
     build(log?: Log): MessagePipelineCallback {
-        let result: MessagePipelineCallback = (_) => Promise.resolve();
+        let result: MessagePipelineCallback = (_) => Promise.resolve(null);
 
         if (log) {
             let messageNumber = 0;
             this.chain(async (context, next) => {
-                log.info(`#${messageNumber} Recieved message = ${context.message.GetDebugString()}`);
-                let result = await next(context);
-                log.info(`#${messageNumber++} procceded, result = ${result.GetDebugString()}`);
-    
-                return result;
+                log.info(`#${messageNumber} Recieved message = ${JSON.stringify(context.message)}`);
+                let resultValue = await next(context);
+                log.info(`#${messageNumber++} procceded, result = ${JSON.stringify(resultValue)}`);
+
+                return resultValue;
             });
         }
 
-        for (let i = this.callbacks.length - 1; i >= 0; i--) {
-            let nextCallback = this.callbacks[i];
-            result = (context) => nextCallback(context, result);
+        for (let i = 0; i < this.callbacks.length; i++) {
+            let nextArgument = result;
+            let callback = this.callbacks[i];
+            result = (context) => callback(context, nextArgument);
         }
 
         return result;
@@ -82,7 +83,7 @@ export class DefaulMessagePipeline implements MessagePipeline {
         }
         else {
             this.chainInternal(handler as MessageHandler)
-        }    
+        }
 
         return this;
     }
