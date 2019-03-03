@@ -18,12 +18,6 @@ export interface MessageHandler {
     (context: MessageContext, next: MessagePipelineCallback): Promise<any>;
 }
 
-export interface SpecificMessageTypeHandler {
-    canHandle(message: Message): boolean;
-
-    handle(context: MessageContext): Promise<any>;
-}
-
 export interface MessagePipeline {
     chain(handler: MessageHandler): MessagePipeline;
 
@@ -60,31 +54,8 @@ export class DefaulMessagePipeline implements MessagePipeline {
         return result;
     }
 
-    private chainInternal(handler: MessageHandler): void {
+    chain(handler: MessageHandler): this {
         this.callbacks.push(handler);
-    }
-
-    private chainTyped(handler: SpecificMessageTypeHandler): void {
-        this.callbacks.push(
-            (context: MessageContext, next: MessagePipelineCallback): Promise<any> => {
-                if (handler.canHandle(context.message)) {
-                    return handler.handle(context);
-                }
-                else {
-                    return next(context);
-                }
-            }
-        );
-    }
-
-    chain(handler: MessageHandler | SpecificMessageTypeHandler): MessagePipeline {
-        if (nameof<SpecificMessageTypeHandler>(i => i.handle) in handler) {
-            this.chainTyped(handler as SpecificMessageTypeHandler);
-        }
-        else {
-            this.chainInternal(handler as MessageHandler)
-        }
-
         return this;
     }
 }
