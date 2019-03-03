@@ -16,6 +16,8 @@ export interface MessagePipelineCallback {
 
 export interface MessageHandler {
     (context: MessageContext, next: MessagePipelineCallback): Promise<any>;
+
+    handlerName?: string;
 }
 
 export interface MessagePipeline {
@@ -48,7 +50,15 @@ export class DefaulMessagePipeline implements MessagePipeline {
         for (let i = 0; i < this.callbacks.length; i++) {
             let nextArgument = result;
             let callback = this.callbacks[i];
-            result = (context) => callback(context, nextArgument);
+            if (log && callback.handlerName) {
+                result = (context) => { 
+                    log.info(`Invoking handler: ${callback.handlerName}`);
+                    return callback(context, nextArgument);
+                };
+            }
+            else {
+                result = (context) => callback(context, nextArgument);
+            }
         }
 
         return result;
