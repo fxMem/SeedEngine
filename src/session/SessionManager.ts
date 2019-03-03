@@ -1,5 +1,6 @@
 import { User } from "@users";
-import { Session, SessionInfo } from "./Session";
+import { Session } from "./Session";
+import { SessionInfo } from "./SessionInfo";
 
 export interface SessionManager {
     createSession(options: { owner: User, description?: string }): Session;

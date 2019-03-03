@@ -1,8 +1,9 @@
 import { SessionManager } from "./SessionManager";
 import { User, Claims } from "@users";
-import { Session, SessionInfo } from "./Session";
+import { Session } from "./Session";
 import { DefaultSession } from "./DefaultSession";
 import { ServerError } from "@transport";
+import { SessionInfo } from "./SessionInfo";
 
 
 export class DefaultSessionManager implements SessionManager {
