@@ -1,10 +1,8 @@
 import { Instance, DefaultInstance, InstanceOptions } from "./Instance";
 import { DefaultUserManager, AuthMethod, AuthModule, UserStorage } from "@users";
 import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport, SpecificMessageTypeHandler } from "@transport";
-import { Logger, Log, DefaultConsoleLogger } from "@log";
+import { Logger, Log, DefaultConsoleLogger, initializeLogger } from "@log";
 import { MessageSender } from "@transport/MessageSender";
-import { log } from "util";
-
 
 export class Bootstrapper {
     private facadeFactory: HttpFacadeFactory;
@@ -21,9 +19,8 @@ export class Bootstrapper {
     }
 
     build(): Instance {
-        let log = new Log(this.loggers || [new DefaultConsoleLogger()]);
-        let serverTransport = new SocketIOServerTransport(this.facadeFactory.create(log));
-
+        
+        let serverTransport = new SocketIOServerTransport(this.facadeFactory.create());
         let userManager = new DefaultUserManager();
         let connection = new Connection(serverTransport);
         let messageSender = new MessageSender(serverTransport);
@@ -32,9 +29,8 @@ export class Bootstrapper {
             connection,
             userManager,
             messageSender,
-            this.pipeline.build(log),
-            new AuthModule(userManager, this.authMethods, this.userStorage, log),
-            log);
+            this.pipeline.build(),
+            new AuthModule(userManager, this.authMethods, this.userStorage));
 
         return new DefaultInstance(this.options, server);
     }
@@ -49,10 +45,6 @@ export class Bootstrapper {
 
     withStorage(storage: UserStorage): this {
         return (this.userStorage = storage) && this;
-    }
-
-    withLogger(logger: Logger): this {
-        return this.loggers.push(logger) && this;
     }
 
     add(handler: MessageHandler): this {
