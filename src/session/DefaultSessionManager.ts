@@ -15,7 +15,10 @@ export class DefaultSessionManager implements SessionManager {
         return this.sessions.get(sessionId);
     }
 
-    listAllSessions(): SessionInfo[] {
+    listAllSessions(user: User): SessionInfo[] {
+        if (!user.haveClaim(Claims.viewSessionList)) {
+            throw new ServerError(`User ${user} does not have sufficient rights to create sessions!`);
+        }
         let result: SessionInfo[] = [];
         for (let session of (this.sessions.values as any)) {
             result.push(session);
@@ -27,7 +30,7 @@ export class DefaultSessionManager implements SessionManager {
     createSession(options: { owner: User, description?: string }): InternalSession {
         let { owner, description } = options;
         if (!owner.haveClaim(Claims.createSession)) {
-            throw new ServerError(`User ${owner.nickname} does not have sufficient rights to create sessions!`);
+            throw new ServerError(`User ${owner} does not have sufficient rights to create sessions!`);
         }
 
         let sessionId = this.sessionIdCounter++ + '';

@@ -1,7 +1,7 @@
 import { Bootstrapper, Instance } from "@core";
 import { InMemoryUserStorage, SimpleIdentity } from "@users";
 import { ExpressFacadeFactory, makeRegularHandler, MessageHandler } from "@transport";
-import { SessionPipeline, DefaultSessionManager } from "@session";
+import { DefaultSessionPipeline, DefaultSessionManager } from "@session";
 
 function buildTestServer(): Instance {
     let bootstrapper = new Bootstrapper();
@@ -12,7 +12,7 @@ function buildTestServer(): Instance {
         .add(createSessionHandler());
 
     function createSessionHandler(): MessageHandler {
-        let handler = makeRegularHandler(new SessionPipeline(new DefaultSessionManager()));
+        let handler = makeRegularHandler(new DefaultSessionPipeline(new DefaultSessionManager()));
         handler.handlerName = 'SessionHandler';
 
         return handler;

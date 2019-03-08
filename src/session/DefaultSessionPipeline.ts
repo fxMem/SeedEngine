@@ -22,7 +22,7 @@ function isSessionMessage(message: Message): message is SessionMessage {
     return (message as any).command !== undefined;
 }
 
-export class SessionPipeline implements SpecificMessageTypeHandler {
+export class DefaultSessionPipeline implements SpecificMessageTypeHandler {
 
     constructor(private sessionManager: DefaultSessionManager) {
 
@@ -74,7 +74,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     }
 
     private getList(user: User): SessionInfo[] {
-        return this.sessionManager.listAllSessions();
+        return this.sessionManager.listAllSessions(user);
     }
 
     private async joinSession(sessionId: string, applicant: User): Promise<any> {
