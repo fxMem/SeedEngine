@@ -16,7 +16,7 @@ export class Claim {
         return this.name == claim.name || (this.claims && this.claims.some(c => c.haveClaim(claim)));
     }
 
-    ToString() {
+    toString() {
         return `${this.name}[${this.claims.toString()}]`;
     }
 }
