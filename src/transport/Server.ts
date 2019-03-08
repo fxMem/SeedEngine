@@ -78,6 +78,7 @@ export class Server {
                 }
                 else if (e instanceof ServerError) {
                     // This is expected exception, meant user did something wrong
+                    info(e.toString());
                 }
 
                 return { failed: true, message: e.message };

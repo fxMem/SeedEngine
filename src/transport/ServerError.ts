@@ -9,4 +9,8 @@ export class ServerError implements LogFriendly {
     GetDebugString(): string {
         return `ServerError: ${this.message}`;
     }
+
+    toString() {
+        return this.message;
+    }
 }

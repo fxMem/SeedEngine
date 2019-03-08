@@ -3,6 +3,7 @@ import { User, Claims } from "@users";
 import { TargetBuilder, ClientMessage, ServerError } from "@transport";
 import { EventEmitter } from "events";
 import { SessionState, SessionInfo } from "./SessionInfo";
+import { createLocalLogScope, ScopedLogger } from "@log";
 
 const playerJoined = 'playerJoined';
 const playerLeft = 'playerLeft';
@@ -10,7 +11,8 @@ const messageRecieved = 'messageRecieved';
 const started = 'started';
 
 export class DefaultSession extends EventEmitter implements InternalSession {
-    
+
+    private log: ScopedLogger;
     private state: SessionState;
     private startTime: Date;
     private connectedPlayers: User[] = [];
@@ -19,6 +21,8 @@ export class DefaultSession extends EventEmitter implements InternalSession {
         super();
 
         this.state = SessionState.waiting;
+        this.log = createLocalLogScope(
+            `${nameof(DefaultSession)} / ${this.sessionId} [${this.description || 'No description'}]`);
     }
 
     id() {
@@ -68,16 +72,21 @@ export class DefaultSession extends EventEmitter implements InternalSession {
         this.connectedPlayers.push(user);
         this.emit(playerJoined, user);
 
+        this.log.info(`Player ${user} joined!`);
         return Promise.resolve({ success: true });
     }
 
     removePlayer(id: string): void {
         let leavingUser = this.connectedPlayers.filter(p => p.id === id);
         this.connectedPlayers = this.connectedPlayers.filter(p => p.id !== id);
+
+        this.log.info(`Player ${leavingUser} has left!`);
         this.emit(playerLeft, leavingUser);
     }
 
     incomingMessage(message: any, from: User): void {
+
+        this.log.info(`Message from ${from}, contents = ${JSON.stringify(message)}`);
         this.emit(messageRecieved, message, from);
     }
 }

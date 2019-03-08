@@ -20,5 +20,9 @@ export class DefaultUser implements User {
     haveClaim(claim: Claim): boolean {
         return haveClaim(this.data.claims, claim);
     }
+
+    toString() {
+        return `${this.nickname}[${this.id}]`;
+    }
 }
 

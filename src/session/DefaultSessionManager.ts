@@ -4,10 +4,12 @@ import { InternalSession } from "./Session";
 import { DefaultSession } from "./DefaultSession";
 import { ServerError } from "@transport";
 import { SessionInfo } from "./SessionInfo";
+import { createLocalLogScope } from "@log";
 
 
 export class DefaultSessionManager implements SessionManager {
 
+    private log = createLocalLogScope(nameof(DefaultSessionManager));
     private sessionIdCounter = 0;
     private sessions = new Map<string, DefaultSession>();
 
@@ -37,6 +39,7 @@ export class DefaultSessionManager implements SessionManager {
         let session = new DefaultSession(sessionId, description);
         this.sessions.set(sessionId, session);
 
+        this.log.info(`Created session ${sessionId} by ${owner}`);
         return session;
     }
 
