@@ -7,5 +7,5 @@ export interface SessionManager {
 
     getSession(sessionId: string): InternalSession;
 
-    listAllSessions(): SessionInfo[];
+    listAllSessions(user: User): SessionInfo[];
 }
