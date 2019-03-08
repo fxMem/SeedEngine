@@ -1,4 +1,4 @@
-import { Session } from "./Session";
+import { InternalSession } from "./Session";
 import { User, Claims } from "@users";
 import { TargetBuilder, ClientMessage, ServerError } from "@transport";
 import { EventEmitter } from "events";
@@ -9,7 +9,7 @@ const playerLeft = 'playerLeft';
 const messageRecieved = 'messageRecieved';
 const started = 'started';
 
-export class DefaultSession extends EventEmitter implements Session {
+export class DefaultSession extends EventEmitter implements InternalSession {
     
     private state: SessionState;
     private startTime: Date;

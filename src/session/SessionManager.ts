@@ -1,11 +1,11 @@
 import { User } from "@users";
-import { Session } from "./Session";
+import { InternalSession } from "./Session";
 import { SessionInfo } from "./SessionInfo";
 
 export interface SessionManager {
-    createSession(options: { owner: User, description?: string }): Session;
+    createSession(options: { owner: User, description?: string }): InternalSession;
 
-    getSession(sessionId: string): Session;
+    getSession(sessionId: string): InternalSession;
 
     listAllSessions(): SessionInfo[];
 }
