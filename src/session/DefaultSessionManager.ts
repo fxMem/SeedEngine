@@ -31,7 +31,7 @@ export class DefaultSessionManager implements SessionManager {
         }
 
         let sessionId = this.sessionIdCounter++ + '';
-        let session = new DefaultSession(sessionId);
+        let session = new DefaultSession(sessionId, description);
         this.sessions.set(sessionId, session);
 
         return session;
