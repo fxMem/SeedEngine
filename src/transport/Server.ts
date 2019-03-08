@@ -1,6 +1,6 @@
 import { MessagePipelineCallback } from "./MessagePipeline";
 import { AuthModule, Users } from '@users';
-import { Log } from '@log';
+import { Log, createLocalLogScope } from '@log';
 import { Header } from './Headers';
 import { Connection, ConnectedClient } from "./Connection";
 import { User } from "users/User";
@@ -10,13 +10,13 @@ import { ServerError } from "./ServerError";
 // Facade class tying together connection, authentication and messaging logic
 export class Server {
 
+    private log = createLocalLogScope(nameof(Server));
     constructor(
         private connection: Connection,
         private users: Users,
         private sender: MessageSender,
         private pipeline: MessagePipelineCallback,
-        private authModule: AuthModule,
-        private log: Log) { }
+        private authModule: AuthModule) { }
 
     listen(port: number): void {
         this.connection.onConnected(this.handleClient.bind(this));

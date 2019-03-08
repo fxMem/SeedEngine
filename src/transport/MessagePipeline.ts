@@ -1,5 +1,5 @@
 import { User, Users } from "@users";
-import { Log, LogFriendly } from "@log";
+import { createLocalLogScope } from "@log";
 import { MessageSender } from "./MessageSender";
 
 export interface MessageContext {
@@ -23,7 +23,7 @@ export interface MessageHandler {
 export interface MessagePipeline {
     chain(handler: MessageHandler): MessagePipeline;
 
-    build(log?: Log): MessagePipelineCallback;
+    build(): MessagePipelineCallback;
 }
 
 export interface Message {
@@ -31,28 +31,27 @@ export interface Message {
 }
 
 export class DefaulMessagePipeline implements MessagePipeline {
+    private log = createLocalLogScope(nameof(DefaulMessagePipeline));
     private callbacks: MessageHandler[] = [];
 
-    build(log?: Log): MessagePipelineCallback {
+    build(): MessagePipelineCallback {
         let result: MessagePipelineCallback = (_) => Promise.resolve(null);
 
-        if (log) {
-            let messageNumber = 0;
-            this.chain(async (context, next) => {
-                log.info(`#${messageNumber} Recieved message = ${JSON.stringify(context.message)}`);
-                let resultValue = await next(context);
-                log.info(`#${messageNumber++} procceded, result = ${JSON.stringify(resultValue)}`);
+        let messageNumber = 0;
+        this.chain(async (context, next) => {
+            this.log.info(`#${messageNumber} Recieved message = ${JSON.stringify(context.message)}`);
+            let resultValue = await next(context);
+            this.log.info(`#${messageNumber++} procceded, result = ${JSON.stringify(resultValue)}`);
 
-                return resultValue;
-            });
-        }
+            return resultValue;
+        });
 
         for (let i = 0; i < this.callbacks.length; i++) {
             let nextArgument = result;
             let callback = this.callbacks[i];
-            if (log && callback.handlerName) {
+            if (callback.handlerName) {
                 result = (context) => { 
-                    log.info(`Invoking handler: ${callback.handlerName}`);
+                    this.log.info(`Invoking handler: ${callback.handlerName}`);
                     return callback(context, nextArgument);
                 };
             }
