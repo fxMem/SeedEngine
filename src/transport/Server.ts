@@ -74,7 +74,7 @@ export class Server {
                 return result;
             } catch (e) {
                 if (e instanceof Error) {
-                    this.log.error(e.toString());
+                    this.log.error(e.toString() + e.stack);
                 }
                 else if (e instanceof ServerError) {
                     // This is expected exception, meant user did something wrong
