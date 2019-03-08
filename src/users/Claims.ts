@@ -13,11 +13,11 @@ export class Claim {
     }
 
     haveClaim(claim: Claim): boolean {
-        return this.claims.some(c => c.name === claim.name);
+        return this.name == claim.name || (this.claims && this.claims.some(c => c.haveClaim(claim)));
     }
 
     ToString() {
-        return this.name;
+        return `${this.name}[${this.claims.toString()}]`;
     }
 }
 
@@ -39,6 +39,9 @@ export function haveClaim(claims: Claim[], claim: Claim): boolean {
 export namespace Claims {
     export const joinSession = claim();
     export const createSession = claim();
-    
-    export const rootUser = claim({ joinSession, createSession });
+    export const viewSessionList = claim();
+    const commonClaims = claim({ joinSession, viewSessionList });
+
+    export const rootUser = claim({ commonClaims, createSession });
+    export const regularUser = claim({ commonClaims })
 }
