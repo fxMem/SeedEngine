@@ -57,7 +57,7 @@ export class Server {
             let { header, payload } = data;
             let user: User = null;
             if (header != Header.Authenticate) {
-                let user = this.authModule.identifyUser(userTransportId);
+                user = this.authModule.identifyUser(userTransportId);
                 if (!user) {
                     header = Header.Authenticate;
                 }
