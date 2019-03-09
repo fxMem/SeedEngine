@@ -1,15 +1,14 @@
 import { Instance, DefaultInstance, InstanceOptions } from "./Instance";
 import { DefaultUserManager, AuthMethod, AuthModule, UserStorage } from "@users";
-import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport, SpecificMessageTypeHandler } from "@transport";
-import { Logger, Log, DefaultConsoleLogger, initializeLogger } from "@log";
+import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport, makeRegularHandler } from "@transport";
 import { MessageSender } from "@transport/MessageSender";
+import { LobbyModule, LobbyPipeline } from "@lobby";
 
 export class Bootstrapper {
     private facadeFactory: HttpFacadeFactory;
     private pipeline: MessagePipeline;
     private authMethods: AuthMethod[] = [];
     private userStorage: UserStorage;
-    private loggers: Logger[];
     private options: InstanceOptions = {
         port: 8080
     };
@@ -45,6 +44,10 @@ export class Bootstrapper {
 
     withStorage(storage: UserStorage): this {
         return (this.userStorage = storage) && this;
+    }
+
+    withLobbyModule(lobbyModule: LobbyModule): this {
+        return this.add(makeRegularHandler(new LobbyPipeline(lobbyModule, null)));
     }
 
     add(handler: MessageHandler): this {

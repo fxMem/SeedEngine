@@ -13,6 +13,8 @@ export interface SessionHandler {
     addPlayer(user: User): Promise<{ success: boolean, message?: string }>;
 
     removePlayer(id: string): void;
+
+    start(): void;
 }
 
 // This interface is handed to game implementation
