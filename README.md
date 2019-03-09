@@ -41,4 +41,4 @@ npm run ss
 npm run sc
 ```
 
-For usage examples see included test project [TestGame.ts](https://github.com/fxMem/SeedEngine/blob/test_project/src/test/TestGame.ts)
+For usage examples see included test project [TestGame.ts](https://github.com/fxMem/SeedEngine/blob/master/src/test/TestGame.ts)
