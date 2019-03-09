@@ -3,12 +3,14 @@ import { User } from "./User";
 export interface Users {
     getUserById(userId: string): User;
     getUserByNickname(nickname: string): User;
+}
 
+export interface UserManager extends Users {
     connect(userId: string, user: User): void;
     disconnect(userId: string): void;
 }
 
-export class DefaultUserManager implements Users {
+export class DefaultUserManager implements UserManager {
     
     private idsMap: Map<string, string> = new Map<string, string>();
     private users: Map<string, User> = new Map<string, User>();

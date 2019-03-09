@@ -1,7 +1,7 @@
 import { AuthMethod } from './AuthMethod';
 import { UserStorage } from "./UserStorage";
-import { Users } from './Users';
-import { Log, createLocalLogScope } from '@log';
+import { UserManager } from './Users';
+import { createLocalLogScope } from '@log';
 import { User, DefaultUser } from './User';
 
 export class AuthModule {
@@ -9,7 +9,7 @@ export class AuthModule {
     private log = createLocalLogScope(nameof(AuthModule));
     constructor
         (
-            private userManager: Users,
+            private userManager: UserManager,
             private authMethods: AuthMethod[],
             private userStorage: UserStorage
         ) { }
