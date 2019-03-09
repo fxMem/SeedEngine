@@ -9,6 +9,10 @@ export interface SessionHandler {
     getInfo(): SessionInfo;
 
     players(): User[];
+
+    addPlayer(user: User): Promise<{ success: boolean, message?: string }>;
+
+    removePlayer(id: string): void;
 }
 
 // This interface is handed to game implementation

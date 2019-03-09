@@ -1,9 +1,9 @@
 import { Message, MessageContext, ServerError, SpecificMessageTypeHandler } from "@transport";
 import { User } from "@users";
-import { DefaultSessionManager } from "./DefaultSessionManager";
-import { DefaultSession } from "./DefaultSession";
 import { SessionCommand } from "./SessionCommand";
 import { SessionInfo } from "./SessionInfo";
+import { SessionHandler } from "./Session";
+import { SessionManager } from "@session";
 
 interface SessionSelectionOptions {
     sessionId?: string;
@@ -22,9 +22,9 @@ function isSessionMessage(message: Message): message is SessionMessage {
     return (message as any).command !== undefined;
 }
 
-export class DefaultSessionPipeline implements SpecificMessageTypeHandler {
+export class SessionPipeline implements SpecificMessageTypeHandler {
 
-    constructor(private sessionManager: DefaultSessionManager) {
+    constructor(private sessionManager: SessionManager) {
 
     }
 
@@ -96,7 +96,7 @@ export class DefaultSessionPipeline implements SpecificMessageTypeHandler {
         session.removePlayer(applicant.id);
     }
 
-    private getSession(sessionId: string): DefaultSession {
+    private getSession(sessionId: string): SessionHandler {
         if (!sessionId) {
             throw new ServerError('Session id is not specified!');
         }

@@ -43,15 +43,19 @@ export class DefaultSession extends EventEmitter implements SessionHandler {
     players(): User[] {
         return this.connectedPlayers;
     }
+
     onPlayerJoin(callback: (player: User) => Promise<void>): void {
         this.on(playerJoined, callback);
     }
+
     onPlayerLeave(callback: (player: User) => Promise<void>): void {
         this.on(playerLeft, callback);
     }
+
     onPlayerMessage(callback: (message: any, from: User) => Promise<void>): void {
         this.on(messageRecieved, callback);
     }
+
     onStarted(callback: () => void): void {
 
         this.state = SessionState.running;
@@ -61,6 +65,10 @@ export class DefaultSession extends EventEmitter implements SessionHandler {
 
     sendMessage(message: ClientMessage): TargetBuilder {
         throw new Error("Method not implemented.");
+    }
+
+    start(): void {
+        this.emit(started);
     }
 
     addPlayer(user: User): Promise<{ success: boolean, message?: string }> {
