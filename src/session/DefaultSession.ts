@@ -1,4 +1,4 @@
-import { InternalSession } from "./Session";
+import { SessionHandler } from "./Session";
 import { User, Claims } from "@users";
 import { TargetBuilder, ClientMessage, ServerError } from "@transport";
 import { EventEmitter } from "events";
@@ -10,7 +10,7 @@ const playerLeft = 'playerLeft';
 const messageRecieved = 'messageRecieved';
 const started = 'started';
 
-export class DefaultSession extends EventEmitter implements InternalSession {
+export class DefaultSession extends EventEmitter implements SessionHandler {
 
     private log: ScopedLogger;
     private state: SessionState;

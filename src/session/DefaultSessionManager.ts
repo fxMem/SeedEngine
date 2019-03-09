@@ -1,6 +1,6 @@
 import { SessionManager } from "./SessionManager";
 import { User, Claims } from "@users";
-import { InternalSession } from "./Session";
+import { SessionHandler } from "./Session";
 import { DefaultSession } from "./DefaultSession";
 import { ServerError } from "@transport";
 import { SessionInfo } from "./SessionInfo";
@@ -29,7 +29,7 @@ export class DefaultSessionManager implements SessionManager {
         return result;
     }
 
-    createSession(options: { owner: User, description?: string }): InternalSession {
+    createSession(options: { owner: User, description?: string }): SessionHandler {
         let { owner, description } = options;
         if (!owner.haveClaim(Claims.createSession)) {
             throw new ServerError(`User ${owner} does not have sufficient rights to create sessions!`);

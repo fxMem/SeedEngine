@@ -3,7 +3,7 @@ import { ClientMessage, TargetBuilder } from "@transport";
 import { SessionInfo } from "./SessionInfo";
 
 // This interface is used by server
-export interface InternalSession {
+export interface SessionHandler {
     id(): string;
 
     getInfo(): SessionInfo;
