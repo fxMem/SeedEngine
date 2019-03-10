@@ -58,6 +58,13 @@ export class Client {
         });
     }
 
+    leaveSession(sessionId: string): Promise<void>{
+        return this.invokeWithMessage<SessionMessage>({
+            command: SessionCommand.leave,
+            sessionId: sessionId
+        });
+    }
+
     allSessions(): Promise<SessionInfo[]> {
         return this.invokeWithMessage<SessionMessage>({
             command: SessionCommand.getList
