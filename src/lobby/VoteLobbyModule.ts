@@ -3,15 +3,9 @@ import { ServerError } from "@transport";
 import { User } from "@users";
 import { SessionHandler } from "@session";
 import { createLocalLogScope } from "@log";
+import { VoteMessage, VoteType } from "./VoteMessage";
 
-export enum VoteType {
-    Vote,
-    UnVote
-}
 
-interface VoteMessage {
-    vote: VoteType;
-}
 
 function isVoteMessage(message: any): message is VoteMessage {
     return message.vote !== undefined && message.sessionId != undefined;

@@ -4,24 +4,23 @@ import { Session } from "@session/Session";
 
 export class TestGameFacade implements Game {
     create(session: Session): void {
-
         let game = new TestGame();
-        session.onPlayerJoin(async (player) => {
 
-        });
+        session.subscribe({
+            playerJoin: async (player) => {
 
-        session.onPlayerLeave(async (player) => {
+            },
+            playerLeave: async (player) => {
 
-        });
-
-        session.onPlayerMessage(async (message, from) => {
-            let { guess } = message;
-            game.guess(guess, from.nickname);
-        });
-
-        session.onStarted(() => {
-            game.thinkNumber();
-        });
+            },
+            message: async (message, from) => {
+                let { guess } = message;
+                game.guess(guess, from.nickname);
+            },
+            started: () => {
+                game.thinkNumber();
+            }
+        })
     }
 }
 

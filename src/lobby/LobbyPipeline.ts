@@ -2,10 +2,8 @@ import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from
 import { createLocalLogScope } from "@log";
 import { LobbyModule } from "./LobbyModule";
 import { SessionManager } from "@session";
+import { LobbyMessage } from "./LobbyMessage";
 
-export interface LobbyMessage {
-    sessionId: string;
-}
 
 function isLobbyMessage(message: Message): message is LobbyMessage {
     return (message as any).sessionId !== undefined;
@@ -24,7 +22,7 @@ export class LobbyPipeline implements SpecificMessageTypeHandler {
     }
 
     handle(context: MessageContext): Promise<any> {
-        let { message, from, users } = context;
+        let { message, from } = context;
 
         if (!isLobbyMessage(message)) {
             throw new ServerError(`Message ${JSON.stringify(message)} is not lobby message!`);

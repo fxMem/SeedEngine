@@ -2,12 +2,14 @@
 import { DefaultSessionClient } from "@session/SessionClient";
 import { ClientBuilder } from "@client/ClientBuilder";
 import { DefaultAuthClient } from "@users/AuthClient";
+import { VoteLobbyClient } from "@lobby/VoteLobbyClient";
 
 localStorage.debug = '*';
 
 new ClientBuilder()
     .addClientInterface({ auth: new DefaultAuthClient() })
     .addClientInterface({ sessions: new DefaultSessionClient() })
+    .addClientInterface({votes: new VoteLobbyClient()})
     .connect()
     .then(async (client) => {
 
@@ -49,6 +51,7 @@ new ClientBuilder()
         let { sessionId } = await client.sessions.createSession('test session', true);
         var sessions = await client.sessions.allSessions();
 
+        await client.votes.vote(sessionId);
         //client.
     });
 
