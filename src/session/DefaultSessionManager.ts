@@ -22,11 +22,7 @@ export class DefaultSessionManager implements SessionManager {
             throw new ServerError(`User ${user} does not have sufficient rights to create sessions!`);
         }
         let result: SessionInfo[] = [];
-        for (let session of (this.sessions.values as any)) {
-            result.push(session);
-        }
-
-        return result;
+        return [...(this.sessions as any).values().map((s: DefaultSession) => s.getInfo())];
     }
 
     createSession(options: { owner: User, description?: string }): SessionHandler {
