@@ -1,8 +1,9 @@
 import { Connection, ConnectedClient } from "@transport/Connection";
 import { SocketIOClientTransport } from "./SocketIOClientTransport";
 import { Header } from "@transport/Headers";
-import { SessionCommand } from "@session/SessionCommand";
+
 import { SessionInfo } from "@session/SessionInfo";
+import { SessionCommand, SessionMessage, SessionJoiningResult } from "@session/SessionMessage";
 
 export type ServerApi = {
     getAvailableAuthMethods: () => Promise<{ id: string, description: string }[]>;
@@ -39,14 +40,26 @@ export class Client {
         this.messageCallback = callback;
     }
 
-    createSession(): Promise<{ sessionId: string }> {
-        return this.invokeWithMessage({
-            command: SessionCommand.create
+    createSession(sessionDescription?: string, join?: boolean): Promise<{
+        sessionId: string,
+        joined?: SessionJoiningResult
+    }> {
+        return this.invokeWithMessage<SessionMessage>({
+            command: SessionCommand.create,
+            sessionDescription,
+            join
+        });
+    }
+
+    joinSession(sessionId: string): Promise<SessionJoiningResult> {
+        return this.invokeWithMessage<SessionMessage>({
+            command: SessionCommand.join,
+            sessionId: sessionId
         });
     }
 
     allSessions(): Promise<SessionInfo[]> {
-        return this.invokeWithMessage({
+        return this.invokeWithMessage<SessionMessage>({
             command: SessionCommand.getList
         });
     }
@@ -65,7 +78,7 @@ export class Client {
         })
     }
 
-    private async invokeWithMessage(payload: any): Promise<any> {
+    private async invokeWithMessage<T>(payload: T): Promise<any> {
         let result = await this.client.invoke({
             header: Header.Message,
             payload

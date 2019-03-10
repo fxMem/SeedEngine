@@ -1,6 +1,7 @@
 import { User, Users } from "@users";
 import { createLocalLogScope } from "@log";
 import { MessageSender } from "./MessageSender";
+import { Message } from "./Message";
 
 export interface MessageContext {
     message: Message;
@@ -24,10 +25,6 @@ export interface MessagePipeline {
     chain(handler: MessageHandler): MessagePipeline;
 
     build(): MessagePipelineCallback;
-}
-
-export interface Message {
-
 }
 
 export class DefaulMessagePipeline implements MessagePipeline {

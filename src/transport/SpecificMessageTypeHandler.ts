@@ -1,4 +1,5 @@
-import { MessageContext, Message, MessageHandler, MessagePipelineCallback } from "./MessagePipeline";
+import { MessageContext, MessageHandler, MessagePipelineCallback } from "./MessagePipeline";
+import { Message } from "./Message";
 
 export interface SpecificMessageTypeHandler {
     canHandle(message: Message): boolean;
