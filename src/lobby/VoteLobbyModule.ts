@@ -1,4 +1,4 @@
-import { LobbyModule } from "./LobbyModule";
+import { LobbyModule, LobbyContext } from "./LobbyModule";
 import { ServerError } from "@transport";
 import { User } from "@users";
 import { SessionHandler } from "@session";
@@ -44,7 +44,7 @@ export class VoteLobbyModule implements LobbyModule {
         return isVoteMessage(message);
     }
 
-    handle({ message, from, session }): Promise<any> {
+    handle({ message, from, session }: LobbyContext): Promise<any> {
         
         if (!isVoteMessage(message)) {
             throw new ServerError(`Message ${JSON.stringify(message)} is not vote message!`);
