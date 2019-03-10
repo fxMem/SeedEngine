@@ -5,8 +5,6 @@ import { SessionHandler } from "./Session";
 import { SessionManager } from "@session";
 import { SessionMessage, SessionCommand, SessionJoiningResult } from "./SessionMessage";
 
-
-
 function isSessionMessage(message: Message): message is SessionMessage {
     return (message as any).command !== undefined;
 }
@@ -41,7 +39,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
                 result = await this.joinSessionBySessionId(message.sessionId, from);
                 break;
             case SessionCommand.leave:
-                result = this.leaveSession(from);
+                result = this.leaveSession(message.sessionId, from);
                 break;
             default:
                 throw new ServerError(`Unknown session command: ${command}`);
@@ -78,16 +76,12 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     private async joinSession(session: SessionHandler, applicant: User): Promise<SessionJoiningResult> {
 
         let result = await session.addPlayer(applicant);
-        applicant.data.sessionId = session.id();
-
         return result;
     }
 
-    private leaveSession(applicant: User): any {
-        let sessionId = applicant.data.sessionId;
-        if (!sessionId) {
-            throw new ServerError(`User ${applicant.nickname} hasn't joined any session!`);
-        }
+    // The reasoning behind this is that player actually might join several sessions,
+    // so we should know which one he leaves, hence sessionId parameter
+    private leaveSession(sessionId: string, applicant: User): any {
 
         let session = this.getSession(sessionId);
         session.removePlayer(applicant.id);
