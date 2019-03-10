@@ -70,8 +70,10 @@ export class Server {
             try {
                 let result = await handlers[header](user, payload);
 
-                info(`Sending a responce - ${JSON.stringify(result)}`);
-                return result;
+                if (result !== undefined) {
+                    info(`Sending a responce - ${JSON.stringify(result)}`);
+                    return result;
+                }
             } catch (e) {
                 if (e instanceof Error) {
                     this.log.error(e.toString() + e.stack);

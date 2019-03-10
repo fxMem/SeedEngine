@@ -5,8 +5,6 @@ import { SessionHandler } from "@session";
 import { createLocalLogScope } from "@log";
 import { VoteMessage, VoteType } from "./VoteMessage";
 
-
-
 function isVoteMessage(message: any): message is VoteMessage {
     return message.vote !== undefined && message.sessionId != undefined;
 }
