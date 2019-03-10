@@ -7,3 +7,4 @@ export * from './Users';
 export * from './SimpleIdentity';
 export * from './User';
 export * from './Claims';
+export * from './AuthClient';

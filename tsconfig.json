@@ -10,12 +10,15 @@
         "@transport": ["./transport"],
         "@transport/*": ["./transport/*"],
         "@users": ["./users"],
+        "@users/*": ["./users/*"],
         "@session": ["./session"],
         "@session/*": ["./session/*"],
         "@lobby": ["./lobby"],
         "@game": ["./game"],
         "@log": ["./log"],
-        "@utils": ["./utils"]
+        "@utils": ["./utils"],
+        "@client": ["./client"],
+        "@client/*": ["./client/*"]
       }
     },
     "exclude": [

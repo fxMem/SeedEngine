@@ -1,45 +1,54 @@
-import { Client } from "../client/Client";
+
+import { DefaultSessionClient } from "@session/SessionClient";
+import { ClientBuilder } from "@client/ClientBuilder";
+import { DefaultAuthClient } from "@users/AuthClient";
 
 localStorage.debug = '*';
 
+new ClientBuilder()
+    .addClientInterface({ auth: new DefaultAuthClient() })
+    .addClientInterface({ sessions: new DefaultSessionClient() })
+    .connect()
+    .then(async (client) => {
 
-console.log('piglet');
+        console.log('connected!');
 
-let client = new Client();
-client.connect().then(async () => {
-    console.log('connected!');
+        let handlers = {
+            openTile: (p) => {
+                let tiles: [] = p.tiles;
+                for (let tile of tiles) {
+                    let { playerId, tileInfo } = tile;
 
-    let handlers = {
-        openTile: (p) => {
-            let tiles: [] = p.tiles;
-            for (let tile of tiles) {
-                let { playerId, tileInfo } = tile;
-    
-                // display update
+                    // display update
+                }
+            },
+
+            finish: (p) => {
+                let { winner } = p;
+
+
+                // display scores
             }
-        },
-    
-        finish: (p) => {
-            let { winner } = p;
-    
-            
-            // display scores
         }
-    }
-    
-    client.onMessage(async (message) => {
-    
-        let handler = handlers[message.header];
-        if (!handler)
-            throw new Error('Handler not found!');
-    
-        handlers[message.header](message.payload);
-    });
-    
-    let authResult = await client.authenticate('0', { nickname: 'root', password: 'root' });
-    if (!authResult) {
-        throw new Error('Cant authorize');
-    }
 
-});
+        client.onMessage(async (message) => {
+
+            let handler = handlers[message.header];
+            if (!handler)
+                throw new Error('Handler not found!');
+
+            handlers[message.header](message.payload);
+        });
+
+        let authResult = await client.auth.authenticate('0', { nickname: 'root', password: 'root' });
+        if (!authResult) {
+            throw new Error('Cant authorize');
+        }
+
+
+        let { sessionId } = await client.sessions.createSession('test session', true);
+        var sessions = await client.sessions.allSessions();
+
+        //client.
+    });
 
