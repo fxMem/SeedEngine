@@ -22,7 +22,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
             throw new ServerError('Incorrect message type for SessionPipeline!');
         }
 
-        let { command } = message;
+        let { sessionCommand: command } = message;
         let result: any;
         switch (command) {
             case SessionCommand.getList:

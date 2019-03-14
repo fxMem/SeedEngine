@@ -17,11 +17,11 @@ interface SessionCreationOptions {
 }
 
 export interface SessionMessage extends Message, SessionSelectionOptions, SessionCreationOptions {
-    command: SessionCommand;
+    sessionCommand: SessionCommand;
 }
 
 export function isSessionMessage(message: Message): message is SessionMessage {
-    return (message as any).command !== undefined;
+    return (message as any).sessionCommand !== undefined;
 }
 
 export interface SessionJoiningResult {

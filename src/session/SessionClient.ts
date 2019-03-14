@@ -23,7 +23,7 @@ export class DefaultSessionClient implements SessionClient {
         sessionId: string; joined?: SessionJoiningResult; 
     }> {
         return this.handler.invokeWithMessage<SessionMessage>({
-            command: SessionCommand.create,
+            sessionCommand: SessionCommand.create,
             sessionDescription,
             join
         });
@@ -31,21 +31,21 @@ export class DefaultSessionClient implements SessionClient {
 
     joinSession(sessionId: string): Promise<SessionJoiningResult> {
         return this.handler.invokeWithMessage<SessionMessage>({
-            command: SessionCommand.join,
+            sessionCommand: SessionCommand.join,
             sessionId: sessionId
         });
     }
 
     leaveSession(sessionId: string): Promise<void> {
         return this.handler.invokeWithMessage<SessionMessage>({
-            command: SessionCommand.leave,
+            sessionCommand: SessionCommand.leave,
             sessionId: sessionId
         });
     }
 
     allSessions(): Promise<SessionInfo[]> {
         return this.handler.invokeWithMessage<SessionMessage>({
-            command: SessionCommand.getList
+            sessionCommand: SessionCommand.getList
         });
     }
 }
