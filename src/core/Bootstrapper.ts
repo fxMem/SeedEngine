@@ -1,8 +1,14 @@
 import { Instance, DefaultInstance, InstanceOptions } from "./Instance";
-import { DefaultUserManager, AuthMethod, AuthModule, UserStorage } from "@users";
+import { DefaultUserManager, AuthMethod, AuthModule, UserStorage, UserManager } from "@users";
 import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport, makeRegularHandler } from "@transport";
-import { MessageSender } from "@transport/MessageSender";
-import { LobbyModule, LobbyPipeline } from "@lobby";
+import { MessageSender, Transport } from "@transport";
+
+export interface CoreDependencies {
+    transport: Transport,
+    connection: Connection,
+    userManager: UserManager,
+    messageSender: MessageSender
+}
 
 export class Bootstrapper {
     private facadeFactory: HttpFacadeFactory;
@@ -13,23 +19,35 @@ export class Bootstrapper {
         port: 8080
     };
 
+    private coreDependencies: CoreDependencies = {} as any;
+
     constructor() {
         this.pipeline = new DefaulMessagePipeline();
     }
 
-    build(): Instance {
-        
-        let serverTransport = new SocketIOServerTransport(this.facadeFactory.create());
+    private buildCoreDependencies() {
+        let transport = new SocketIOServerTransport(this.facadeFactory.create());
         let userManager = new DefaultUserManager();
-        let connection = new Connection(serverTransport);
-        let messageSender = new MessageSender(serverTransport);
+        let connection = new Connection(transport);
+        let messageSender = new MessageSender(transport);
 
-        let server = new Server(
+        this.coreDependencies = {
+            transport,
             connection,
             userManager,
-            messageSender,
+            messageSender
+        }
+    }
+    
+    build(): Instance {
+        this.buildCoreDependencies();
+
+        let server = new Server(
+            this.coreDependencies.connection,
+            this.coreDependencies.userManager,
+            this.coreDependencies.messageSender,
             this.pipeline.build(),
-            new AuthModule(userManager, this.authMethods, this.userStorage));
+            new AuthModule(this.coreDependencies.userManager, this.authMethods, this.userStorage));
 
         return new DefaultInstance(this.options, server);
     }
@@ -46,11 +64,7 @@ export class Bootstrapper {
         return (this.userStorage = storage) && this;
     }
 
-    withLobbyModule(lobbyModule: LobbyModule): this {
-        return this.add(makeRegularHandler(new LobbyPipeline(lobbyModule, null)));
-    }
-
-    add(handler: MessageHandler): this {
-        return this.pipeline.chain(handler) && this;
+    add(factory: (core: CoreDependencies) => MessageHandler[]): this {
+        return this.pipeline.chain(() => factory(this.coreDependencies)) && this;
     }
 }

@@ -22,7 +22,7 @@ export interface MessageHandler {
 }
 
 export interface MessagePipeline {
-    chain(handler: MessageHandler): MessagePipeline;
+    chain(factory: () => MessageHandler[]): MessagePipeline;
 
     build(): MessagePipelineCallback;
 }

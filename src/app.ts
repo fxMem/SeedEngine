@@ -1,4 +1,4 @@
-import { Bootstrapper, Instance } from "@core";
+import { Bootstrapper, Instance, CoreDependencies } from "@core";
 import { InMemoryUserStorage, SimpleIdentity } from "@users";
 import { ExpressFacadeFactory, makeRegularHandler, MessageHandler } from "@transport";
 import { SessionPipeline, DefaultSessionManager } from "@session";
@@ -15,13 +15,13 @@ function buildTestServer(): Instance {
     bootstrapper
         .withHttpFacade(new ExpressFacadeFactory())
         .withAuthMethod(new SimpleIdentity.SimpleAuthModule())
-        .withStorage(SimpleIdentity.WithSuperUser(new InMemoryUserStorage()));
+        .withStorage(SimpleIdentity.WithSuperUser(new InMemoryUserStorage()))
+        .add(_ => createSessionRelatedHandlers(_))
 
-    addSessionSupport(bootstrapper);
     return bootstrapper.build();
 
-    function addSessionSupport(bootstrapper: Bootstrapper): Bootstrapper {
-        let sessionManager = new DefaultSessionManager();
+    function createSessionRelatedHandlers(_: CoreDependencies): MessageHandler[] {
+        let sessionManager = new DefaultSessionManager(_.messageSender);
 
         let sessionPipeline = makeRegularHandler(new SessionPipeline(sessionManager));
         sessionPipeline.handlerName = 'SessionHandler';
@@ -35,10 +35,7 @@ function buildTestServer(): Instance {
         let invitesPipeline = makeRegularHandler(new InvitesPipeline([inviteMethod], invitesManager));
         invitesPipeline.handlerName = 'InvitesHandler';
 
-        return bootstrapper
-            .add(sessionPipeline)
-            .add(lobbyPipeline)
-            .add(invitesPipeline);
+        return [sessionPipeline, lobbyPipeline, invitesPipeline];
     }
 }
 
