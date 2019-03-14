@@ -13,7 +13,7 @@ export class KeyInvitationClient implements Client {
     }
 
     createInvite(sessionId: string, attempts?: number, expires?: Date, userIds?: string[])
-        : Promise<{ success: boolean }> {
+        : Promise<{ success: boolean, inviteKey: string }> {
         return this.handler.invokeWithMessage<CreateInviteMessage>({
             inviteToSession: sessionId,
             attemptsCount: attempts || Infinity,

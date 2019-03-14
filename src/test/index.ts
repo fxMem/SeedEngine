@@ -53,6 +53,9 @@ new ClientBuilder()
         let { sessionId } = await client.sessions.createSession('test session', true);
         var sessions = await client.sessions.allSessions();
 
+        let invite = await client.invites.createInvite(sessionId, 1);
+        console.log(invite.inviteKey);
+        
         await client.votes.vote(sessionId);
         //client.
     });

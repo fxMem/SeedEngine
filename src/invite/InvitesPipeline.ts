@@ -26,16 +26,16 @@ export class InvitesPipeline implements SpecificMessageTypeHandler {
         return method.processInvite(message, from);
     }
 
-    private createInvite(message: CreateInviteMessage, from: User, users: Users): { success: boolean } {
+    private createInvite(message: CreateInviteMessage, from: User, users: Users): { success: boolean, inviteKey: string } {
         let invite = InviteBuilder
             .forSession(message.inviteToSession)
             .validUntil(message.expires)
             .withUseCount(message.attemptsCount)
-            .forUsers(message.userIds.map(u => users.getUserById(u)))
+            .forUsers((message.userIds || []).map(u => users.getUserById(u)))
             .build();
 
         this.inviteManager.addInvite(invite, from);
-        return { success: true };
+        return { success: true, inviteKey: invite.id };
     }
 
 
