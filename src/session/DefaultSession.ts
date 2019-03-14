@@ -1,6 +1,6 @@
 import { SessionHandler } from "./Session";
 import { User, Claims } from "@users";
-import { TargetBuilder, ClientMessage, ServerError } from "@transport";
+import { TargetBuilder, ClientMessage, ServerError, MessageSender } from "@transport";
 import { EventEmitter } from "events";
 import { SessionState, SessionInfo } from "./SessionInfo";
 import { createLocalLogScope, ScopedLogger } from "@log";
@@ -18,7 +18,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler {
     private startTime: Date;
     private connectedPlayers: User[] = [];
 
-    constructor(private sessionId: string, private description?: string) {
+    constructor(private messageSender: MessageSender, private sessionId: string, private description?: string) {
         super();
 
         this.state = SessionState.waiting;
@@ -65,7 +65,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler {
     }
 
     sendMessage(message: ClientMessage): TargetBuilder {
-        throw new Error("Method not implemented.");
+        return this.messageSender.send(message);
     }
 
     start(): void {

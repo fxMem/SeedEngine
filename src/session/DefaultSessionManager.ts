@@ -2,7 +2,7 @@ import { SessionManager } from "./SessionManager";
 import { User, Claims } from "@users";
 import { SessionHandler } from "./Session";
 import { DefaultSession } from "./DefaultSession";
-import { ServerError } from "@transport";
+import { ServerError, MessageSender } from "@transport";
 import { SessionInfo } from "./SessionInfo";
 import { createLocalLogScope } from "@log";
 
@@ -12,6 +12,10 @@ export class DefaultSessionManager implements SessionManager {
     private log = createLocalLogScope(nameof(DefaultSessionManager));
     private sessionIdCounter = 0;
     private sessions = new Map<string, DefaultSession>();
+
+    constructor(private messageSender: MessageSender) {
+
+    }
 
     getSession(sessionId: string): DefaultSession {
         return this.sessions.get(sessionId);
@@ -32,7 +36,7 @@ export class DefaultSessionManager implements SessionManager {
         }
 
         let sessionId = this.sessionIdCounter++ + '';
-        let session = new DefaultSession(sessionId, description);
+        let session = new DefaultSession(this.messageSender, sessionId, description);
         this.sessions.set(sessionId, session);
 
         this.log.info(`Created session ${sessionId} by ${owner}`);
