@@ -1,10 +1,13 @@
 import { UserInfo } from "./UserStorage";
 import { Claim, haveClaim } from "./Claims";
 
-export interface User {
-    id: string;
+export type nickname = string;
+export type userId = string;
 
-    nickname: string;
+export interface User {
+    id: userId;
+
+    nickname: nickname;
 
     data: UserInfo;
 

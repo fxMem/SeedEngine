@@ -1,4 +1,4 @@
-import { User } from "./User";
+import { User, nickname, userId } from "./User";
 
 export interface Users {
     getUserById(userId: string): User;
@@ -15,19 +15,19 @@ export class DefaultUserManager implements UserManager {
     private idsMap: Map<string, string> = new Map<string, string>();
     private users: Map<string, User> = new Map<string, User>();
 
-    getUserByNickname(nickname: string): User {
+    getUserByNickname(nickname: nickname): User {
         return this.getUserById(this.idsMap.get(nickname));
     }
 
-    getUserById(userId: string): User {
+    getUserById(userId: userId): User {
         return this.users.get(userId);
     }    
     
-    connect(userId: string, user: User): void {
+    connect(userId: userId, user: User): void {
         this.users.set(userId, user);
     }
 
-    disconnect(userId: string): void {
+    disconnect(userId: userId): void {
         this.users.delete(userId);
     }
 }
