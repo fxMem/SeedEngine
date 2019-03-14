@@ -10,3 +10,4 @@ export * from './MessageSender';
 export * from './ServerError';
 export * from './SpecificMessageTypeHandler';
 export * from './Message';
+export * from './DefaultMessagePipeline';
