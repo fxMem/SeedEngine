@@ -7,6 +7,7 @@
       "baseUrl": "./src",
       "paths": {
         "@core": ["./core"],
+        "@core/*": ["./core/*"],
         "@transport": ["./transport"],
         "@transport/*": ["./transport/*"],
         "@users": ["./users"],

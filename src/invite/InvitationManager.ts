@@ -2,8 +2,9 @@ import { User, Claims } from "@users";
 import { Invite } from "./Invite";
 import { ServerError } from "@transport";
 import { SessionManager } from "@session";
-import { SessionJoiningResult } from "@session/SessionMessage";
+
 import { createLocalLogScope } from "@log";
+import { OperationResult } from "@core";
 
 export class InvitationManager {
 
@@ -33,7 +34,7 @@ export class InvitationManager {
         return this.invites.get(key);
     }
 
-    useInvite(invite: Invite, user: User): Promise<SessionJoiningResult> {
+    useInvite(invite: Invite, user: User): Promise<OperationResult> {
         if (!invite.isValid({ user, requestedTime: new Date() })) {
             throw new ServerError(`Invite ${invite} cannot be used for user ${user}`);
         }

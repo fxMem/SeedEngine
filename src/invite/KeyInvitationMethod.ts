@@ -3,7 +3,7 @@ import { isKeyInvitationMessage } from "./KeyInvitationMessage";
 import { ServerError } from "@transport";
 import { User } from "@users";
 import { InvitationManager } from "./InvitationManager";
-import { SessionJoiningResult } from "@session/SessionMessage";
+import { OperationResult } from "@core";
 
 export class KeyInvitationMethod implements InvitationMethod {
 
@@ -15,7 +15,7 @@ export class KeyInvitationMethod implements InvitationMethod {
         return isKeyInvitationMessage(message);
     }    
     
-    processInvite(message: any, from: User): Promise<SessionJoiningResult> {
+    processInvite(message: any, from: User): Promise<OperationResult> {
         if (!isKeyInvitationMessage(message)) {
             throw new ServerError(`Message ${JSON.stringify(message)} is not correct KeyInvitation message!`);
         }

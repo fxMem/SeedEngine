@@ -4,7 +4,7 @@ import { TargetBuilder, ClientMessage, ServerError, MessageSender } from "@trans
 import { EventEmitter } from "events";
 import { SessionState, SessionInfo } from "./SessionInfo";
 import { createLocalLogScope, ScopedLogger } from "@log";
-import { SessionJoiningResult } from "./SessionMessage";
+import { OperationResult } from "@core";
 
 const playerJoined = 'playerJoined';
 const playerLeft = 'playerLeft';
@@ -72,7 +72,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler {
         this.emit(started);
     }
 
-    addPlayer(user: User): Promise<SessionJoiningResult> {
+    addPlayer(user: User): Promise<OperationResult> {
 
         if (!user.haveClaim(Claims.joinSession)) {
             throw new ServerError(`User ${user.nickname} can't join any sessions!`);

@@ -1,12 +1,12 @@
 import { ClientConnectionHandler, Client } from "@client";
 import { KeyInvitationMessage } from "./KeyInvitationMessage";
-import { SessionJoiningResult } from "@session/SessionMessage";
 import { CreateInviteMessage } from "./InviteMessage";
+import { OperationResult } from "@core";
 
 export class KeyInvitationClient implements Client {
     handler: ClientConnectionHandler;
 
-    acceptInvite(invitationKey: string): Promise<SessionJoiningResult> {
+    acceptInvite(invitationKey: string): Promise<OperationResult> {
         return this.handler.invokeWithMessage<KeyInvitationMessage>({
             invitationKey
         });

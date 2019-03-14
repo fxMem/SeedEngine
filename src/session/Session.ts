@@ -1,7 +1,7 @@
 import { User } from "@users";
 import { ClientMessage, TargetBuilder } from "@transport";
 import { SessionInfo } from "./SessionInfo";
-import { SessionJoiningResult } from "./SessionMessage";
+import { OperationResult } from "@core";
 
 // This interface is used by server
 export interface SessionHandler {
@@ -11,7 +11,7 @@ export interface SessionHandler {
 
     players(): User[];
 
-    addPlayer(user: User): Promise<SessionJoiningResult>;
+    addPlayer(user: User): Promise<OperationResult>;
 
     removePlayer(id: string): void;
 

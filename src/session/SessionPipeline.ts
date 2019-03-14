@@ -3,7 +3,8 @@ import { User } from "@users";
 import { SessionInfo } from "./SessionInfo";
 import { SessionHandler } from "./Session";
 import { SessionManager } from "@session";
-import { SessionMessage, SessionCommand, SessionJoiningResult, isSessionMessage } from "./SessionMessage";
+import { SessionMessage, SessionCommand, isSessionMessage } from "./SessionMessage";
+import { OperationResult } from "@core";
 
 export class SessionPipeline implements SpecificMessageTypeHandler {
 
@@ -44,7 +45,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
         return result;
     }
 
-    private async createSession(message: SessionMessage, creator: User): Promise<{ sessionId: string, joined?: SessionJoiningResult }> {
+    private async createSession(message: SessionMessage, creator: User): Promise<{ sessionId: string, joined?: OperationResult }> {
 
         let session = this.sessionManager.createSession({
             owner: creator,
@@ -69,7 +70,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
         return this.joinSession(session, applicant);
     }
 
-    private async joinSession(session: SessionHandler, applicant: User): Promise<SessionJoiningResult> {
+    private async joinSession(session: SessionHandler, applicant: User): Promise<OperationResult> {
 
         let result = await session.addPlayer(applicant);
         return result;

@@ -1,15 +1,17 @@
-import { SessionJoiningResult, SessionCommand, SessionMessage } from "./SessionMessage";
+import { SessionCommand, SessionMessage } from "./SessionMessage";
 import { SessionInfo } from "./SessionInfo";
 import { ClientConnectionHandler, Client } from "@client";
+import { OperationResult } from "@core/OperationResult";
+
 
 
 export interface SessionClient extends Client {
     createSession(sessionDescription?: string, join?: boolean): Promise<{
         sessionId: string,
-        joined?: SessionJoiningResult
+        joined?: OperationResult
     }>;
 
-    joinSession(sessionId: string): Promise<SessionJoiningResult>;
+    joinSession(sessionId: string): Promise<OperationResult>;
 
     leaveSession(sessionId: string): Promise<void>;
 
@@ -20,7 +22,7 @@ export class DefaultSessionClient implements SessionClient {
     handler: ClientConnectionHandler;
 
     createSession(sessionDescription?: string, join?: boolean): Promise<{ 
-        sessionId: string; joined?: SessionJoiningResult; 
+        sessionId: string; joined?: OperationResult; 
     }> {
         return this.handler.invokeWithMessage<SessionMessage>({
             sessionCommand: SessionCommand.create,
@@ -29,7 +31,7 @@ export class DefaultSessionClient implements SessionClient {
         });
     }    
 
-    joinSession(sessionId: string): Promise<SessionJoiningResult> {
+    joinSession(sessionId: string): Promise<OperationResult> {
         return this.handler.invokeWithMessage<SessionMessage>({
             sessionCommand: SessionCommand.join,
             sessionId: sessionId
