@@ -20,6 +20,10 @@ export interface SessionMessage extends Message, SessionSelectionOptions, Sessio
     command: SessionCommand;
 }
 
+export function isSessionMessage(message: Message): message is SessionMessage {
+    return (message as any).command !== undefined;
+}
+
 export interface SessionJoiningResult {
     success: boolean;
     message?: string;

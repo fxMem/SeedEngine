@@ -3,11 +3,7 @@ import { User } from "@users";
 import { SessionInfo } from "./SessionInfo";
 import { SessionHandler } from "./Session";
 import { SessionManager } from "@session";
-import { SessionMessage, SessionCommand, SessionJoiningResult } from "./SessionMessage";
-
-function isSessionMessage(message: Message): message is SessionMessage {
-    return (message as any).command !== undefined;
-}
+import { SessionMessage, SessionCommand, SessionJoiningResult, isSessionMessage } from "./SessionMessage";
 
 export class SessionPipeline implements SpecificMessageTypeHandler {
 

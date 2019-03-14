@@ -2,12 +2,7 @@ import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from
 import { createLocalLogScope } from "@log";
 import { LobbyModule } from "./LobbyModule";
 import { SessionManager } from "@session";
-import { LobbyMessage } from "./LobbyMessage";
-
-
-function isLobbyMessage(message: Message): message is LobbyMessage {
-    return (message as any).sessionId !== undefined;
-}
+import { isLobbyMessage } from "./LobbyMessage";
 
 export class LobbyPipeline implements SpecificMessageTypeHandler {
     private log = createLocalLogScope(nameof(LobbyPipeline));
