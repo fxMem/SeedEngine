@@ -3,6 +3,7 @@ import { DefaultSessionClient } from "@session/SessionClient";
 import { ClientBuilder } from "@client/ClientBuilder";
 import { DefaultAuthClient } from "@users/AuthClient";
 import { VoteLobbyClient } from "@lobby/VoteLobbyClient";
+import { KeyInvitationClient } from "@invite/KeyInvitationClient";
 
 localStorage.debug = '*';
 
@@ -10,6 +11,7 @@ new ClientBuilder()
     .addClientInterface({ auth: new DefaultAuthClient() })
     .addClientInterface({ sessions: new DefaultSessionClient() })
     .addClientInterface({votes: new VoteLobbyClient()})
+    .addClientInterface({invites: new KeyInvitationClient()})
     .connect()
     .then(async (client) => {
 

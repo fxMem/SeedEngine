@@ -4,6 +4,8 @@ import { ExpressFacadeFactory, makeRegularHandler, MessageHandler } from "@trans
 import { SessionPipeline, DefaultSessionManager } from "@session";
 import { initializeLogger, DefaultConsoleLogger, Log } from "@log";
 import { LobbyPipeline, VoteLobbyModule } from "@lobby";
+import { KeyInvitationMethod, InvitesPipeline } from "@invite";
+import { InvitationManager } from "@invite/InvitationManager";
 
 function buildTestServer(): Instance {
 
@@ -19,7 +21,7 @@ function buildTestServer(): Instance {
     return bootstrapper.build();
 
     function addSessionSupport(bootstrapper: Bootstrapper): Bootstrapper {
-        let sessionManager = new DefaultSessionManager() ;
+        let sessionManager = new DefaultSessionManager();
 
         let sessionPipeline = makeRegularHandler(new SessionPipeline(sessionManager));
         sessionPipeline.handlerName = 'SessionHandler';
@@ -28,9 +30,15 @@ function buildTestServer(): Instance {
         let lobbyPipeline = makeRegularHandler(new LobbyPipeline(lobbyModule, sessionManager));
         lobbyPipeline.handlerName = 'LobbyHandler';
 
+        let invitesManager = new InvitationManager(sessionManager);
+        let inviteMethod = new KeyInvitationMethod(invitesManager);
+        let invitesPipeline = makeRegularHandler(new InvitesPipeline([inviteMethod], invitesManager));
+        invitesPipeline.handlerName = 'InvitesHandler';
+
         return bootstrapper
-                .add(sessionPipeline)
-                .add(lobbyPipeline);
+            .add(sessionPipeline)
+            .add(lobbyPipeline)
+            .add(invitesPipeline);
     }
 }
 

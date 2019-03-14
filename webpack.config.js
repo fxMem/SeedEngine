@@ -12,9 +12,10 @@ let resolve = {
         '@log': path.join(__dirname, 'src/log'),
         '@session': path.join(__dirname, 'src/session'),
         '@lobby': path.join(__dirname, 'src/lobby'),
+        '@invite': path.join(__dirname, 'src/invite'),
         '@utils': path.join(__dirname, 'src/utils'),
         '@game': path.join(__dirname, 'src/game'),
-        '@client': path.join(__dirname, 'src/client')
+        '@client': path.join(__dirname, 'src/client'),
     }
 };
 

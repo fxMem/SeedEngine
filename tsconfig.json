@@ -15,6 +15,8 @@
         "@session/*": ["./session/*"],
         "@lobby": ["./lobby"],
         "@lobby/*": ["./lobby/*"],
+        "@invite": ["./invite"],
+        "@invite/*": ["./invite/*"],
         "@game": ["./game"],
         "@log": ["./log"],
         "@utils": ["./utils"],

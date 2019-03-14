@@ -40,7 +40,10 @@ export namespace Claims {
     export const joinSession = claim();
     export const createSession = claim();
     export const viewSessionList = claim();
-    const commonClaims = claim({ joinSession, viewSessionList });
+    export const createInvite = claim();
+    export const joinInvite = claim();
+
+    const commonClaims = claim({ joinSession, joinInvite, createInvite, viewSessionList });
 
     export const rootUser = claim({ commonClaims, createSession });
     export const regularUser = claim({ commonClaims })
