@@ -2,6 +2,7 @@ import { Claims, haveClaim } from "./Claims";
 import { UserStorage, UserInfo } from "./UserStorage";
 import { IdentityChecker } from "./IdentityChecker";
 import { AuthMethod } from "./AuthMethod";
+import { ServerError } from "@transport";
 
 export namespace SimpleIdentity {
 
@@ -31,7 +32,7 @@ export namespace SimpleIdentity {
         async tryAuthentificate(authData: any, storeLoader: (nickname: string) => any): Promise<{ nickname: string, data: any }> {
             let { nickname } = authData;
             if (!nickname) {
-                throw new Error('Provided user information lacks nickname!');
+                throw new ServerError('Provided user information lacks nickname!');
             }
 
             let userData = await storeLoader(nickname);

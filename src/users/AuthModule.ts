@@ -3,6 +3,8 @@ import { UserStorage } from "./UserStorage";
 import { UserManager } from './Users';
 import { createLocalLogScope } from '@log';
 import { User, DefaultUser } from './User';
+import { isNicknameValid } from './UserValidator';
+import { ServerError } from '@transport';
 
 export class AuthModule {
 
@@ -32,15 +34,18 @@ export class AuthModule {
     async authentificate(userTransportId: string, authData: { moduleId: string }): Promise<boolean> {
         let selectedModule = this.authMethods[+authData.moduleId];
         if (!selectedModule) {
-            throw new Error(`Requested authentification module with id = ${authData.moduleId} is not found!`);
+            throw new ServerError(`Requested authentification module with id = ${authData.moduleId} is not found!`);
         }
 
         let user = await selectedModule.tryAuthentificate(authData, (nickname) => this.userStorage.getData(nickname));
+        if (!isNicknameValid(user.nickname)) {
+            throw new ServerError(`Nickname ${user.nickname} is not valid!`);
+        }
 
         // checking for existing login here to avoid race conditions
         let existingUser = this.getExistingUser(userTransportId);
         if (existingUser) {
-            throw new Error(`User with id = ${userTransportId} is alredy online!`);
+            throw new ServerError(`User with id = ${userTransportId} is alredy online!`);
         }
 
         if (user) {
