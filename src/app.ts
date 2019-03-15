@@ -7,6 +7,7 @@ import { LobbyPipeline, VoteLobbyModule } from "@lobby";
 import { KeyInvitationMethod, InvitesPipeline } from "@invite";
 import { InvitationManager } from "@invite/InvitationManager";
 import { GroupPipeline } from "@groups";
+import { ChatPipeline, ChatManager } from "@chat";
 
 function buildTestServer(): Instance {
 
@@ -18,7 +19,8 @@ function buildTestServer(): Instance {
         .withAuthMethod(new SimpleIdentity.SimpleAuthModule())
         .withStorage(SimpleIdentity.WithSuperUser(new InMemoryUserStorage()))
         .add(_ => createSessionRelatedHandlers(_))
-        .add(_ => createGroupsHandler(_));
+        .add(_ => createGroupsHandler(_))
+        .add(_ => createChatHandler(_));
 
     return bootstrapper.build();
 
@@ -27,6 +29,14 @@ function buildTestServer(): Instance {
         groupHandler.handlerName = 'GroupHandler';
 
         return [groupHandler];
+    }
+
+    function createChatHandler(_: CoreDependencies): MessageHandler[] {
+        let chatManager = new ChatManager(_.messageSender);
+        let chatHandler = makeRegularHandler(new ChatPipeline(chatManager));
+        chatHandler.handlerName = 'ChatHandler';
+
+        return [chatHandler];
     }
 
     function createSessionRelatedHandlers(_: CoreDependencies): MessageHandler[] {

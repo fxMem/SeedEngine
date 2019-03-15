@@ -18,6 +18,8 @@
         "@session/*": ["./session/*"],
         "@lobby": ["./lobby"],
         "@lobby/*": ["./lobby/*"],
+        "@chat": ["./chat"],
+        "@chat/*": ["./chat/*"],
         "@invite": ["./invite"],
         "@invite/*": ["./invite/*"],
         "@game": ["./game"],

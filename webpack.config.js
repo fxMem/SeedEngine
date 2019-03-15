@@ -17,6 +17,7 @@ let resolve = {
         '@game': path.join(__dirname, 'src/game'),
         '@client': path.join(__dirname, 'src/client'),
         '@groups': path.join(__dirname, 'src/groups'),
+        '@chat': path.join(__dirname, 'src/chat'),
     }
 };
 
