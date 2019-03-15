@@ -4,6 +4,7 @@ import { User } from "@users";
 import { SessionHandler } from "@session";
 import { createLocalLogScope } from "@log";
 import { VoteMessage, VoteType } from "./VoteMessage";
+import { Success, OperationResult } from "@core";
 
 function isVoteMessage(message: any): message is VoteMessage {
     return message.vote !== undefined && message.sessionId != undefined;
@@ -44,7 +45,7 @@ export class VoteLobbyModule implements LobbyModule {
         return isVoteMessage(message);
     }
 
-    handle({ message, from, session }: LobbyContext): Promise<any> {
+    handle({ message, from, session }: LobbyContext): Promise<OperationResult> {
         
         if (!isVoteMessage(message)) {
             throw new ServerError(`Message ${JSON.stringify(message)} is not vote message!`);
@@ -62,7 +63,7 @@ export class VoteLobbyModule implements LobbyModule {
             session.start();
         }
 
-        return Promise.resolve();
+        return Promise.resolve(Success);
     }
 
     private checkIfAllVoted(session: SessionHandler): boolean {
