@@ -6,6 +6,7 @@ import { Success, OperationResult } from "@core";
 
 export class GroupPipeline implements SpecificMessageTypeHandler {
 
+    name: 'groupHandler';
     constructor(private groupManager: GroupManager) {
 
     }

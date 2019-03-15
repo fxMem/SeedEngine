@@ -5,6 +5,7 @@ import { OperationResult, Success } from "@core";
 
 export class ChatPipeline implements SpecificMessageTypeHandler {
 
+    name: 'chatPipeline';
     constructor(private chatManager: ChatManager) {
 
     }

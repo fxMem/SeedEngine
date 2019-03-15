@@ -4,8 +4,7 @@ import { ExpressFacadeFactory, makeRegularHandler, MessageHandler } from "@trans
 import { SessionPipeline, DefaultSessionManager } from "@session";
 import { initializeLogger, DefaultConsoleLogger, Log } from "@log";
 import { LobbyPipeline, VoteLobbyModule } from "@lobby";
-import { KeyInvitationMethod, InvitesPipeline } from "@invite";
-import { InvitationManager } from "@invite/InvitationManager";
+import { KeyInvitationMethod, InvitesPipeline, InvitationManager } from "@invite";
 import { GroupPipeline } from "@groups";
 import { ChatPipeline, ChatManager } from "@chat";
 
@@ -26,7 +25,6 @@ function buildTestServer(): Instance {
 
     function createGroupsHandler(_: CoreDependencies): MessageHandler[] {
         let groupHandler = makeRegularHandler(new GroupPipeline(_.groups));
-        groupHandler.handlerName = 'GroupHandler';
 
         return [groupHandler];
     }
@@ -34,7 +32,6 @@ function buildTestServer(): Instance {
     function createChatHandler(_: CoreDependencies): MessageHandler[] {
         let chatManager = new ChatManager(_.messageSender);
         let chatHandler = makeRegularHandler(new ChatPipeline(chatManager));
-        chatHandler.handlerName = 'ChatHandler';
 
         return [chatHandler];
     }
@@ -43,16 +40,13 @@ function buildTestServer(): Instance {
         let sessionManager = new DefaultSessionManager(_.messageSender);
 
         let sessionPipeline = makeRegularHandler(new SessionPipeline(sessionManager));
-        sessionPipeline.handlerName = 'SessionHandler';
 
         let lobbyModule = new VoteLobbyModule();
         let lobbyPipeline = makeRegularHandler(new LobbyPipeline(lobbyModule, sessionManager));
-        lobbyPipeline.handlerName = 'LobbyHandler';
 
         let invitesManager = new InvitationManager(sessionManager);
         let inviteMethod = new KeyInvitationMethod(invitesManager);
         let invitesPipeline = makeRegularHandler(new InvitesPipeline([inviteMethod], invitesManager));
-        invitesPipeline.handlerName = 'InvitesHandler';
 
         return [sessionPipeline, lobbyPipeline, invitesPipeline];
     }

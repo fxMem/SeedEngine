@@ -8,6 +8,7 @@ import { OperationResult } from "@core";
 
 export class SessionPipeline implements SpecificMessageTypeHandler {
 
+    name: 'sessionHandler';
     constructor(private sessionManager: SessionManager) {
 
     }

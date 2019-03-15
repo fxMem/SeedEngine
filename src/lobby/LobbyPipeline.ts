@@ -5,8 +5,8 @@ import { SessionManager } from "@session";
 import { isLobbyMessage } from "./LobbyMessage";
 
 export class LobbyPipeline implements SpecificMessageTypeHandler {
-    private log = createLocalLogScope(nameof(LobbyPipeline));
 
+    name: 'LobbyHandler';
     constructor(private module: LobbyModule, private sessionManager: SessionManager) {
 
     }

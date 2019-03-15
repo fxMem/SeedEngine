@@ -2,13 +2,16 @@ import { MessageContext, MessageHandler, MessagePipelineCallback } from "./Messa
 import { Message } from "./Message";
 
 export interface SpecificMessageTypeHandler {
+
+    name?: string;
+
     canHandle(message: Message): boolean;
 
     handle(context: MessageContext): Promise<any>;
 }
 
 export function makeRegularHandler(handler: SpecificMessageTypeHandler): MessageHandler {
-    return (context: MessageContext, next: MessagePipelineCallback): Promise<any> => {
+    let callbackHandler: MessageHandler = (context: MessageContext, next: MessagePipelineCallback): Promise<any> => {
         if (handler.canHandle(context.message)) {
             return handler.handle(context);
         }
@@ -16,4 +19,7 @@ export function makeRegularHandler(handler: SpecificMessageTypeHandler): Message
             return next(context);
         }
     }
+    
+    callbackHandler.handlerName = handler.name;
+    return callbackHandler;
 }

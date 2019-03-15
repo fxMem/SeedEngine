@@ -7,6 +7,7 @@ import { InvitationManager } from "./InvitationManager";
 
 export class InvitesPipeline implements SpecificMessageTypeHandler {
 
+    name: 'invitesHander';
     constructor(private methods: InvitationMethod[], private inviteManager: InvitationManager) {
 
     }
