@@ -12,6 +12,8 @@
         "@transport/*": ["./transport/*"],
         "@users": ["./users"],
         "@users/*": ["./users/*"],
+        "@groups": ["./groups"],
+        "@groups/*": ["./groups/*"],
         "@session": ["./session"],
         "@session/*": ["./session/*"],
         "@lobby": ["./lobby"],

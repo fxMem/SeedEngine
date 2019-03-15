@@ -2,12 +2,16 @@ import { Instance, DefaultInstance, InstanceOptions } from "./Instance";
 import { DefaultUserManager, AuthMethod, AuthModule, UserStorage, UserManager } from "@users";
 import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport, makeRegularHandler } from "@transport";
 import { MessageSender, Transport } from "@transport";
+import { GroupManager } from "@groups";
+import { GroupIdGenerator } from "@groups/GroupIdGenerator";
+import { InMemoryGroupIdGenerator } from "@groups/InMemoryGroupIdGenerator";
 
 export interface CoreDependencies {
     transport: Transport,
     connection: Connection,
-    userManager: UserManager,
-    messageSender: MessageSender
+    users: UserManager,
+    messageSender: MessageSender,
+    groups: GroupManager
 }
 
 export class Bootstrapper {
@@ -15,6 +19,7 @@ export class Bootstrapper {
     private pipeline: MessagePipeline;
     private authMethods: AuthMethod[] = [];
     private userStorage: UserStorage;
+    private groupIdGenerator: GroupIdGenerator;
     private options: InstanceOptions = {
         port: 8080
     };
@@ -30,12 +35,14 @@ export class Bootstrapper {
         let userManager = new DefaultUserManager();
         let connection = new Connection(transport);
         let messageSender = new MessageSender(transport);
+        let groups = new GroupManager(userManager, this.groupIdGenerator || new InMemoryGroupIdGenerator());
 
         this.coreDependencies = {
             transport,
             connection,
-            userManager,
-            messageSender
+            users: userManager,
+            messageSender,
+            groups
         }
     }
     
@@ -44,10 +51,10 @@ export class Bootstrapper {
 
         let server = new Server(
             this.coreDependencies.connection,
-            this.coreDependencies.userManager,
+            this.coreDependencies.users,
             this.coreDependencies.messageSender,
             this.pipeline.build(),
-            new AuthModule(this.coreDependencies.userManager, this.authMethods, this.userStorage));
+            new AuthModule(this.coreDependencies.users, this.authMethods, this.userStorage));
 
         return new DefaultInstance(this.options, server);
     }
@@ -62,6 +69,10 @@ export class Bootstrapper {
 
     withStorage(storage: UserStorage): this {
         return (this.userStorage = storage) && this;
+    }
+
+    withGroupIdGenerator(generator: GroupIdGenerator): this {
+        return (this.groupIdGenerator = generator) && this;
     }
 
     add(factory: (core: CoreDependencies) => MessageHandler[]): this {

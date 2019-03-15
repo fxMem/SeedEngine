@@ -4,6 +4,7 @@ import { ClientBuilder } from "@client/ClientBuilder";
 import { DefaultAuthClient } from "@users/AuthClient";
 import { VoteLobbyClient } from "@lobby/VoteLobbyClient";
 import { KeyInvitationClient } from "@invite/KeyInvitationClient";
+import { GroupClient } from "@groups/GroupClient";
 
 localStorage.debug = '*';
 
@@ -12,6 +13,7 @@ new ClientBuilder()
     .addClientInterface({ sessions: new DefaultSessionClient() })
     .addClientInterface({votes: new VoteLobbyClient()})
     .addClientInterface({invites: new KeyInvitationClient()})
+    .addClientInterface({groups: new GroupClient()})
     .connect()
     .then(async (client) => {
 
@@ -55,6 +57,9 @@ new ClientBuilder()
 
         let invite = await client.invites.createInvite(sessionId, 1);
         console.log(invite.inviteKey);
+
+        let group = await client.groups.createGroup();
+        await client.groups.leaveGroup(group.groupId);
         
         await client.votes.vote(sessionId);
         //client.

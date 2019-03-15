@@ -6,6 +6,7 @@ import { initializeLogger, DefaultConsoleLogger, Log } from "@log";
 import { LobbyPipeline, VoteLobbyModule } from "@lobby";
 import { KeyInvitationMethod, InvitesPipeline } from "@invite";
 import { InvitationManager } from "@invite/InvitationManager";
+import { GroupPipeline } from "@groups";
 
 function buildTestServer(): Instance {
 
@@ -17,8 +18,16 @@ function buildTestServer(): Instance {
         .withAuthMethod(new SimpleIdentity.SimpleAuthModule())
         .withStorage(SimpleIdentity.WithSuperUser(new InMemoryUserStorage()))
         .add(_ => createSessionRelatedHandlers(_))
+        .add(_ => createGroupsHandler(_));
 
     return bootstrapper.build();
+
+    function createGroupsHandler(_: CoreDependencies): MessageHandler[] {
+        let groupHandler = makeRegularHandler(new GroupPipeline(_.groups));
+        groupHandler.handlerName = 'GroupHandler';
+
+        return [groupHandler];
+    }
 
     function createSessionRelatedHandlers(_: CoreDependencies): MessageHandler[] {
         let sessionManager = new DefaultSessionManager(_.messageSender);
