@@ -13,7 +13,6 @@ export type ConnectedClient = {
     onMessage: (callback: ClientCallback) => void;
     onDisconnected: (callback: Action) => void;
 
-    //send: (message: ClientMessage) => void;
     invoke: (message: ClientMessage) => Promise<any>;
 }
 
@@ -46,7 +45,6 @@ export class Connection {
                 id: transportClient.id,
                 onMessage: (userCallback) => transportClient.onMessage(sender.enableRPC(userCallback)),
                 onDisconnected: transportClient.onDisconnected,
-                //send: (message) => sender.send(message.header, message.payload),
                 invoke: (message) => sender.sendAndGetResult(message.header, message.payload)
             })
         });
