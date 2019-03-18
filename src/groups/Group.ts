@@ -13,7 +13,13 @@ export interface Group {
     getUsers(): User[];
 }
 
-export class DefaultGroup extends EventEmitter implements Group {
+export interface GroupHandle extends Group {
+    addUser(user: User): void;
+    removeUser(user: User, reason?: string): void;
+    close(reason?: string): void;
+}
+
+export class DefaultGroup extends EventEmitter implements GroupHandle {
     usersMap = new Map<string, User>();
 
     constructor(private users: User[], public id: string, public description?: string) {

@@ -2,6 +2,7 @@ import { User } from "@users";
 import { ClientMessage, TargetBuilder } from "@transport";
 import { SessionInfo } from "./SessionInfo";
 import { OperationResult } from "@core";
+import { Group } from "@groups";
 
 // This interface is used by server
 export interface SessionHandler {
@@ -23,6 +24,9 @@ export interface Session {
 
     // Currently connected players
     players(): User[];
+
+    // Group object for the session, this group contains all users connected to the session
+    group(): Group;
 
     // Allows game implemention to subscribe to game lifecycle events
     subscribe(subscriber: SessionEvents): void;

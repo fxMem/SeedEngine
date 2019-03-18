@@ -5,3 +5,4 @@ export interface OperationResult {
 }
 
 export const Success = { success: true };
+export const SuccessPromise = Promise.resolve(Success);

@@ -1,24 +1,30 @@
-import { SessionHandler } from "./Session";
+import { SessionHandler, Session, SessionEvents } from "./Session";
 import { User, Claims } from "@users";
 import { TargetBuilder, ClientMessage, ServerError, MessageSender } from "@transport";
 import { EventEmitter } from "events";
 import { SessionState, SessionInfo } from "./SessionInfo";
 import { createLocalLogScope, ScopedLogger } from "@log";
-import { OperationResult } from "@core";
+import { OperationResult, SuccessPromise } from "@core";
+import { Group, GroupHandle } from "@groups";
 
 const playerJoined = 'playerJoined';
 const playerLeft = 'playerLeft';
 const messageRecieved = 'messageRecieved';
 const started = 'started';
 
-export class DefaultSession extends EventEmitter implements SessionHandler {
+export class DefaultSession extends EventEmitter implements SessionHandler, Session {
 
     private log: ScopedLogger;
     private state: SessionState;
     private startTime: Date;
     private connectedPlayers: User[] = [];
 
-    constructor(private messageSender: MessageSender, private sessionId: string, private description?: string) {
+    constructor(
+        private localGroup: GroupHandle,
+        private messageSender: MessageSender,
+        private sessionId: string,
+        private description?: string) {
+
         super();
 
         this.state = SessionState.waiting;
@@ -45,23 +51,31 @@ export class DefaultSession extends EventEmitter implements SessionHandler {
         return this.connectedPlayers;
     }
 
+    group(): Group {
+        return this.localGroup;
+    }
+
+    subscribe(subscriber: SessionEvents): void {
+        this.onPlayerJoin(subscriber.playerJoin);
+        this.onPlayerLeave(subscriber.playerLeave);
+        this.onPlayerMessage(subscriber.message);
+        this.onStarted(subscriber.started);
+    }
+
     onPlayerJoin(callback: (player: User) => Promise<void>): void {
-        this.on(playerJoined, callback);
+        callback && this.on(playerJoined, callback);
     }
 
     onPlayerLeave(callback: (player: User) => Promise<void>): void {
-        this.on(playerLeft, callback);
+        callback && this.on(playerLeft, callback);
     }
 
     onPlayerMessage(callback: (message: any, from: User) => Promise<void>): void {
-        this.on(messageRecieved, callback);
+        callback && this.on(messageRecieved, callback);
     }
 
     onStarted(callback: () => void): void {
-
-        this.state = SessionState.running;
-        this.startTime = new Date();
-        this.on(started, callback);
+        callback && this.on(started, callback);
     }
 
     sendMessage(message: ClientMessage): TargetBuilder {
@@ -69,6 +83,8 @@ export class DefaultSession extends EventEmitter implements SessionHandler {
     }
 
     start(): void {
+        this.state = SessionState.running;
+        this.startTime = new Date();
         this.emit(started);
     }
 
@@ -79,15 +95,17 @@ export class DefaultSession extends EventEmitter implements SessionHandler {
         }
 
         this.connectedPlayers.push(user);
-        this.emit(playerJoined, user);
+        this.localGroup.addUser(user);
 
+        this.emit(playerJoined, user);
         this.log.info(`Player ${user} joined!`);
-        return Promise.resolve({ success: true });
+        return SuccessPromise;
     }
 
     removePlayer(id: string): void {
-        let leavingUser = this.connectedPlayers.filter(p => p.id === id);
+        let leavingUser = this.connectedPlayers.filter(p => p.id === id)[0];
         this.connectedPlayers = this.connectedPlayers.filter(p => p.id !== id);
+        this.localGroup.removeUser(leavingUser);
 
         this.log.info(`Player ${leavingUser} has left!`);
         this.emit(playerLeft, leavingUser);

@@ -5,6 +5,7 @@ import { DefaultSession } from "./DefaultSession";
 import { ServerError, MessageSender } from "@transport";
 import { SessionInfo } from "./SessionInfo";
 import { createLocalLogScope } from "@log";
+import { GroupManager } from "@groups";
 
 
 export class DefaultSessionManager implements SessionManager {
@@ -13,7 +14,7 @@ export class DefaultSessionManager implements SessionManager {
     private sessionIdCounter = 0;
     private sessions = new Map<string, DefaultSession>();
 
-    constructor(private messageSender: MessageSender) {
+    constructor(private messageSender: MessageSender, private groupsManager: GroupManager) {
 
     }
 
@@ -36,7 +37,8 @@ export class DefaultSessionManager implements SessionManager {
         }
 
         let sessionId = this.sessionIdCounter++ + '';
-        let session = new DefaultSession(this.messageSender, sessionId, description);
+        let sessionGroup = this.groupsManager.createGroup(owner, null, `Group for session ${sessionId}`);
+        let session = new DefaultSession(sessionGroup, this.messageSender, sessionId, description);
         this.sessions.set(sessionId, session);
 
         this.log.info(`Created session ${sessionId} by ${owner}`);
