@@ -5,9 +5,16 @@ import { ChatMessage } from "./ChatMessage";
 export class ChatClient implements Client {
     handler: ClientConnectionHandler;
 
-    send(target: string, text: string): Promise<OperationResult> {
+    sendToUser(userNickname: string, text: string): Promise<OperationResult> {
         return this.handler.invokeWithMessage<ChatMessage>({
-            target,
+            targetUer: userNickname,
+            text
+        });
+    }
+
+    sendToGroup(groupId: string, text: string): Promise<OperationResult> {
+        return this.handler.invokeWithMessage<ChatMessage>({
+            targetGroup: groupId,
             text
         });
     }

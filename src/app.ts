@@ -31,7 +31,7 @@ function buildTestServer(): Instance {
 
     function createChatHandler(_: CoreDependencies): MessageHandler[] {
         let chatManager = new ChatManager(_.messageSender);
-        let chatHandler = makeRegularHandler(new ChatPipeline(chatManager));
+        let chatHandler = makeRegularHandler(new ChatPipeline(chatManager, _.users, _.groups));
 
         return [chatHandler];
     }

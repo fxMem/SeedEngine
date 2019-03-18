@@ -4,11 +4,12 @@ import { nickname } from "@users";
 
 export interface ChatMessage extends Message {
     text: string;
-    target: string;
+    targetUer?: string;
+    targetGroup?: string;
 }
 
 export function isChatMessage(message: any): message is ChatMessage {
-    return message.text !== undefined && message.target !== undefined;
+    return message.text !== undefined && (message.targetUer !== undefined || message.targetGroup !== undefined);
 }
 
 // Sent to client

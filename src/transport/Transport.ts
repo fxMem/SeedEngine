@@ -1,5 +1,7 @@
 import { Action } from "@utils";
 import { ClientMessage } from "./Connection";
+import { User } from "@users";
+import { MessageTarget } from "./MessageTarget";
 
 export type TransportMessageCallbackAsync = (message: TransportMessage) => Promise<any>;
 export type TransportMessageCallback = (message: TransportMessage) => void;
@@ -13,7 +15,7 @@ export type TransportMessageOptions = {
 }
 
 export interface TransportMessageSender {
-    send(message: TransportMessage, options: { broadcast?: boolean, targets: string[] }): void;
+    send(message: TransportMessage, options: { broadcast?: boolean, targets: MessageTarget[] }): void;
 }
 
 export interface Transport extends TransportMessageSender {

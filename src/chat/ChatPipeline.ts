@@ -2,11 +2,13 @@ import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from
 import { isChatMessage } from "./ChatMessage";
 import { ChatManager } from "./ChatManager";
 import { OperationResult, Success } from "@core";
+import { Users } from "@users";
+import { Groups } from "@groups";
 
 export class ChatPipeline implements SpecificMessageTypeHandler {
 
     name: 'chatPipeline';
-    constructor(private chatManager: ChatManager) {
+    constructor(private chatManager: ChatManager, private users: Users, private groups: Groups) {
 
     }
 
@@ -21,7 +23,13 @@ export class ChatPipeline implements SpecificMessageTypeHandler {
             throw new ServerError('Incorrect message type for ChatPipeline!');
         }
 
-        this.chatManager.sendMessage(from, message.target, message.text);
+        if (message.targetUer) {
+            this.chatManager.sendToUser(from, this.users.getUserByNickname(message.targetUer), message.text);
+        }
+        else if (message.targetGroup) {
+            this.chatManager.sendToGroup(from, this.groups.getGroup(message.targetGroup), message.text);
+        }
+
         return Promise.resolve(Success);
     }
 }

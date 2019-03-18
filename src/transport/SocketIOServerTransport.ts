@@ -1,12 +1,12 @@
 import * as socketIO from 'socket.io';
 import { SeedMessage, DefaultSeedNamespace } from './Headers';
 import { HttpFacade } from './HttpFacade';
-import { Transport, TransportMessageCallbackAsync, TransportMessage, TransportClient } from './Transport';
-import { Action } from '@utils';
-
+import { Transport, TransportMessage, TransportClient } from './Transport';
+import { MessageTarget } from './MessageTarget';
 
 // Wraps socket.IO connection (server)
 export class SocketIOServerTransport implements Transport {
+    
     private ioServer: socketIO.Namespace;
 
     constructor(private httpFacade: HttpFacade) {
@@ -22,12 +22,14 @@ export class SocketIOServerTransport implements Transport {
         return !!this.ioServer;
     }
 
-    send(message: TransportMessage, options: { broadcast?: boolean, targets: string[] }): void {
+    send(message: TransportMessage, options: { broadcast?: boolean, targets: MessageTarget[] }): void {
         let target = this.ioServer;
 
         if (options.targets) {
-            for (let clientId of options.targets) {
-                target = target.to(clientId);
+            for (let clientTarget of options.targets) {
+                for (const targetId of clientTarget.targets) {
+                    target = target.to(targetId);
+                }
             }
         }
         

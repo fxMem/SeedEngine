@@ -1,6 +1,7 @@
 import { RpcWrapper } from './RpcWrapper';
 import { Transport } from './Transport';
 import { Action } from '@utils';
+import { MessageTarget } from './MessageTarget';
 
 export type ClientCallback = (message: ClientMessage) => Promise<any>;
 export type ClientMessage = {
@@ -39,7 +40,7 @@ export class Connection {
         }
 
         this.transport.onConnected((transportClient) => {
-            let sender = new RpcWrapper((message) => this.transport.send(message, { targets: [transportClient.id] }));
+            let sender = new RpcWrapper((message) => this.transport.send(message, { targets: [new MessageTarget([transportClient.id])] }));
 
             userCallback({
                 id: transportClient.id,

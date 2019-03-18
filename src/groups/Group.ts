@@ -5,35 +5,39 @@ const onUserAdded = 'onUserAdded';
 const onUserRemoved = 'onUserRemoved';
 const onGroupClosed = 'onGroupClosed';
 
-export class Group extends EventEmitter {
-    users = new Map<string, User>();
+// Extracting this interface we prohibit users to invoke addUser / removeUser by hand (which
+// should be done via GroupManager)
+export interface Group {
+    id: string;
+    description?: string;
+    getUsers(): User[];
+}
 
-    constructor(users: User[], private id: string, private description?: string) {
+export class DefaultGroup extends EventEmitter implements Group {
+    usersMap = new Map<string, User>();
+
+    constructor(private users: User[], public id: string, public description?: string) {
         super();
 
         for (const user of users) {
-            this.users.set(user.id, user);
+            this.usersMap.set(user.id, user);
         }
     }
 
-    getId(): string {
-        return this.id;
-    }
-
-    getDescription(): string {
-        return this.description;
+    getUsers(): User[] {
+        return this.users;
     }
 
     addUser(user: User) {
-        if (!this.users.has(user.id)) {
-            this.users.set(user.id, user);
+        if (!this.usersMap.has(user.id)) {
+            this.usersMap.set(user.id, user);
             this.emit(onUserAdded, user);
         }
     }
 
     removeUser(user: User, reason?: string) {
-        if (this.users.has(user.id)) {
-            this.users.delete(user.id);
+        if (this.usersMap.has(user.id)) {
+            this.usersMap.delete(user.id);
             this.emit(onUserRemoved, user, reason);
         }
     }

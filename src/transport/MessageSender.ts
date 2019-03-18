@@ -2,30 +2,29 @@
 import { User } from "@users";
 import { TransportMessageSender } from "./Transport";
 import { ClientMessage } from "./Connection";
-import { Group } from "@groups/Group";
+import { Group } from "@groups";
+import { MessageTarget } from "./MessageTarget";
 
 export class TargetBuilder {
-    private targets: string[];
+    private targets: MessageTarget[];
     private broadcast = false;
 
-    constructor(private sender: (message: ClientMessage, options: { broadcast?: boolean, targets?: string [] }) => void, private message: ClientMessage) {
+    constructor(private sender: (message: ClientMessage, options: { broadcast?: boolean, targets?: MessageTarget[] }) => void, private message: ClientMessage) {
 
     }
 
-    // TODO: think of better way to represent targets. Maybe something like
-    // interface Targetable?
-    to(...targets: string[]): this {
+    to(...targets: MessageTarget[]): this {
         this.targets = targets
         return this;
     }
 
     toUsers(...users: User[]): this {
-        this.targets = users.map(u => u.id);
+        this.targets = users.map(u => MessageTarget.fromUser(u));
         return this;
     }
 
     toGroups(...groups: Group[]): this {
-        this.targets = groups.map(g => g.getId());
+        this.targets = groups.map(g => MessageTarget.fromGroup(g));
         return this;
     }
 

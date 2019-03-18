@@ -2,7 +2,7 @@ import { Users, User, nickname } from "@users";
 import { createLocalLogScope } from "@log";
 
 import { ServerError } from "@transport";
-import { Group } from "./Group";
+import { DefaultGroup, Group } from "./Group";
 import { GroupIdGenerator } from "./GroupIdGenerator";
 import { addUserGroup } from "./UserGroupInfo";
 
@@ -15,7 +15,7 @@ export interface Groups {
 export class GroupManager implements Groups {
 
     private log = createLocalLogScope(nameof(GroupManager));
-    private groups = new Map<string, Group>();
+    private groups = new Map<string, DefaultGroup>();
 
     // TODO: create means to 'reload' existing groups after server restart
     // (probably by iterating over players and 'rejoining' them to groups?)
@@ -23,10 +23,10 @@ export class GroupManager implements Groups {
 
     }
 
-    createGroup(targets: nickname[], description?: string): Group {
+    createGroup(targets: nickname[], description?: string): DefaultGroup {
 
         let id = this.idGenerator.getNext();
-        let group = new Group((targets || []).map(t => this.users.getUserByNickname(t)), id);
+        let group = new DefaultGroup((targets || []).map(t => this.users.getUserByNickname(t)), id);
         this.groups.set(id, group);
 
         this.log.info(`Group ${id} created with users ${targets}`);
@@ -38,7 +38,7 @@ export class GroupManager implements Groups {
             throw new ServerError(`Targets should be provided!`);
         }
 
-        let group = this.getGroup(groupId);
+        let group = this.getGroup(groupId) as DefaultGroup;
         for (const user of targets.map(t => this.users.getUserByNickname(t))) {
             group.addUser(user);
             addUserGroup(user, groupId);
@@ -48,7 +48,7 @@ export class GroupManager implements Groups {
     }
 
     leaveGroup(user: User, groupId: string) {
-        let group = this.getGroup(groupId);
+        let group = this.getGroup(groupId) as DefaultGroup;
         group.removeUser(user);
 
         this.log.info(`User ${user} left group ${group}`);
