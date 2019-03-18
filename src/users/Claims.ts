@@ -46,13 +46,16 @@ export namespace Claims {
 
     export const sendChatMessage = claim();
 
+    export const createGroup = claim();
+
     const commonClaims = claim({ 
         joinSession, 
         joinInvite, 
         createInvite, 
         viewSessionList, 
-        sendChatMessage });
+        sendChatMessage
+     });
 
-    export const rootUser = claim({ commonClaims, createSession });
+    export const rootUser = claim({ commonClaims, createSession, createGroup });
     export const regularUser = claim({ commonClaims })
 }

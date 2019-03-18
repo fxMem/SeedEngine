@@ -26,7 +26,7 @@ export class GroupPipeline implements SpecificMessageTypeHandler {
 
         switch (groupCommand) {
             case GroupCommand.create:
-                let group = this.groupManager.createGroup(message.targets);
+                let group = this.groupManager.createGroup(from, message.targets);
                 return { groupId: group.id };
             case GroupCommand.join:
                 this.groupManager.addUsers([from.nickname], message.groupId);

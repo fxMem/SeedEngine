@@ -1,4 +1,4 @@
-import { Users, User, nickname } from "@users";
+import { Users, User, nickname, Claims } from "@users";
 import { createLocalLogScope } from "@log";
 
 import { ServerError } from "@transport";
@@ -23,13 +23,17 @@ export class GroupManager implements Groups {
 
     }
 
-    createGroup(targets: nickname[], description?: string): DefaultGroup {
+    createGroup(creator: User, add: nickname[], description?: string): DefaultGroup {
 
+        if (!creator.haveClaim(Claims.createGroup)) {
+            throw new ServerError(`User ${creator} is not allowed to create groups!`);
+        }
+        
         let id = this.idGenerator.getNext();
-        let group = new DefaultGroup((targets || []).map(t => this.users.getUserByNickname(t)), id);
+        let group = new DefaultGroup((add || []).map(t => this.users.getUserByNickname(t)), id);
         this.groups.set(id, group);
 
-        this.log.info(`Group ${id} created with users ${targets}`);
+        this.log.info(`Group ${id} created with users ${add}`);
         return group;
     }
 
