@@ -6,6 +6,7 @@ import { ServerError, MessageSender } from "@transport";
 import { SessionInfo } from "./SessionInfo";
 import { createLocalLogScope } from "@log";
 import { GroupManager } from "@groups";
+import { Game } from "@game";
 
 
 export class DefaultSessionManager implements SessionManager {
@@ -14,7 +15,10 @@ export class DefaultSessionManager implements SessionManager {
     private sessionIdCounter = 0;
     private sessions = new Map<string, DefaultSession>();
 
-    constructor(private messageSender: MessageSender, private groupsManager: GroupManager) {
+    constructor(
+        private messageSender: MessageSender, 
+        private groupsManager: GroupManager,
+        private game: Game) {
 
     }
 
@@ -26,7 +30,7 @@ export class DefaultSessionManager implements SessionManager {
         if (!user.haveClaim(Claims.viewSessionList)) {
             throw new ServerError(`User ${user} does not have sufficient rights to create sessions!`);
         }
-        let result: SessionInfo[] = [];
+        
         return [...(this.sessions as any).values()].map((s: DefaultSession) => s.getInfo());
     }
 
@@ -39,6 +43,16 @@ export class DefaultSessionManager implements SessionManager {
         let sessionId = this.sessionIdCounter++ + '';
         let sessionGroup = this.groupsManager.createGroup(owner, null, `Group for session ${sessionId}`);
         let session = new DefaultSession(sessionGroup, this.messageSender, sessionId, description);
+
+        if (this.game) {
+            // should we populate fresh object here instead of passing the whole session?
+            let finishedCallback = this.game.create(session);
+            session.setFinishedCallback(() => {
+                finishedCallback();
+                this.sessions.delete(sessionId);
+            });
+        }
+        
         this.sessions.set(sessionId, session);
 
         this.log.info(`Created session ${sessionId} by ${owner}`);

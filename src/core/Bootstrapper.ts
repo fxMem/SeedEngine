@@ -5,13 +5,15 @@ import { MessageSender, Transport } from "@transport";
 import { GroupManager } from "@groups";
 import { GroupIdGenerator } from "@groups/GroupIdGenerator";
 import { InMemoryGroupIdGenerator } from "@groups/InMemoryGroupIdGenerator";
+import { Game } from "@game";
 
 export interface CoreDependencies {
     transport: Transport,
     connection: Connection,
     users: UserManager,
     messageSender: MessageSender,
-    groups: GroupManager
+    groups: GroupManager,
+    game: Game
 }
 
 export class Bootstrapper {
@@ -20,6 +22,7 @@ export class Bootstrapper {
     private authMethods: AuthMethod[] = [];
     private userStorage: UserStorage;
     private groupIdGenerator: GroupIdGenerator;
+    private game: Game;
     private options: InstanceOptions = {
         port: 8080
     };
@@ -42,7 +45,8 @@ export class Bootstrapper {
             connection,
             users: userManager,
             messageSender,
-            groups
+            groups, 
+            game: this.game
         }
     }
     
@@ -77,5 +81,9 @@ export class Bootstrapper {
 
     add(factory: (core: CoreDependencies) => MessageHandler[]): this {
         return this.pipeline.chain(() => factory(this.coreDependencies)) && this;
+    }
+
+    withGame(game: Game): this {
+        return (this.game = game) && this;
     }
 }

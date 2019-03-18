@@ -33,6 +33,9 @@ export interface Session {
 
     // Sends message to client(s)
     sendMessage(message: ClientMessage): TargetBuilder;
+
+    // Marks session as finished
+    close(): void;
 }
 
 export interface SessionEvents {

@@ -18,6 +18,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     private state: SessionState;
     private startTime: Date;
     private connectedPlayers: User[] = [];
+    private disposeCallback: () => void;
 
     constructor(
         private localGroup: GroupHandle,
@@ -53,6 +54,16 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
 
     group(): Group {
         return this.localGroup;
+    }
+
+    close() {
+        this.state = SessionState.finished;
+        this.localGroup.close(`Session ${this.id} is finished!`);
+        this.disposeCallback && this.disposeCallback();
+    }
+
+    setFinishedCallback(callback: () => void) {
+        this.disposeCallback = callback;
     }
 
     subscribe(subscriber: SessionEvents): void {

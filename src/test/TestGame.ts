@@ -3,7 +3,7 @@ import { Session } from "@session/Session";
 
 
 export class TestGameFacade implements Game {
-    create(session: Session): void {
+    create(session: Session): () => void {
         let game = new TestGame();
 
         session.subscribe({
@@ -20,7 +20,9 @@ export class TestGameFacade implements Game {
             started: () => {
                 game.thinkNumber();
             }
-        })
+        });
+
+        return () => {};
     }
 }
 
