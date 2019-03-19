@@ -1,8 +1,9 @@
-import { User, Claims } from "@users";
-import { createLocalLogScope } from "@log";
-import { MessageSender, ServerError } from "@transport";
-import { MessageTarget } from "@transport/MessageTarget";
-import { Group } from "@groups";
+import { createLocalLogScope } from "../log";
+import { MessageSender, ServerError } from "../transport";
+import { User, Claims } from "../users";
+import { MessageTarget } from "../transport/MessageTarget";
+import { Group } from "../groups";
+
 
 export const chatMessageClientHeader = 'chat';
 export class ChatManager {

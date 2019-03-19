@@ -1,8 +1,9 @@
-import { User } from "@users";
-import { ClientMessage, TargetBuilder } from "@transport";
 import { SessionInfo } from "./SessionInfo";
-import { OperationResult } from "@core";
-import { Group } from "@groups";
+import { User } from "../users";
+import { OperationResult } from "../core";
+import { Group } from "../groups";
+import { ClientMessage, TargetBuilder } from "../server";
+
 
 // This interface is used by server
 export interface SessionHandler {

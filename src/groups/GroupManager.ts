@@ -1,12 +1,9 @@
-import { Users, User, nickname, Claims } from "@users";
-import { createLocalLogScope } from "@log";
-
-import { ServerError } from "@transport";
 import { DefaultGroup, Group, GroupHandle } from "./Group";
 import { GroupIdGenerator } from "./GroupIdGenerator";
 import { addUserGroup } from "./UserGroupInfo";
-
-export const chatMessageClientHeader = 'chat';
+import { createLocalLogScope } from "../log";
+import { Users, User, nickname, Claims } from "../users";
+import { ServerError } from "../transport";
 
 export interface Groups {
     getGroup(groupId: string): Group;

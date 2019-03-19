@@ -1,4 +1,4 @@
-import { Server } from "@transport";
+import { Server } from "../transport";
 
 export interface InstanceOptions {
     port?: number

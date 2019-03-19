@@ -1,4 +1,4 @@
-import { User } from "@users";
+import { User } from "../users";
 import { SessionHandler } from "./Session";
 import { SessionInfo } from "./SessionInfo";
 

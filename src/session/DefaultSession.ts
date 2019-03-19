@@ -1,11 +1,11 @@
 import { SessionHandler, Session, SessionEvents } from "./Session";
-import { User, Claims } from "@users";
-import { TargetBuilder, ClientMessage, ServerError, MessageSender } from "@transport";
 import { EventEmitter } from "events";
+import { ScopedLogger, createLocalLogScope } from "../log";
+import { User, Claims } from "../users";
+import { GroupHandle, Group } from "../groups";
+import { MessageSender, ClientMessage, TargetBuilder, ServerError } from "../server";
 import { SessionState, SessionInfo } from "./SessionInfo";
-import { createLocalLogScope, ScopedLogger } from "@log";
-import { OperationResult, SuccessPromise } from "@core";
-import { Group, GroupHandle } from "@groups";
+import { OperationResult, SuccessPromise } from "../core";
 
 const playerJoined = 'playerJoined';
 const playerLeft = 'playerLeft';

@@ -1,10 +1,11 @@
 import { LobbyModule, LobbyContext } from "./LobbyModule";
-import { ServerError } from "@transport";
-import { User } from "@users";
-import { SessionHandler } from "@session";
-import { createLocalLogScope } from "@log";
 import { VoteMessage, VoteType } from "./VoteMessage";
-import { Success, OperationResult } from "@core";
+import { User } from "../users";
+import { createLocalLogScope } from "../log";
+import { OperationResult, Success } from "../core";
+import { ServerError } from "../transport";
+import { SessionHandler } from "../session";
+
 
 function isVoteMessage(message: any): message is VoteMessage {
     return message.vote !== undefined && message.sessionId != undefined;

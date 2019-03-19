@@ -1,6 +1,5 @@
-import { Game } from "@game";
-import { Session } from "@session/Session";
-
+import { Game } from "../game";
+import { Session } from "../session";
 
 export class TestGameFacade implements Game {
     create(session: Session): () => void {

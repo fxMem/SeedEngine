@@ -1,10 +1,10 @@
-import { Message, MessageContext, ServerError, SpecificMessageTypeHandler } from "@transport";
-import { User } from "@users";
+import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from "../server";
+import { SessionManager, SessionHandler } from ".";
+import { isSessionMessage, SessionCommand, SessionMessage } from "./SessionMessage";
+import { User } from "../users";
+import { OperationResult } from "../core";
 import { SessionInfo } from "./SessionInfo";
-import { SessionHandler } from "./Session";
-import { SessionManager } from "@session";
-import { SessionMessage, SessionCommand, isSessionMessage } from "./SessionMessage";
-import { OperationResult } from "@core";
+
 
 export class SessionPipeline implements SpecificMessageTypeHandler {
 

@@ -1,11 +1,11 @@
 import { Instance, DefaultInstance, InstanceOptions } from "./Instance";
-import { DefaultUserManager, AuthMethod, AuthModule, UserStorage, UserManager } from "@users";
-import { Server, MessagePipeline, DefaulMessagePipeline, MessageHandler, HttpFacadeFactory, Connection, SocketIOServerTransport, makeRegularHandler } from "@transport";
-import { MessageSender, Transport } from "@transport";
-import { GroupManager } from "@groups";
-import { GroupIdGenerator } from "@groups/GroupIdGenerator";
-import { InMemoryGroupIdGenerator } from "@groups/InMemoryGroupIdGenerator";
-import { Game } from "@game";
+import { Connection, Server, Transport, MessageSender, HttpFacadeFactory, MessagePipeline, DefaulMessagePipeline, SocketIOServerTransport, MessageHandler } from "../transport";
+import { UserManager, AuthMethod, UserStorage, DefaultUserManager, AuthModule } from "../users";
+import { GroupManager } from "../groups";
+import { Game } from "../game";
+import { GroupIdGenerator } from "../groups/GroupIdGenerator";
+import { InMemoryGroupIdGenerator } from "../groups/InMemoryGroupIdGenerator";
+
 
 export interface CoreDependencies {
     transport: Transport,

@@ -1,9 +1,9 @@
-import { SpecificMessageTypeHandler, MessageContext, Message } from "@transport";
 import { InvitationMethod } from "./InvitationMethod";
 import { isCreateInviteMessage, CreateInviteMessage } from "./InviteMessage";
-import { User, Users } from "@users";
 import { InviteBuilder } from "./Invite";
 import { InvitationManager } from "./InvitationManager";
+import { SpecificMessageTypeHandler, Message, MessageContext } from "../transport";
+import { User, Users } from "../users";
 
 export class InvitesPipeline implements SpecificMessageTypeHandler {
 

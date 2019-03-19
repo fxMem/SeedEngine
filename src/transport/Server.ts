@@ -1,11 +1,9 @@
 import { MessagePipelineCallback } from "./MessagePipeline";
-import { AuthModule, Users } from '@users';
-import { Log, createLocalLogScope } from '@log';
-import { Header } from './Headers';
-import { Connection, ConnectedClient } from "./Connection";
-import { User } from "users/User";
 import { MessageSender } from "./MessageSender";
 import { ServerError } from "./ServerError";
+import { createLocalLogScope } from "../log";
+import { Connection, ConnectedClient, Header } from ".";
+import { Users, AuthModule, User } from "../users";
 
 // Facade class tying together connection, authentication and messaging logic
 export class Server {

@@ -1,9 +1,8 @@
-
-import { User } from "@users";
 import { TransportMessageSender } from "./Transport";
 import { ClientMessage } from "./Connection";
-import { Group } from "@groups";
 import { MessageTarget } from "./MessageTarget";
+import { User } from "../users";
+import { Group } from "../groups";
 
 export class TargetBuilder {
     private targets: MessageTarget[];

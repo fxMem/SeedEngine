@@ -1,4 +1,4 @@
-import { User } from "@users";
+import { User } from "../users";
 import { EventEmitter } from "events";
 
 const onUserAdded = 'onUserAdded';

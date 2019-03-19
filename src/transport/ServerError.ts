@@ -1,4 +1,4 @@
-import { LogFriendly } from "@log";
+import { LogFriendly } from "../log";
 
 export class ServerError implements LogFriendly {
 

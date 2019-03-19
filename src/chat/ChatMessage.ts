@@ -1,6 +1,5 @@
-import { Message } from "@transport";
-import { nickname } from "@users";
-
+import { Message } from "../transport";
+import { nickname } from "../users";
 
 export interface ChatMessage extends Message {
     text: string;

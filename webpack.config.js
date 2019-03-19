@@ -3,45 +3,47 @@ const tsNameof = require("ts-nameof");
 const nodeExternals = require('webpack-node-externals');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-let resolve = {
-    extensions: [".ts", ".js"],
-    alias: {
-        '@core': path.join(__dirname, 'src/core'),
-        '@transport': path.join(__dirname, 'src/transport'),
-        '@users': path.join(__dirname, 'src/users'),
-        '@log': path.join(__dirname, 'src/log'),
-        '@session': path.join(__dirname, 'src/session'),
-        '@lobby': path.join(__dirname, 'src/lobby'),
-        '@invite': path.join(__dirname, 'src/invite'),
-        '@utils': path.join(__dirname, 'src/utils'),
-        '@game': path.join(__dirname, 'src/game'),
-        '@client': path.join(__dirname, 'src/client'),
-        '@groups': path.join(__dirname, 'src/groups'),
-        '@chat': path.join(__dirname, 'src/chat'),
-    }
-};
-
-let serverEntry = path.join(__dirname, '/src/app.ts');
+let serverEntry = path.join(__dirname, '/src/server/index.ts');
 let clientEntry = path.join(__dirname, '/src/client/index.ts');
 
-let outputDirectory = path.join(__dirname, '/distr');
+let outputDirectory = path.join(__dirname, '/distr/');
 
 let clientOutputFilename = 'client.js';
 let serverOutputFilename = 'server.js';
 
 let mode = 'development';
 
-let rules = [{
-        test: /\.tsx?$/,
-        use: [{
-            loader: 'ts-loader', 
-            options: {
-              getCustomTransformers: () => ({ before: [tsNameof] })
+let resolve = {
+    extensions: [".ts", ".js"]
+};
+
+let serverRules = [{
+    test: /\.tsx?$/,
+    use: [{
+        loader: 'ts-loader',
+        options: {
+            getCustomTransformers: () => ({ before: [tsNameof] }),
+            compilerOptions: {
+                "outDir": "./distr/server",
             }
-          }]
-    },
+        }
+    }]
+},
 ];
 
+let clientRules = [{
+    test: /\.tsx?$/,
+    use: [{
+        loader: 'ts-loader',
+        options: {
+            getCustomTransformers: () => ({ before: [tsNameof] }),
+            compilerOptions: {
+                "outDir": "./distr/client",
+            }
+        }
+    }]
+},
+];
 
 module.exports = [
     {
@@ -58,41 +60,41 @@ module.exports = [
         },
         plugins: [
             new HtmlWebpackPlugin({
-              title: 'Development'
+                title: 'Development'
             })
-          ],
+        ],
         module: {
-            rules
+            rules: serverRules
         },
         resolve
     },
     {
-	mode,
-    entry: serverEntry,
-    target: "node",
-    externals: [nodeExternals()],
-    output: {
-        filename: serverOutputFilename,
-        path: outputDirectory
+        mode,
+        entry: serverEntry,
+        target: "node",
+        externals: [nodeExternals()],
+        output: {
+            filename: serverOutputFilename,
+            path: path.join(outputDirectory, 'server')
+        },
+        devtool: 'inline-source-map',
+        module: {
+            rules: serverRules
+        },
+        resolve
     },
-    devtool: 'inline-source-map',
-    module: {
-        rules
-    },
-    resolve
-},
-{
-	mode,
-    entry: clientEntry,
-    output: {
-        filename: clientOutputFilename,
-        path: outputDirectory
-    },
-    devtool: 'inline-source-map',
-    module: {
-        rules
-    },
-    resolve
-}
+    {
+        mode,
+        entry: clientEntry,
+        output: {
+            filename: clientOutputFilename,
+            path: path.join(outputDirectory, 'client')
+        },
+        devtool: 'inline-source-map',
+        module: {
+            rules: clientRules
+        },
+        resolve
+    }
 ]
-.filter(config => process.env.config ? config.output.filename === process.env.config : true);
+    .filter(config => process.env.config ? config.output.filename === process.env.config : true);

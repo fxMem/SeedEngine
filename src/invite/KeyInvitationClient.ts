@@ -1,7 +1,7 @@
-import { ClientConnectionHandler, Client } from "@client";
 import { KeyInvitationMessage } from "./KeyInvitationMessage";
 import { CreateInviteMessage } from "./InviteMessage";
-import { OperationResult } from "@core";
+import { Client, ClientConnectionHandler } from "../client";
+import { OperationResult } from "../core";
 
 export class KeyInvitationClient implements Client {
     handler: ClientConnectionHandler;

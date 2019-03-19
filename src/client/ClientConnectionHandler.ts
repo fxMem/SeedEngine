@@ -1,6 +1,5 @@
-import { Connection, ConnectedClient } from "@transport/Connection";
+import { Connection, ConnectedClient, Header } from "../transport";
 import { SocketIOClientTransport } from "./SocketIOClientTransport";
-import { Header } from "@transport/Headers";
 
 // Client interfaces must implement this along with
 // any server-side methods they wish to expose to client

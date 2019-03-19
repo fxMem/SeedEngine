@@ -1,6 +1,6 @@
 import { createServer } from 'http';
 import * as express from 'express';
-import { createLocalLogScope } from '@log';
+import { createLocalLogScope } from '../log';
 
 export interface HttpFacade {
     listen(port: number, callback: (error: any) => void): void;

@@ -1,10 +1,11 @@
 import { AuthMethod } from './AuthMethod';
 import { UserStorage } from "./UserStorage";
 import { UserManager } from './Users';
-import { createLocalLogScope } from '@log';
 import { User, DefaultUser } from './User';
 import { isNicknameValid } from './UserValidator';
-import { ServerError } from '@transport';
+import { createLocalLogScope } from '../log';
+import { ServerError } from '../server';
+
 
 export class AuthModule {
 

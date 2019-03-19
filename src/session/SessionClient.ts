@@ -1,8 +1,7 @@
 import { SessionCommand, SessionMessage } from "./SessionMessage";
 import { SessionInfo } from "./SessionInfo";
-import { ClientConnectionHandler, Client } from "@client";
-import { OperationResult } from "@core/OperationResult";
-
+import { OperationResult } from "../core";
+import { ClientConnectionHandler, Client } from "../client";
 
 
 export interface SessionClient extends Client {

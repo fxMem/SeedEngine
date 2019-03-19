@@ -1,7 +1,6 @@
-import { User, Users } from "@users";
-import { createLocalLogScope } from "@log";
 import { MessageSender } from "./MessageSender";
 import { Message } from "./Message";
+import { User, Users } from "../users";
 
 export interface MessageContext {
     message: Message;

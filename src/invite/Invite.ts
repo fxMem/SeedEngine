@@ -1,4 +1,4 @@
-import { User } from "@users";
+import { User } from "../users";
 import { v1 as uuid } from "uuid";
 
 const FarFuture = new Date(2100, 1, 1);

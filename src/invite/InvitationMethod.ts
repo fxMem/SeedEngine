@@ -1,4 +1,4 @@
-import { User } from "@users";
+import { User } from "../users";
 
 export interface InvitationMethod {
     isCorrectInvitation(message: any): boolean;

@@ -1,10 +1,9 @@
-import { User, Claims } from "@users";
+import { createLocalLogScope } from "../log";
 import { Invite } from "./Invite";
-import { ServerError } from "@transport";
-import { SessionManager } from "@session";
-
-import { createLocalLogScope } from "@log";
-import { OperationResult } from "@core";
+import { SessionManager } from "../session";
+import { User, Claims } from "../users";
+import { ServerError } from "../transport";
+import { OperationResult } from "../core";
 
 export class InvitationManager {
 

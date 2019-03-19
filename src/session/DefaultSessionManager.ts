@@ -1,13 +1,11 @@
 import { SessionManager } from "./SessionManager";
-import { User, Claims } from "@users";
-import { SessionHandler } from "./Session";
-import { DefaultSession } from "./DefaultSession";
-import { ServerError, MessageSender } from "@transport";
+import { createLocalLogScope } from "../log";
+import { DefaultSession, SessionHandler } from ".";
+import { MessageSender, ServerError } from "../server";
+import { GroupManager } from "../groups";
+import { Game } from "../game";
+import { User, Claims } from "../users";
 import { SessionInfo } from "./SessionInfo";
-import { createLocalLogScope } from "@log";
-import { GroupManager } from "@groups";
-import { Game } from "@game";
-
 
 export class DefaultSessionManager implements SessionManager {
 

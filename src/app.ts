@@ -1,12 +1,12 @@
-import { Bootstrapper, Instance, CoreDependencies } from "@core";
-import { InMemoryUserStorage, SimpleIdentity } from "@users";
-import { ExpressFacadeFactory, makeRegularHandler, MessageHandler } from "@transport";
-import { SessionPipeline, DefaultSessionManager } from "@session";
-import { initializeLogger, DefaultConsoleLogger, Log } from "@log";
-import { LobbyPipeline, VoteLobbyModule } from "@lobby";
-import { KeyInvitationMethod, InvitesPipeline, InvitationManager } from "@invite";
-import { GroupPipeline } from "@groups";
-import { ChatPipeline, ChatManager } from "@chat";
+import { Instance, Bootstrapper, CoreDependencies } from "./core";
+import { initializeLogger, Log, DefaultConsoleLogger } from "./log";
+import { ExpressFacadeFactory, MessageHandler, makeRegularHandler, DefaultSessionManager, SessionPipeline } from "./server";
+import { SimpleIdentity, InMemoryUserStorage } from "./users";
+import { GroupPipeline } from "./groups";
+import { ChatManager, ChatPipeline } from "./chat";
+import { VoteLobbyModule, LobbyPipeline } from "./lobby";
+import { InvitationManager, KeyInvitationMethod, InvitesPipeline } from "./invite";
+
 
 function buildTestServer(): Instance {
 

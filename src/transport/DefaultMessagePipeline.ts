@@ -1,5 +1,5 @@
 import { MessagePipeline, MessageHandler, MessagePipelineCallback } from "./MessagePipeline";
-import { createLocalLogScope } from "@log";
+import { createLocalLogScope } from "../log";
 
 export class DefaulMessagePipeline implements MessagePipeline {
     private log = createLocalLogScope(nameof(DefaulMessagePipeline));

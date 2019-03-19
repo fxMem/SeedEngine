@@ -5,33 +5,10 @@
       "module": "commonjs",
       "target": "es6",
       "sourceMap": true,
-      "baseUrl": "./src",
       "outDir": "./distr",
-      "paths": {
-        "@core": ["./core"],
-        "@core/*": ["./core/*"],
-        "@transport": ["./transport"],
-        "@transport/*": ["./transport/*"],
-        "@users": ["./users"],
-        "@users/*": ["./users/*"],
-        "@groups": ["./groups"],
-        "@groups/*": ["./groups/*"],
-        "@session": ["./session"],
-        "@session/*": ["./session/*"],
-        "@lobby": ["./lobby"],
-        "@lobby/*": ["./lobby/*"],
-        "@chat": ["./chat"],
-        "@chat/*": ["./chat/*"],
-        "@invite": ["./invite"],
-        "@invite/*": ["./invite/*"],
-        "@game": ["./game"],
-        "@log": ["./log"],
-        "@utils": ["./utils"],
-        "@client": ["./client"],
-        "@client/*": ["./client/*"]
-      }
     },
     "exclude": [
-      "node_modules"
+      "node_modules",
+      "distr"
     ],
 }

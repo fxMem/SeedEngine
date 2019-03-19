@@ -1,4 +1,4 @@
-import { User } from "@users";
+import { User } from "../users";
 
 const groupsKeyId = 'groups';
 export function getUserGroups(user: User): string[] {

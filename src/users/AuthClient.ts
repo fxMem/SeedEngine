@@ -1,5 +1,5 @@
-import { ClientConnectionHandler, Client } from "@client";
-import { Header } from "@transport/Headers";
+import { ClientConnectionHandler, Client } from "../client";
+import { Header } from "../server";
 
 export interface AuthClient extends Client {
     getAvailableAuthMethods(): Promise<{ id: string, description: string }[]>;

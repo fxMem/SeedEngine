@@ -1,5 +1,5 @@
-import { Users, User } from "@users";
-import { SessionHandler } from "@session";
+import { User } from "../users";
+import { SessionHandler } from "../session";
 
 export interface LobbyContext {
     message: any,

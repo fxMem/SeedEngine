@@ -1,7 +1,8 @@
-import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from "@transport";
 import { isGroupMessage, GroupCommand } from "./GroupMessage";
 import { GroupManager } from "./GroupManager";
-import { Success, OperationResult } from "@core";
+import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from "../transport";
+import { Success } from "../core";
+
 
 
 export class GroupPipeline implements SpecificMessageTypeHandler {

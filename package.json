@@ -1,7 +1,8 @@
 {
   "name": "seedengine.core",
   "version": "1.0.0",
-  "description": "",
+  "description": "SeedEngine core project",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "ba": "webpack",
