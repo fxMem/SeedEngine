@@ -1,7 +1,8 @@
 import { ClientConnectionHandler, Client } from "../client";
 import { OperationResult } from "../core";
 import { VoteType, VoteMessage } from "./VoteMessage";
-import { LobbyMessage } from ".";
+import { LobbyMessage } from "./LobbyMessage";
+
 
 
 export class VoteLobbyClient implements Client {

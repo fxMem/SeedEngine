@@ -1,6 +1,8 @@
 import * as io from 'socket.io-client';
 import { ManualResetEvent } from '../utils';
-import { DefaultSeedNamespace, TransportMessage, SeedMessage, TransportClient, Transport } from '../transport';
+import { TransportMessage, TransportClient, Transport } from '../transport/Transport';
+import { SeedMessage, DefaultSeedNamespace } from '../transport/Headers';
+
 
 // Wraps socket.IO connection (client)
 export class SocketIOClientTransport implements Transport {

@@ -1,4 +1,4 @@
-import { Message } from "../transport";
+import { Message } from "../transport/Message";
 
 export enum GroupCommand {
     create,
