@@ -24,7 +24,7 @@ export class ClientBuilder {
     }
 
     async connect(): 
-    Promise<Omit<this, 'addClientInterface' | 'connect'>> {
+    Promise<this> {
         
         await this.handler.connect();
         return this;
