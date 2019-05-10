@@ -48,7 +48,7 @@ export namespace SimpleIdentity {
                 }
             }
 
-            return { nickname, data: userData || { claims: {} } };
+            return { nickname, data: userData || { claims: [] } };
         }
     }
 }
