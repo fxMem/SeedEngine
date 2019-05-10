@@ -15,7 +15,7 @@
     "ds": "npm run bs && nodemon ./distr/server.js",
     "dc": "npm run bc && npm run client",
     "wbs": "config=server.js webpack --watch",
-    "ws": "nodemon \"./distr/server.js\" --watch \"./distr/server.js\"",
+    "ws": "nodemon \"./distr/server/server.js\" --watch \"./distr/server/server.js\"",
     "ss": "npm-run-all --parallel ws wbs",
     "sc": "webpack-dev-server --open"
   },

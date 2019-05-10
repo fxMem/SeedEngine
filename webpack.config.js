@@ -6,7 +6,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 let serverEntry = path.join(__dirname, '/src/server/index.ts');
 let clientEntry = path.join(__dirname, '/src/client/index.ts');
 
-let outputDirectory = path.join(__dirname, '/distr/');
+let outputDirectory = path.join(__dirname, 'distr');
+let clientOutputDirectory = outputDirectory;
 
 let clientOutputFilename = 'client.js';
 let serverOutputFilename = 'server.js';
@@ -24,7 +25,7 @@ let serverRules = [{
         options: {
             getCustomTransformers: () => ({ before: [tsNameof] }),
             compilerOptions: {
-                "outDir": "./distr/server",
+                "outDir": path.join(outputDirectory, 'server'),
             }
         }
     }]
@@ -38,7 +39,7 @@ let clientRules = [{
         options: {
             getCustomTransformers: () => ({ before: [tsNameof] }),
             compilerOptions: {
-                "outDir": "./distr/client",
+                "outDir": clientOutputDirectory,
             }
         }
     }]
@@ -82,19 +83,21 @@ module.exports = [
             rules: serverRules
         },
         resolve
-    },
-    {
-        mode,
-        entry: clientEntry,
-        output: {
-            filename: clientOutputFilename,
-            path: path.join(outputDirectory, 'client')
-        },
-        devtool: 'inline-source-map',
-        module: {
-            rules: clientRules
-        },
-        resolve
     }
+    // {
+    //     mode,
+    //     entry: clientEntry,
+    //     target: "node",
+    //     externals: [nodeExternals()],
+    //     output: {
+    //         filename: clientOutputFilename,
+    //         path: clientOutputDirectory
+    //     },
+    //     devtool: 'inline-source-map',
+    //     module: {
+    //         rules: clientRules
+    //     },
+    //     resolve
+    // }
 ]
     .filter(config => process.env.config ? config.output.filename === process.env.config : true);
