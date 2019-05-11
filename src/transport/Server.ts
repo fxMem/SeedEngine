@@ -54,18 +54,19 @@ export class Server {
 
             let { header, payload } = data;
             let user: User = null;
-            if (header != Header.Authenticate) {
-                user = this.authModule.identifyUser(userTransportId);
-                if (!user) {
-                    header = Header.Authenticate;
-                }
-            }
-
-            if (!(header in handlers)) {
-                throw new Error(`Handler for message header ${header} is not found!`);
-            }
-
+            
             try {
+                if (header != Header.Authenticate) {
+                    user = this.authModule.identifyUser(userTransportId);
+                    if (!user) {
+                        throw new ServerError(`User is not authenticated!`);
+                    }
+                }
+    
+                if (!(header in handlers)) {
+                    throw new Error(`Handler for message header ${header} is not found!`);
+                }
+
                 let result = await handlers[header](user, payload);
 
                 if (result !== undefined) {
