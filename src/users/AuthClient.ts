@@ -28,10 +28,10 @@ export class DefaultAuthClient implements AuthClient {
 export class SimpleIdentityClient implements Client {
     handler: ClientConnectionHandler;
 
-    authenticate(nickname: string): Promise<boolean> {
+    authenticate(nickname: string, password?: string): Promise<boolean> {
         return this.handler.invoke({
             header: Header.Authenticate,
-            payload: { moduleId: '0', nickname }
+            payload: { moduleId: '0', nickname, password }
         });
     }
 }
