@@ -26,7 +26,7 @@ export class DefaultSessionManager implements SessionManager {
 
     listAllSessions(user: User): SessionInfo[] {
         if (!user.haveClaim(Claims.viewSessionList)) {
-            throw new ServerError(`User ${user} does not have sufficient rights to create sessions!`);
+            throw new ServerError(`User ${user} does not have sufficient rights to view sessions list!`);
         }
         
         return [...(this.sessions as any).values()].map((s: DefaultSession) => s.getInfo());
