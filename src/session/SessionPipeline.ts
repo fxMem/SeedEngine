@@ -4,8 +4,10 @@ import { isSessionMessage, SessionCommand, SessionMessage } from "./SessionMessa
 import { User } from "../users";
 import { OperationResult } from "../core";
 import { SessionInfo } from "./SessionInfo";
+import { UserDisconnectedContext } from "../transport/UserDisconnectedContext";
+import { getUserInfoArray } from "../users/UserInfoArray";
 
-
+const userSessionsKey = '__sessions';
 export class SessionPipeline implements SpecificMessageTypeHandler {
 
     name: 'sessionHandler';
@@ -13,12 +15,17 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
 
     }
 
-    canHandle({ message }: MessageContext): boolean {
-        return isSessionMessage(message);
+    canHandle(context: MessageContext): boolean {
+        return isSessionMessage(context.message) || context instanceof UserDisconnectedContext;
     }
 
     async handle(context: MessageContext): Promise<any> {
         let { message, from } = context;
+
+        if (context instanceof UserDisconnectedContext) {
+            this.leaveAllSessions(context.from);
+            return;
+        }
 
         if (!isSessionMessage(message)) {
             throw new ServerError('Incorrect message type for SessionPipeline!');
@@ -74,7 +81,19 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     private async joinSession(session: SessionHandler, applicant: User): Promise<OperationResult> {
 
         let result = await session.addPlayer(applicant);
+        
+        let userSessionData = getUserInfoArray<string>(applicant, userSessionsKey);
+        userSessionData.add(session.id());
+
         return result;
+    }
+
+    private leaveAllSessions(applicant: User) {
+
+        let userSessionData = getUserInfoArray<string>(applicant, userSessionsKey);
+        for (const sessionId of userSessionData.values) {
+            this.leaveSession(sessionId, applicant);
+        }
     }
 
     // The reasoning behind this is that player actually might join several sessions,
@@ -83,7 +102,12 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
 
         let session = this.getSession(sessionId);
         session.removePlayer(applicant.id);
+
+        let userSessionData = getUserInfoArray<string>(applicant, userSessionsKey);
+        userSessionData.remove(sessionId);
     }
+
+    
 
     private getSession(sessionId: string): SessionHandler {
         if (!sessionId) {
