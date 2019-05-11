@@ -1,3 +1,13 @@
-<p>
-  lobby works!
-</p>
+<div>
+  <p>List of active sessions</p>
+  <ng-container *ngFor='let s of sessions$ | async'>
+    {{s.id}} | {{s.description}}
+  </ng-container>
+</div>
+<div>
+  <p>Create new session</p>
+  <div>
+    <input type="text" [formControl]="description">
+    <button (click)="add()"></button>
+  </div>
+</div>

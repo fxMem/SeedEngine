@@ -1,0 +1,12 @@
+<div class="wrapper">
+
+  <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+
+  <div class="floating red" *ngIf="loading">
+    <div class="wait"></div>
+  </div>
+
+  <div class="floating sub">
+      <ng-content></ng-content>
+  </div>
+</div>
