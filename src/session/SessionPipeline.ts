@@ -13,7 +13,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
 
     }
 
-    canHandle(message: Message): boolean {
+    canHandle({ message }: MessageContext): boolean {
         return isSessionMessage(message);
     }
 

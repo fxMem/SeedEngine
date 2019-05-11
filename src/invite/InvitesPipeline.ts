@@ -12,7 +12,7 @@ export class InvitesPipeline implements SpecificMessageTypeHandler {
 
     }
 
-    canHandle(message: Message): boolean {
+    canHandle({ message }: MessageContext): boolean {
         return isCreateInviteMessage(message) || this.methods.some(m => m.isCorrectInvitation(message));
     }
 

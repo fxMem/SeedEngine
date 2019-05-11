@@ -12,7 +12,7 @@ export class GroupPipeline implements SpecificMessageTypeHandler {
 
     }
 
-    canHandle(message: Message): boolean {
+    canHandle({ message }: MessageContext): boolean {
         return isGroupMessage(message);
     }
 

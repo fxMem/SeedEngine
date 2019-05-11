@@ -5,14 +5,14 @@ export interface SpecificMessageTypeHandler {
 
     name?: string;
 
-    canHandle(message: Message): boolean;
+    canHandle(message: MessageContext): boolean;
 
     handle(context: MessageContext): Promise<any>;
 }
 
 export function makeRegularHandler(handler: SpecificMessageTypeHandler): MessageHandler {
     let callbackHandler: MessageHandler = (context: MessageContext, next: MessagePipelineCallback): Promise<any> => {
-        if (handler.canHandle(context.message)) {
+        if (handler.canHandle(context)) {
             return handler.handle(context);
         }
         else {

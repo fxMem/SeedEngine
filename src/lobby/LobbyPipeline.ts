@@ -11,7 +11,7 @@ export class LobbyPipeline implements SpecificMessageTypeHandler {
     }
 
 
-    canHandle(message: Message): boolean {
+    canHandle({ message }: MessageContext): boolean {
         return isLobbyMessage(message) && this.module.isModuleCommand(message);
     }
 
