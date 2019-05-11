@@ -1,13 +1,15 @@
 import { DefaultGroup, Group, GroupHandle } from "./Group";
 import { GroupIdGenerator } from "./GroupIdGenerator";
-import { addUserGroup } from "./UserGroupInfo";
 import { createLocalLogScope } from "../log";
 import { Users, User, nickname, Claims } from "../users";
 import { ServerError } from "../transport";
+import { getUserInfoArray } from "../users/UserInfoArray";
 
 export interface Groups {
     getGroup(groupId: string): Group;
 }
+
+const groupsKeyId = '__groups';
 
 export class GroupManager implements Groups {
 
@@ -42,7 +44,9 @@ export class GroupManager implements Groups {
         let group = this.getGroup(groupId) as GroupHandle;
         for (const user of targets.map(t => this.users.getUserByNickname(t))) {
             group.addUser(user);
-            addUserGroup(user, groupId);
+
+            let userGroups = getUserInfoArray<string>(user, groupsKeyId);
+            userGroups.add(groupId);
         }
 
         this.log.info(`Users ${targets} were added to group ${group}`);
