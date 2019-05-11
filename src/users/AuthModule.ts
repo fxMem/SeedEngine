@@ -39,6 +39,10 @@ export class AuthModule {
         }
 
         let user = await selectedModule.tryAuthentificate(authData, (nickname) => this.userStorage.getData(nickname));
+        if (!user) {
+            throw new ServerError(`Cannot authentificate user by data ${authData}`);
+        }
+        
         if (!isNicknameValid(user.nickname)) {
             throw new ServerError(`Nickname ${user.nickname} is not valid!`);
         }
