@@ -4,6 +4,7 @@ import { ServerError } from "./ServerError";
 import { createLocalLogScope } from "../log";
 import { Connection, ConnectedClient, Header } from ".";
 import { Users, AuthModule, User } from "../users";
+import { UserDisconnectedContext } from "./UserDisconnectedContext";
 
 // Facade class tying together connection, authentication and messaging logic
 export class Server {
@@ -26,6 +27,16 @@ export class Server {
 
         const info = (message: string): void => {
             this.log.info(`Client ${userTransportId} :: ${message}`);
+        };
+
+        const logError = (e: any): void => {
+            if (e instanceof Error) {
+                this.log.error(e.toString() + e.stack);
+            }
+            else if (e instanceof ServerError) {
+                // This is expected exception, meant user did something wrong
+                info(e.toString());
+            }
         };
 
         const handlers: { [key: string]: (user: User, data: any) => Promise<any> } = {
@@ -74,23 +85,29 @@ export class Server {
                     return result;
                 }
             } catch (e) {
-                if (e instanceof Error) {
-                    this.log.error(e.toString() + e.stack);
-                }
-                else if (e instanceof ServerError) {
-                    // This is expected exception, meant user did something wrong
-                    info(e.toString());
-                }
 
+                logError(e);
                 return { failed: true, message: e.message };
             }
         });
 
 
         client.onDisconnected(() => {
-            this.authModule.disconnectUser(userTransportId);
-
-            info(`Disconnected!`);
+            try {
+                let user = this.authModule.identifyUser(userTransportId);
+                if (user) {
+                    this.pipeline(new UserDisconnectedContext(user, this.users, this.sender));
+                    this.authModule.disconnectUser(userTransportId);
+    
+                    info(`Disconnected!`);
+                }
+                else {
+                    info(`Attempt to disconnect, but user is not connected!`);
+                }         
+            }
+            catch (e) {
+                logError(e);
+            }
         });
     }
 }
