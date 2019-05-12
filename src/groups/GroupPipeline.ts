@@ -13,7 +13,7 @@ export class GroupPipeline implements SpecificMessageTypeHandler {
     }
 
     canHandle({ message }: MessageContext): boolean {
-        return isGroupMessage(message);
+        return message && isGroupMessage(message);
     }
 
     async handle(context: MessageContext): Promise<any> {

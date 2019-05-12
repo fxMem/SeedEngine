@@ -13,7 +13,7 @@ export class ChatPipeline implements SpecificMessageTypeHandler {
     }
 
     canHandle({ message }: MessageContext): boolean {
-        return isChatMessage(message);
+        return message && isChatMessage(message);
     }
 
     handle(context: MessageContext): Promise<OperationResult> {

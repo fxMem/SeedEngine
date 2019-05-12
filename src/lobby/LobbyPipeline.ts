@@ -12,7 +12,7 @@ export class LobbyPipeline implements SpecificMessageTypeHandler {
 
 
     canHandle({ message }: MessageContext): boolean {
-        return isLobbyMessage(message) && this.module.isModuleCommand(message);
+        return message && isLobbyMessage(message) && this.module.isModuleCommand(message);
     }
 
     handle(context: MessageContext): Promise<any> {

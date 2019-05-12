@@ -16,7 +16,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     }
 
     canHandle(context: MessageContext): boolean {
-        return isSessionMessage(context.message) || context instanceof UserDisconnectedContext;
+        return context instanceof UserDisconnectedContext || isSessionMessage(context.message);
     }
 
     async handle(context: MessageContext): Promise<any> {
@@ -106,8 +106,6 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
         let userSessionData = getUserInfoArray<string>(applicant, userSessionsKey);
         userSessionData.remove(sessionId);
     }
-
-    
 
     private getSession(sessionId: string): SessionHandler {
         if (!sessionId) {
