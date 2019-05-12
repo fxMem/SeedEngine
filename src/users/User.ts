@@ -5,8 +5,12 @@ export type nickname = string;
 export type userId = string;
 
 export interface User {
+    
+    // Transport id. Can be changed between reconnects hence 
+    // shouldn't be used to identify user uniquely.
     id: userId;
 
+    // Used to uniquely identify the user. 
     nickname: nickname;
 
     data: UserInfo;
