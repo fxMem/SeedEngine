@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ClientServiceService } from '../common/client-service.service';
 import { Router } from '@angular/router';
 import { Observable, of, BehaviorSubject, from, concat, defer } from 'rxjs';
-import { delay, tap, skip, concatMap } from 'rxjs/operators';
+import { delay, tap, skip, concatMap, switchMap } from 'rxjs/operators';
 import { SessionInfo } from '../../../../../../distr/client/session/SessionInfo';
 import { FormControl } from '@angular/forms';
 
@@ -36,13 +36,23 @@ export class LobbyComponent implements OnInit {
 
     let loadAndWait = concat(sessions, refresh);
     this.sessions$ = this.loader.pipe(
-      concatMap(_ => loadAndWait)
+      switchMap(_ => loadAndWait)
     ) as Observable<SessionInfo[]>;
   }
 
   add() {
     let description = this.description.value;
-    this.client.createSession(description, true);
+    this.client.createSession(description, true).then(r => {
+      this.loader.next(0);
+    });
+  }
+
+  join(sessionId: string) {
+    this.client.joinSession(sessionId).then(res => {
+      if (res.success) {
+        this.router.navigate(['room', sessionId]);
+      }
+    })
   }
 
 }

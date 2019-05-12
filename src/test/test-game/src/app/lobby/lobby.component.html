@@ -1,13 +1,16 @@
 <div>
   <p>List of active sessions</p>
   <ng-container *ngFor='let s of sessions$ | async'>
-    {{s.id}} | {{s.description}}
+    <div>
+        {{s.id}} | {{s.description}} (Players count: {{s.playersCount}}) <span class="join-session" (click)="join(s.id)">Join</span>
+    </div>
+    
   </ng-container>
 </div>
 <div>
   <p>Create new session</p>
   <div>
     <input type="text" [formControl]="description">
-    <button (click)="add()"></button>
+    <button (click)="add()">Create</button>
   </div>
 </div>

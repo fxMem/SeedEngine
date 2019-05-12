@@ -3,6 +3,8 @@ import { Observable, Subject } from 'rxjs';
 import { SimpleIdentityClient, DefaultSessionClient, VoteLobbyClient, KeyInvitationClient, GroupClient, ChatClient, ClientBuilder } from 'seedengine.client';
 import { SessionInfo } from 'seedengine.client/session/SessionInfo';
 import { OperationResult } from 'seedengine.client/core';
+import { ServerError } from 'seedengine.client/server';
+import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
 
 
 type ClientType = {
@@ -16,7 +18,7 @@ type ClientType = {
 // type SessionInfo = {};
 // type OperationResult = {};
 
-type Status = { pending: boolean, error?: string };
+type Status = { pending: boolean, error?: string, code?: ErrorCode };
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +51,12 @@ export class ClientServiceService {
     );
   }
 
+  async joinSession(sessionId: string) {
+    return this.reportProgress(
+      (await this.connectedClient()).sessions.joinSession(sessionId)
+    );
+  }
+
   private async  reportProgress<T>(input: Promise<T>): Promise<T> {
     this.operations$.next({ pending: true });
     try {
@@ -57,7 +65,8 @@ export class ClientServiceService {
       return result;
     }
     catch (e) {
-      this.operations$.next({ pending: false, error: (e as Error).message });
+      let serverError = e as ServerError;
+      this.operations$.next({ pending: false, error: (serverError).message, code: serverError.code });
       throw e;
     }
   }

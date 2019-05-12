@@ -8,6 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { LobbyComponent } from './lobby/lobby.component';
 import { GameComponent } from './game/game.component';
 import { LoaderComponent } from './loader/loader.component';
+import { LobbyRoomComponent } from './lobby-room/lobby-room.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { LoaderComponent } from './loader/loader.component';
     LoginComponent,
     LobbyComponent,
     GameComponent,
-    LoaderComponent
+    LoaderComponent,
+    LobbyRoomComponent
   ],
   imports: [
     BrowserModule,
