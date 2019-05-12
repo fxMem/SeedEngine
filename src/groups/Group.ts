@@ -1,4 +1,4 @@
-import { User } from "../users";
+import { User, nickname } from "../users";
 import { EventEmitter } from "events";
 
 const onUserAdded = 'onUserAdded';
@@ -20,13 +20,13 @@ export interface GroupHandle extends Group {
 }
 
 export class DefaultGroup extends EventEmitter implements GroupHandle {
-    usersMap = new Map<string, User>();
+    usersMap = new Map<nickname, User>();
 
     constructor(private users: User[], public id: string, public description?: string) {
         super();
 
         for (const user of users) {
-            this.usersMap.set(user.id, user);
+            this.usersMap.set(user.nickname, user);
         }
     }
 
@@ -35,15 +35,15 @@ export class DefaultGroup extends EventEmitter implements GroupHandle {
     }
 
     addUser(user: User) {
-        if (!this.usersMap.has(user.id)) {
-            this.usersMap.set(user.id, user);
+        if (!this.usersMap.has(user.nickname)) {
+            this.usersMap.set(user.nickname, user);
             this.emit(onUserAdded, user);
         }
     }
 
     removeUser(user: User, reason?: string) {
-        if (this.usersMap.has(user.id)) {
-            this.usersMap.delete(user.id);
+        if (this.usersMap.has(user.nickname)) {
+            this.usersMap.delete(user.nickname);
             this.emit(onUserRemoved, user, reason);
         }
     }

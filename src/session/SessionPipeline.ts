@@ -101,7 +101,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     private leaveSession(sessionId: string, applicant: User): any {
 
         let session = this.getSession(sessionId);
-        session.removePlayer(applicant.id);
+        session.removePlayer(applicant);
 
         let userSessionData = getUserInfoArray<string>(applicant, userSessionsKey);
         userSessionData.remove(sessionId);

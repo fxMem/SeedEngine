@@ -30,7 +30,7 @@ export class Invite {
 
     isValid(context: InvitationContext): boolean {
 
-        let userFits = !this.restrictedTo || this.restrictedTo.some(u => u.id === context.user.id);
+        let userFits = !this.restrictedTo || this.restrictedTo.some(u => u.nickname === context.user.nickname);
         return this.expires >= context.requestedTime
             && this.useCount > 0
             && userFits;

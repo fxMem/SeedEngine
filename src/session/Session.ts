@@ -15,7 +15,7 @@ export interface SessionHandler {
 
     addPlayer(user: User): Promise<OperationResult>;
 
-    removePlayer(id: string): void;
+    removePlayer(user: User): void;
 
     start(): void;
 }

@@ -99,10 +99,17 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         this.emit(started);
     }
 
+    private getConnectedUser(nickname: string): User {
+        return this.connectedPlayers.filter(p => p.nickname === nickname)[0];
+    }
     addPlayer(user: User): Promise<OperationResult> {
 
         if (!user.haveClaim(Claims.joinSession)) {
             throw new DeniedError(`User ${user.nickname} can't join any sessions!`);
+        }
+
+        if (this.getConnectedUser(user.nickname)) {
+            throw new ServerError(`User ${user} cannot join session ${this.sessionId} twice!`);
         }
 
         this.connectedPlayers.push(user);
@@ -113,18 +120,26 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         return SuccessPromise;
     }
 
-    removePlayer(id: string): void {
-        let leavingUser = this.connectedPlayers.filter(p => p.id === id)[0];
-        this.connectedPlayers = this.connectedPlayers.filter(p => p.id !== id);
-        this.localGroup.removeUser(leavingUser);
+    removePlayer(user: User): void {
+        if (!this.getConnectedUser(user.nickname)) {
+            this.log.info(`Player ${user} is leaving session ${this} but he wasn't here in the first place!`);
+            return;
+        }
 
-        this.log.info(`Player ${leavingUser} has left!`);
-        this.emit(playerLeft, leavingUser);
+        this.connectedPlayers = this.connectedPlayers.filter(p => p.nickname !== user.nickname);
+        this.localGroup.removeUser(user);
+
+        this.log.info(`Player ${user} has left!`);
+        this.emit(playerLeft, user);
     }
 
     incomingMessage(message: any, from: User): void {
 
         this.log.info(`Message from ${from}, contents = ${JSON.stringify(message)}`);
         this.emit(messageRecieved, message, from);
+    }
+
+    toString() {
+        return `Session #${this.sessionId}`;
     }
 }
