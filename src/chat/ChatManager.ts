@@ -1,5 +1,5 @@
 import { createLocalLogScope } from "../log";
-import { MessageSender, ServerError } from "../transport";
+import { MessageSender, ServerError, DeniedError } from "../transport";
 import { User, Claims } from "../users";
 import { MessageTarget } from "../transport/MessageTarget";
 import { Group } from "../groups";
@@ -24,7 +24,7 @@ export class ChatManager {
     sendMessage(from: User, target: MessageTarget, text: string): void {
 
         if (!from.haveClaim(Claims.sendChatMessage)) {
-            throw new ServerError(`User ${from} cannot send chat messages!`);
+            throw new DeniedError(`User ${from} cannot send chat messages!`);
         }
 
         this.log.info(`Sending message from ${from} to ${target}, contents = '${text}'`);

@@ -2,7 +2,7 @@ import { DefaultGroup, Group, GroupHandle } from "./Group";
 import { GroupIdGenerator } from "./GroupIdGenerator";
 import { createLocalLogScope } from "../log";
 import { Users, User, nickname, Claims } from "../users";
-import { ServerError } from "../transport";
+import { ServerError, DeniedError } from "../transport";
 import { getUserInfoArray } from "../users/UserInfoArray";
 
 export interface Groups {
@@ -25,7 +25,7 @@ export class GroupManager implements Groups {
     createGroup(creator: User, add: nickname[], description?: string): GroupHandle {
 
         if (!creator.haveClaim(Claims.createGroup)) {
-            throw new ServerError(`User ${creator} is not allowed to create groups!`);
+            throw new DeniedError(`User ${creator} is not allowed to create groups!`);
         }
 
         let id = this.idGenerator.getNext();

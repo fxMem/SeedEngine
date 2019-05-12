@@ -1,7 +1,7 @@
 import { SessionManager } from "./SessionManager";
 import { createLocalLogScope } from "../log";
 import { DefaultSession, SessionHandler } from ".";
-import { MessageSender, ServerError } from "../server";
+import { MessageSender, ServerError, DeniedError } from "../server";
 import { GroupManager } from "../groups";
 import { Game } from "../game";
 import { User, Claims } from "../users";
@@ -26,7 +26,7 @@ export class DefaultSessionManager implements SessionManager {
 
     listAllSessions(user: User): SessionInfo[] {
         if (!user.haveClaim(Claims.viewSessionList)) {
-            throw new ServerError(`User ${user} does not have sufficient rights to view sessions list!`);
+            throw new DeniedError(`User ${user} does not have sufficient rights to view sessions list!`);
         }
         
         return Array.from((this.sessions as any).values()).map((s: DefaultSession) => s.getInfo());
@@ -35,7 +35,7 @@ export class DefaultSessionManager implements SessionManager {
     createSession(options: { owner: User, description?: string }): SessionHandler {
         let { owner, description } = options;
         if (!owner.haveClaim(Claims.createSession)) {
-            throw new ServerError(`User ${owner} does not have sufficient rights to create sessions!`);
+            throw new DeniedError(`User ${owner} does not have sufficient rights to create sessions!`);
         }
 
         let sessionId = this.sessionIdCounter++ + '';

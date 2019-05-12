@@ -3,7 +3,7 @@ import { EventEmitter } from "events";
 import { ScopedLogger, createLocalLogScope } from "../log";
 import { User, Claims } from "../users";
 import { GroupHandle, Group } from "../groups";
-import { MessageSender, ClientMessage, TargetBuilder, ServerError } from "../server";
+import { MessageSender, ClientMessage, TargetBuilder, ServerError, DeniedError } from "../server";
 import { SessionState, SessionInfo } from "./SessionInfo";
 import { OperationResult, SuccessPromise } from "../core";
 
@@ -102,7 +102,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     addPlayer(user: User): Promise<OperationResult> {
 
         if (!user.haveClaim(Claims.joinSession)) {
-            throw new ServerError(`User ${user.nickname} can't join any sessions!`);
+            throw new DeniedError(`User ${user.nickname} can't join any sessions!`);
         }
 
         this.connectedPlayers.push(user);

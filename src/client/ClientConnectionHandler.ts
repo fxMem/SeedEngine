@@ -2,6 +2,7 @@
 import { SocketIOClientTransport } from "./SocketIOClientTransport";
 import { Connection, ConnectedClient } from "../transport/Connection";
 import { Header } from "../transport/Headers";
+import { ServerError } from "../transport/ServerError";
 
 // Client interfaces must implement this along with
 // any server-side methods they wish to expose to client
@@ -49,7 +50,7 @@ export class ClientConnectionHandler {
         let result = await this.client.invoke(message);
 
         if (result.failed) {
-            throw new Error(result.message);
+            throw new ServerError(result.message, result.errorCode);
         }
 
         return result;

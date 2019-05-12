@@ -2,7 +2,7 @@ import { createLocalLogScope } from "../log";
 import { Invite } from "./Invite";
 import { SessionManager } from "../session";
 import { User, Claims } from "../users";
-import { ServerError } from "../transport";
+import { ServerError, DeniedError } from "../transport";
 import { OperationResult } from "../core";
 
 export class InvitationManager {
@@ -18,7 +18,7 @@ export class InvitationManager {
 
     addInvite(invite: Invite, from: User): void {
         if (!from.haveClaim(Claims.createInvite)) {
-            throw new ServerError(`User ${from} doesn't have sufficient rights to create invites!`);
+            throw new DeniedError(`User ${from} doesn't have sufficient rights to create invites!`);
         }
 
         if (this.invites.has(invite.id)) {
@@ -39,7 +39,7 @@ export class InvitationManager {
         }
 
         if (!user.haveClaim(Claims.joinInvite)) {
-            throw new ServerError(`User ${user} doesn't have rights to join invites!`);
+            throw new DeniedError(`User ${user} doesn't have rights to join invites!`);
         }
 
         let session = this.sessionManager.getSession(invite.sessionId);

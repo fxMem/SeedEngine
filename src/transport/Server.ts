@@ -1,6 +1,6 @@
 import { MessagePipelineCallback } from "./MessagePipeline";
 import { MessageSender } from "./MessageSender";
-import { ServerError } from "./ServerError";
+import { ServerError, UnauthorizedError } from "./ServerError";
 import { createLocalLogScope } from "../log";
 import { Connection, ConnectedClient, Header } from ".";
 import { Users, AuthModule, User } from "../users";
@@ -70,7 +70,7 @@ export class Server {
                 if (header != Header.Authenticate) {
                     user = this.authModule.identifyUser(userTransportId);
                     if (!user) {
-                        throw new ServerError(`User is not authenticated!`);
+                        throw new UnauthorizedError(`User is not authenticated!`);
                     }
                 }
     
@@ -87,7 +87,7 @@ export class Server {
             } catch (e) {
 
                 logError(e);
-                return { failed: true, message: e.message };
+                return { failed: true, errorCode: e.code, message: e.message };
             }
         });
 
