@@ -14,6 +14,7 @@ export class ClientConnectionHandler {
     private connection: Connection;
     private client: ConnectedClient;
     private messageCallback: any = (message) => { };
+    private callbacks = new Map<string, any>();
 
     constructor() {
         this.connection = new Connection(new SocketIOClientTransport());
@@ -25,7 +26,13 @@ export class ClientConnectionHandler {
                 this.client = connectedClient;
 
                 connectedClient.onMessage((message) => {
-                    return this.messageCallback(message);
+                    let callbackForHeader = this.callbacks.get(message.header);
+                    if (callbackForHeader) {
+                        return callbackForHeader(message.payload);
+                    }
+                    else {
+                        return this.messageCallback(message);
+                    }
                 });
 
                 resolve();
@@ -37,6 +44,10 @@ export class ClientConnectionHandler {
 
     onMessage(callback: (message) => {}): void {
         this.messageCallback = callback;
+    }
+
+    subscribeToTitledMessage(header: string, callback: any): void {
+        this.callbacks.set(header, callback);
     }
 
     invokeWithMessage<T>(payload: T): Promise<any> {
