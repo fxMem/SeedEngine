@@ -31,7 +31,8 @@ export class LobbyPipeline implements SpecificMessageTypeHandler {
         return this.module.handle({
             message,
             from,
-            session
+            session,
+            sender: context.sender
         });
     }
 
