@@ -1,6 +1,6 @@
 import { ClientConnectionHandler, Client } from "../client";
 import { OperationResult } from "../core";
-import { VoteType, VoteMessage } from "./VoteMessage";
+import { VoteType, VoteMessage, VoteNotificationHeader, VotesNotification } from "./VoteMessage";
 import { LobbyMessage } from "./LobbyMessage";
 
 
@@ -14,6 +14,10 @@ export class VoteLobbyClient implements Client {
 
     unVote(sessionId: string): Promise<OperationResult> {
         return this.voteInternal(sessionId, VoteType.UnVote);
+    }
+
+    onVotesUpdate(callback: (data: VotesNotification) => void): void {
+        this.handler.subscribeToTitledMessage(VoteNotificationHeader, callback);
     }
 
     private voteInternal(sessionId: string, vote: VoteType): Promise<OperationResult> {
