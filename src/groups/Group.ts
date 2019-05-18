@@ -22,7 +22,7 @@ export interface GroupHandle extends Group {
 export class DefaultGroup extends EventEmitter implements GroupHandle {
     usersMap = new Map<nickname, User>();
 
-    constructor(private users: User[], public id: string, public description?: string) {
+    constructor(users: User[], public id: string, public description?: string) {
         super();
 
         for (const user of users) {
@@ -31,7 +31,7 @@ export class DefaultGroup extends EventEmitter implements GroupHandle {
     }
 
     getUsers(): User[] {
-        return this.users;
+        return Array.from((this.usersMap as any).values());
     }
 
     addUser(user: User) {
