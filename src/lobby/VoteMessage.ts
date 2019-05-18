@@ -6,3 +6,9 @@ export enum VoteType {
 export interface VoteMessage {
     vote: VoteType;
 }
+
+export const VoteNotificationHeader = 'vote';
+export interface VotesNotification {
+    voted: number,
+    unvoted: number;
+}

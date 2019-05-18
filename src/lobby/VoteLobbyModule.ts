@@ -1,39 +1,15 @@
 import { LobbyModule, LobbyContext } from "./LobbyModule";
-import { VoteMessage, VoteType } from "./VoteMessage";
-import { User } from "../users";
+import { VoteMessage, VoteType, VoteNotificationHeader, VotesNotification } from "./VoteMessage";
 import { createLocalLogScope } from "../log";
 import { OperationResult, Success } from "../core";
 import { ServerError } from "../transport";
-import { SessionHandler } from "../session";
-
+import { getUserInfoArray, UserInfoArray } from "../users/UserInfoArray";
 
 function isVoteMessage(message: any): message is VoteMessage {
     return message.vote !== undefined && message.sessionId != undefined;
 }
 
 type SessionVote = { sessionId: string, vote: VoteType };
-
-class UserVote {
-    private sessionVote: SessionVote;
-    private userVotes: SessionVote[];
-    constructor(private user: User, private sessionId: string) {
-        this.userVotes = user.data.votes || [];
-        this.sessionVote = this.userVotes.find(v => v.sessionId === sessionId);
-    }
-
-    isUserVoted(): boolean {
-        return this.sessionVote && this.sessionVote.vote === VoteType.Vote;
-    }
-
-    vote(voteType: VoteType) {
-        if (!this.sessionVote) {
-            this.sessionVote = { sessionId: this.sessionId, vote: VoteType.UnVote };
-            this.userVotes.push(this.sessionVote);
-        }
-
-        this.sessionVote.vote = voteType;
-    }
-}
 
 export class VoteLobbyModule implements LobbyModule {
     private log = createLocalLogScope(nameof(VoteLobbyModule));
@@ -46,30 +22,44 @@ export class VoteLobbyModule implements LobbyModule {
         return isVoteMessage(message);
     }
 
-    handle({ message, from, session }: LobbyContext): Promise<OperationResult> {
-        
+    handle({ message, from, session, sender }: LobbyContext): Promise<OperationResult> {
+
         if (!isVoteMessage(message)) {
             throw new ServerError(`Message ${JSON.stringify(message)} is not vote message!`);
         }
 
         let { vote } = message;
-        let userVote = new UserVote(from, session.id());
-        userVote.vote(vote);
+        let sessionId = session.id();
+        let allVotes = session.players().map(p => getUserInfoArray<SessionVote>(p, 'votes'));
+        let userVote = allVotes.find(v => v.user.nickname === from.nickname);
+        userVote.addOrUpdate
+            (
+                v => v.sessionId === sessionId,
+                (v) => (v ? { ...v, vote } : { sessionId, vote })
+            );
 
         this.log.info(`User ${from} have voted as ${VoteType[vote]}`);
 
-        if (this.checkIfAllVoted(session)) {
+        let payload: VotesNotification = {
+            voted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.Vote)).length,
+            unvoted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.UnVote)).length,
+        };
+        sender.send({
+            header: VoteNotificationHeader, 
+            payload
+        }).toGroups(session.group());
 
-            this.log.info(`Everyone has voted! Starting session ${session.id()}`);
+        if (this.checkIfAllVoted(allVotes, sessionId)) {
+
+            this.log.info(`Everyone has voted! Starting session ${sessionId}`);
             session.start();
         }
 
         return Promise.resolve(Success);
     }
 
-    private checkIfAllVoted(session: SessionHandler): boolean {
+    private checkIfAllVoted(votes: UserInfoArray<SessionVote>[], sessionId: string): boolean {
 
-        // Maybe refactor it so not to create vote object every time, but for now it should do
-        return !session.players().some(u => (new UserVote(u, session.id()).isUserVoted()));
+        return !votes.some(u => !!u.find(v => v.sessionId === sessionId && v.vote === VoteType.UnVote));
     }
 }

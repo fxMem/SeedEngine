@@ -13,6 +13,8 @@ export interface SessionHandler {
 
     players(): User[];
 
+    group(): Group;
+
     addPlayer(user: User): Promise<OperationResult>;
 
     removePlayer(user: User): void;
