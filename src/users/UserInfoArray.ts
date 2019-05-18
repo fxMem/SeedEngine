@@ -29,4 +29,16 @@ export class UserInfoArray<T> {
     add(value: T) {
         this.values.push(value);
     }
+
+    addOrUpdate(predicate: (a: T) => boolean, updater: (a?: T) => T): void {
+        let target = this.find(predicate);
+        let finalValue = updater(target);
+        if (!target) {
+            this.add(finalValue);
+        }
+    }
+
+    find(predicate: (a: T) => boolean): T {
+        return this.values.find(v => predicate(v));
+    }
 }
