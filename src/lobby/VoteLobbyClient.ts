@@ -8,12 +8,8 @@ import { LobbyMessage } from "./LobbyMessage";
 export class VoteLobbyClient implements Client {
     handler: ClientConnectionHandler;
 
-    vote(sessionId: string): Promise<OperationResult> {
-        return this.voteInternal(sessionId, VoteType.Vote);
-    }
-
-    unVote(sessionId: string): Promise<OperationResult> {
-        return this.voteInternal(sessionId, VoteType.UnVote);
+    vote(sessionId: string, value: boolean): Promise<OperationResult> {
+        return this.voteInternal(sessionId, value ? VoteType.Vote : VoteType.UnVote);
     }
 
     onVotesUpdate(callback: (data: VotesNotification) => void): void {
