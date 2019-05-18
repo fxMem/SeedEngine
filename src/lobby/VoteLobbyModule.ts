@@ -47,7 +47,8 @@ export class VoteLobbyModule implements LobbyModule {
         sender.send({
             header: VoteNotificationHeader, 
             payload
-        }).toGroups(session.group());
+        }).toGroups(session.group())
+        .go();
 
         if (this.checkIfAllVoted(allVotes, sessionId)) {
 
