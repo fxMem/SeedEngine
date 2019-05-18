@@ -30,15 +30,18 @@ export class RpcWrapper {
 
         let timeoutHandle = setTimeout((header, hash) => {
             let callback = this.returnHandles.popCallbacks(header, hash);
-            callback && callback.reject();
+            callback && callback.reject('Timeout for server callback has expired!');
         }, responseTimeout, header, hash);
 
         return new Promise((resolve, reject) => {
-            this.returnHandles.saveCallbacks(header, hash, (data) => {
-                clearTimeout(timeoutHandle);
+            this.returnHandles.saveCallbacks(header, hash, {
+                resolve: (data) => {
+                    clearTimeout(timeoutHandle);
 
-                resolve(data);
-            }, reject);
+                    resolve(data);
+                }, 
+                reject
+            });
         });
     }
 
@@ -74,7 +77,7 @@ export class RpcWrapper {
     }
 }
 
-type promiseCallbacks = { resolve: (value: any) => void, reject: () => void };
+type promiseCallbacks = { resolve: (value: any) => void, reject: (reason?: string) => void };
 class ReturnHandlesCollection {
     private returnHandles = new Map<string, promiseCallbacks>();
 
@@ -90,7 +93,7 @@ class ReturnHandlesCollection {
         return callbacks;
     }
 
-    saveCallbacks(header: string, hash: string, resolve: (value: any) => void, reject: () => void): void {
-        this.returnHandles.set(this.getResolveCallbackKey(header, hash), { resolve, reject });
+    saveCallbacks(header: string, hash: string, callbacks: promiseCallbacks): void {
+        this.returnHandles.set(this.getResolveCallbackKey(header, hash), callbacks);
     }
 }
