@@ -3,8 +3,10 @@ import { ClientMessage } from "./Connection";
 import { MessageTarget } from "./MessageTarget";
 import { User } from "../users";
 import { Group } from "../groups";
+import { createLocalLogScope } from "../log";
 
 export class TargetBuilder {
+    private log = createLocalLogScope('MessageSender');
     private targets: MessageTarget[];
     private broadcast = false;
 
@@ -33,6 +35,7 @@ export class TargetBuilder {
     }
 
     go(): void {
+        this.log.info(`Sending message ${JSON.stringify(this.message)} to ${JSON.stringify(this.targets)} (broadcast = ${this.broadcast})`)
         this.sender(this.message, { targets: this.targets, broadcast: this.broadcast });
     }
 }
