@@ -12,18 +12,18 @@ export function getUserInfoArray<T>(user: User, key: string, equals?: (a: T, b: 
         user.data[key] = existingData;
     }
 
-    return new UserInfoArray<T>((data) => user.data[key] = data, existingData, equals || defaultEquals);
+    return new UserInfoArray<T>(key, user, existingData, equals || defaultEquals);
 }
 
 export class UserInfoArray<T> {
 
-    constructor(private updateUser: (data: T[]) => void, public values: T[], private equals: (a: T, b: T) => boolean) {
+    constructor(private key: string, public user: User, public values: T[], private equals: (a: T, b: T) => boolean) {
 
     }
 
     remove(value: T) {
         this.values = this.values.filter(v => !this.equals(v, value));
-        this.updateUser(this.values);
+        this.user.data[this.key] = this.values;
     }
 
     add(value: T) {
