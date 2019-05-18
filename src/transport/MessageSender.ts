@@ -35,8 +35,14 @@ export class TargetBuilder {
     }
 
     go(): void {
-        this.log.info(`Sending message ${JSON.stringify(this.message)} to ${JSON.stringify(this.targets)} (broadcast = ${this.broadcast})`)
-        this.sender(this.message, { targets: this.targets, broadcast: this.broadcast });
+        let haveTargets = this.targets && this.targets.length > 0;
+        if (haveTargets || this.broadcast) {
+            this.log.info(`Sending message ${JSON.stringify(this.message)} to ${JSON.stringify(this.targets)} (broadcast = ${this.broadcast})`)
+            this.sender(this.message, { targets: this.targets, broadcast: this.broadcast });
+        }
+        else {
+            this.log.warn(`Sending message ${JSON.stringify(this.message)} failed because there is no suitable targets!`);
+        }
     }
 }
 
