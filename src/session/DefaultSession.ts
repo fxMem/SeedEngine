@@ -89,8 +89,8 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         callback && this.on(started, callback);
     }
 
-    sendMessage(message: ClientMessage): TargetBuilder {
-        return this.messageSender.send(message);
+    sendMessage(message: ClientMessage): void {
+        return this.messageSender.send(message).toGroups(this.localGroup).go();
     }
 
     start(): void {
@@ -102,7 +102,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     private getConnectedUser(nickname: string): User {
         return this.connectedPlayers.filter(p => p.nickname === nickname)[0];
     }
-    
+
     addPlayer(user: User): Promise<OperationResult> {
 
         if (!user.haveClaim(Claims.joinSession)) {

@@ -22,7 +22,7 @@ export class VoteLobbyModule implements LobbyModule {
         return isVoteMessage(message);
     }
 
-    handle({ message, from, session, sender }: LobbyContext): Promise<OperationResult> {
+    handle({ message, from, session }: LobbyContext): Promise<OperationResult> {
 
         if (!isVoteMessage(message)) {
             throw new ServerError(`Message ${JSON.stringify(message)} is not vote message!`);
@@ -44,12 +44,11 @@ export class VoteLobbyModule implements LobbyModule {
             voted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.Vote)).length,
             unvoted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.UnVote)).length,
         };
-        sender.send({
+        session.sendMessage({
             header: VoteNotificationHeader, 
             payload
-        }).toGroups(session.group())
-        .go();
-
+        });
+        
         if (this.checkIfAllVoted(allVotes, sessionId)) {
 
             this.log.info(`Everyone has voted! Starting session ${sessionId}`);

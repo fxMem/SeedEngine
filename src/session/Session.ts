@@ -20,6 +20,8 @@ export interface SessionHandler {
     removePlayer(user: User): void;
 
     start(): void;
+
+    sendMessage(message: ClientMessage): void;
 }
 
 // This interface is handed to game implementation
@@ -34,8 +36,8 @@ export interface Session {
     // Allows game implemention to subscribe to game lifecycle events
     subscribe(subscriber: SessionEvents): void;
 
-    // Sends message to client(s)
-    sendMessage(message: ClientMessage): TargetBuilder;
+    // Sends message to session client(s)
+    sendMessage(message: ClientMessage): void;
 
     // Marks session as finished
     close(): void;
