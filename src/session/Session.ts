@@ -28,6 +28,8 @@ export interface SessionHandler {
     start(): void;
 
     sendMessage<T>(message: GenericClientMessage<T>): void;
+
+    incomingMessage(message: any, from: User): Promise<any>;
 }
 
 // This interface is handed to game implementation
@@ -61,7 +63,7 @@ export interface SessionEvents {
     playerLeave?: (player: User) => Promise<void>;
 
     // Invoked when message recieved from a player
-    message?: (message: any, from: User) => Promise<void>;
+    message?: (message: any, from: User) => Promise<any>;
 
     // Invoked when lobby logic determenies it's time to start. 
     // To get custom behaviour, implement own lobby logic instead of trying

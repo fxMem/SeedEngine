@@ -57,6 +57,14 @@ export class DefaultSessionClient implements SessionClient {
         });
     }
 
+    sendMessage(sessionId: string, payload: any): Promise<any> {
+        return this.handler.invokeWithMessage<SessionMessage>({
+            sessionCommand: SessionCommand.message,
+            sessionId: sessionId,
+            payload
+        });
+    }
+
     onSessionNotification(callback: (data: SessionStateChangedNotification)=> void): void {
         this.handler.subscribeToTitledMessage(SessionStateChangedNotificationHeader, callback);
     }

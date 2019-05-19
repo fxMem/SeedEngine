@@ -13,7 +13,8 @@ export enum SessionCommand {
     getOne,
     create,
     join,
-    leave
+    leave, 
+    message
 }
 
 interface SessionSelectionOptions {
@@ -25,7 +26,11 @@ interface SessionCreationOptions {
     join?: boolean;
 }
 
-export interface SessionMessage extends Message, SessionSelectionOptions, SessionCreationOptions {
+interface SessionMessagePayload {
+    payload?: any;
+}
+
+export interface SessionMessage extends Message, SessionSelectionOptions, SessionCreationOptions, SessionMessagePayload {
     sessionCommand: SessionCommand;
 }
 

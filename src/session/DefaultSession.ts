@@ -31,6 +31,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     private startTime: Date;
     private connectedPlayers: User[] = [];
     private disposeCallback: () => void;
+    private messageFromPlayerCallback: (message: any, from: User) => Promise<any> = async (m, f) => {};
 
     constructor(
         private localGroup: GroupHandle,
@@ -93,8 +94,10 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     subscribe(subscriber: SessionEvents): void {
         this.onPlayerJoin(subscriber.playerJoin);
         this.onPlayerLeave(subscriber.playerLeave);
-        this.onPlayerMessage(subscriber.message);
         this.onStarted(subscriber.started);
+
+        // We subscribe to this defferently because we need access to return value
+        subscriber.message && (this.messageFromPlayerCallback = subscriber.message);
     }
 
     onPlayerJoin(callback: (player: User) => Promise<void>): void {
@@ -103,10 +106,6 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
 
     onPlayerLeave(callback: (player: User) => Promise<void>): void {
         callback && this.on(playerLeft, callback);
-    }
-
-    onPlayerMessage(callback: (message: any, from: User) => Promise<void>): void {
-        callback && this.on(messageRecieved, callback);
     }
 
     onStarted(callback: () => void): void {
@@ -172,10 +171,12 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         this.emit(playerLeft, user);
     }
 
-    incomingMessage(message: any, from: User): void {
+    async incomingMessage(message: any, from: User): Promise<any> {
 
         this.log.info(`Message from ${from}, contents = ${JSON.stringify(message)}`);
-        this.emit(messageRecieved, message, from);
+        let result = await this.messageFromPlayerCallback(message, from);
+        
+        return result;
     }
 
     toString() {

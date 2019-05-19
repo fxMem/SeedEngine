@@ -49,11 +49,20 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
             case SessionCommand.leave:
                 result = this.leaveSession(message.sessionId, from);
                 break;
+            case SessionCommand.message:
+                result = await this.passSessionMessage(message.sessionId, from, message.payload);
+                break;
             default:
                 throw new ServerError(`Unknown session command: ${command}`);
         }
 
         return result;
+    }
+
+    private passSessionMessage(sessionId: string, from: User, payload: any): Promise<any> {
+
+        let session = this.getSession(sessionId);
+        return session.incomingMessage(payload, from);
     }
 
     private async createSession(message: SessionMessage, creator: User): Promise<{ sessionId: string, joined?: OperationResult }> {
