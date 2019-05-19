@@ -6,6 +6,7 @@ import { OperationResult } from 'seedengine.client/core';
 import { ServerError } from 'seedengine.client/server';
 import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
 import { VotesNotification } from 'seedengine.client/lobby/VoteMessage';
+import { SessionStateChangedNotification } from 'seedengine.client/session/SessionMessage';
 
 
 type ClientType = {
@@ -28,6 +29,8 @@ export class ClientServiceService {
   private connected: boolean;
   private operations$ = new Subject<Status>();
   private votes$ = new Subject<VotesNotification>();
+  private sessionUpdates$ = new Subject<SessionStateChangedNotification>();
+
   client: ClientType & ClientBuilder;
 
   constructor() { }
@@ -40,12 +43,20 @@ export class ClientServiceService {
     return this.votes$;
   }
 
+  getSessionStateChanges(): Observable<SessionStateChangedNotification> {
+    return this.sessionUpdates$;
+  }
+
   async connect(nickname: string, password?: string): Promise<boolean> {
     return this.reportProgress((await this.connectedClient()).auth.authenticate(nickname, password));
   }
 
   async getSessions(): Promise<SessionInfo[]> {
     return this.reportProgress((await this.connectedClient()).sessions.allSessions());
+  }
+
+  async getSession(sessionId: string): Promise<SessionInfo> {
+    return this.reportProgress((await this.connectedClient()).sessions.getSingleSessionInfo(sessionId));
   }
 
   async createSession(sessionDescription?: string, join?: boolean): Promise<{
@@ -100,6 +111,10 @@ export class ClientServiceService {
 
       client.votes.onVotesUpdate((v) => {
         this.votes$.next(v);
+      });
+
+      client.sessions.onSessionNotification((d) => {
+        this.sessionUpdates$.next(d);
       });
 
       this.client = await client.connect();
