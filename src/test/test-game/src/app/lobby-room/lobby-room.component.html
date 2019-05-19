@@ -1,3 +1,12 @@
-<p (click)="toLobby()">
+<p (click)="toLobby()" class='button'>
   Return to lobby
 </p>
+<div>
+  Please vote to start a game!
+  Voting progress: {{votingProgressText}}
+</div>
+<span class='button' (click)="switchVote()">{{switchVoteText}}</span>
+<div id='chat'>
+
+</div>
+

@@ -5,6 +5,7 @@ import { SessionInfo } from 'seedengine.client/session/SessionInfo';
 import { OperationResult } from 'seedengine.client/core';
 import { ServerError } from 'seedengine.client/server';
 import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
+import { VotesNotification } from 'seedengine.client/lobby/VoteMessage';
 
 
 type ClientType = {
@@ -26,12 +27,17 @@ type Status = { pending: boolean, error?: string, code?: ErrorCode };
 export class ClientServiceService {
   private connected: boolean;
   private operations$ = new Subject<Status>();
-  client: ClientType;
+  private votes$ = new Subject<VotesNotification>();
+  client: ClientType & ClientBuilder;
 
   constructor() { }
 
   getPending(): Observable<Status> {
     return this.operations$;
+  }
+
+  getVotes(): Observable<VotesNotification> {
+    return this.votes$;
   }
 
   async connect(nickname: string, password?: string): Promise<boolean> {
@@ -54,6 +60,12 @@ export class ClientServiceService {
   async joinSession(sessionId: string) {
     return this.reportProgress(
       (await this.connectedClient()).sessions.joinSession(sessionId)
+    );
+  }
+
+  async vote(sessionId: string, vote: boolean) {
+    return this.reportProgress(
+      (await this.connectedClient()).votes.vote(sessionId, vote)
     );
   }
 
@@ -81,7 +93,17 @@ export class ClientServiceService {
         .addClientInterface({ groups: new GroupClient() })
         .addClientInterface({ chat: new ChatClient() });
 
+      client.onMessage((message) => {
+
+        return null;
+      });
+
+      client.votes.onVotesUpdate((v) => {
+        this.votes$.next(v);
+      });
+
       this.client = await client.connect();
+
       this.connected = true;
     }
 

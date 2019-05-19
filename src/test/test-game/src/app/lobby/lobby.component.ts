@@ -30,7 +30,7 @@ export class LobbyComponent implements OnInit {
     let sessions = defer(() => this.client.getSessions());
     let refresh = of(0).pipe(
       delay(5000),
-      tap(_ => this.loader.next(0)),
+      //tap(_ => this.loader.next(0)),
       skip(1)
     );
 
@@ -40,9 +40,13 @@ export class LobbyComponent implements OnInit {
     ) as Observable<SessionInfo[]>;
   }
 
+  reload() {
+    this.loader.next(0);
+  }
+
   add() {
     let description = this.description.value;
-    this.client.createSession(description, true).then(r => {
+    this.client.createSession(description, false).then(r => {
       this.loader.next(0);
     });
   }

@@ -1,4 +1,8 @@
 .join-session {
     color: red;
-    cursor: pointer;
+}
+
+.refresh-button {
+    color: red;
+    
 }

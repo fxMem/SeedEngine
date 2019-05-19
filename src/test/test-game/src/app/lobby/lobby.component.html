@@ -1,8 +1,8 @@
 <div>
-  <p>List of active sessions</p>
+  <p>List of active sessions <span class='refresh-button button' (click)="reload()">(Update)</span></p>
   <ng-container *ngFor='let s of sessions$ | async'>
     <div>
-        {{s.id}} | {{s.description}} (Players count: {{s.playersCount}}) <span class="join-session" (click)="join(s.id)">Join</span>
+        {{s.id}} | {{s.description}} (Players count: {{s.playersCount}}) <span class="join-session button" (click)="join(s.id)">Join</span>
     </div>
     
   </ng-container>
