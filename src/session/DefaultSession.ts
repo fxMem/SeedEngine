@@ -14,7 +14,8 @@ const started = 'started';
 
 const legalSessionStateTransitions: { [key: string]: SessionState[] } = {
     [SessionState.waiting]: [SessionState.running, SessionState.finished],
-    [SessionState.running]: [SessionState.finished],
+    [SessionState.running]: [SessionState.halted, SessionState.finished],
+    [SessionState.halted]: [SessionState.running, SessionState.finished],
     [SessionState.finished]: []
 }
 
@@ -66,9 +67,20 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         return this.localGroup;
     }
 
+    start(): void {
+
+        this.moveToState(SessionState.running);
+        this.startTime = new Date();
+        this.emit(started);
+    }
+
+    halt(by: User, reason: string): void {
+        throw new Error('Not implemented');
+    }
+
     close() {
         this.moveToState(SessionState.finished);
-        
+
         this.localGroup.close(`Session ${this.id} is finished!`);
         this.disposeCallback && this.disposeCallback();
     }
@@ -102,13 +114,6 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
 
     sendMessage(message: ClientMessage): void {
         return this.messageSender.send(message).toGroups(this.localGroup).go();
-    }
-
-    start(): void {
-
-        this.moveToState(SessionState.running);
-        this.startTime = new Date();
-        this.emit(started);
     }
 
     private moveToState(nextState: SessionState) {

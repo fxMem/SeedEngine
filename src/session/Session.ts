@@ -19,6 +19,8 @@ export interface SessionHandler {
 
     removePlayer(user: User): void;
 
+    halt(by: User, reason: string): void;
+    
     start(): void;
 
     sendMessage(message: ClientMessage): void;
@@ -38,6 +40,9 @@ export interface Session {
 
     // Sends message to session client(s)
     sendMessage(message: ClientMessage): void;
+
+    // Temporary halt session
+    halt(by: User, reason: string): void;
 
     // Marks session as finished
     close(): void;
