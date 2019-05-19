@@ -1,7 +1,7 @@
 import { SessionManager } from "./SessionManager";
 import { createLocalLogScope } from "../log";
 import { DefaultSession, SessionHandler } from ".";
-import { MessageSender, ServerError, DeniedError } from "../server";
+import { MessageSender, ServerError, DeniedError, DefaultSessionOptions } from "../server";
 import { GroupManager } from "../groups";
 import { Game } from "../game";
 import { User, Claims } from "../users";
@@ -14,6 +14,7 @@ export class DefaultSessionManager implements SessionManager {
     private sessions = new Map<string, DefaultSession>();
 
     constructor(
+        private sessionOptions: DefaultSessionOptions,
         private messageSender: MessageSender, 
         private groupsManager: GroupManager,
         private game: Game) {
@@ -43,7 +44,7 @@ export class DefaultSessionManager implements SessionManager {
 
         let sessionId = this.sessionIdCounter++ + '';
         let sessionGroup = this.groupsManager.createGroup(owner, null, `Group for session ${sessionId}`);
-        let session = new DefaultSession(sessionGroup, this.messageSender, sessionId, description);
+        let session = new DefaultSession(sessionGroup, this.messageSender, this.sessionOptions, sessionId, description);
 
         if (this.game) {
             // should we populate fresh object here instead of passing the whole session?

@@ -24,6 +24,10 @@ function canChangeSessionState(previousState: SessionState, nextState: SessionSt
     return legalSessionStateTransitions[previousState.toString()].some(s => s === nextState);
 }
 
+export interface DefaultSessionOptions {
+    allowJoinAfterSessionStart: boolean;
+}
+
 export class DefaultSession extends EventEmitter implements SessionHandler, Session {
 
     private log: ScopedLogger;
@@ -36,6 +40,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     constructor(
         private localGroup: GroupHandle,
         private messageSender: MessageSender,
+        private options: DefaultSessionOptions,
         private sessionId: string,
         private description?: string) {
 
@@ -150,6 +155,10 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
             throw new ServerError(`User ${user} cannot join session ${this.sessionId} twice!`);
         }
 
+        if (this.state !== SessionState.waiting && !this.options.allowJoinAfterSessionStart) {
+            throw new ServerError(`User ${user} cannot join session ${this.sessionId} because it's already started and administrator prohibits to join running sessions.`);
+        }
+
         this.connectedPlayers.push(user);
         this.localGroup.addUser(user);
 
@@ -179,7 +188,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         
         this.log.info(`Message from ${from}, contents = ${JSON.stringify(message)}`);
         let result = await this.messageFromPlayerCallback(message, from);
-        
+
         return result;
     }
 
