@@ -10,6 +10,7 @@ export interface SessionStateChangedNotification {
 
 export enum SessionCommand {
     getList,
+    getOne,
     create,
     join,
     leave

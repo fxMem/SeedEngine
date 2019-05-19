@@ -37,6 +37,9 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
             case SessionCommand.getList:
                 result = this.getList(from);
                 break;
+            case SessionCommand.getOne:
+                result = this.getOne(message.sessionId);
+                break;
             case SessionCommand.create:
                 result = await this.createSession(message, from);
                 break;
@@ -70,6 +73,10 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
 
     private getList(user: User): SessionInfo[] {
         return this.sessionManager.listAllSessions(user);
+    }
+
+    private getOne(sessionId: string): SessionInfo {
+        return this.getSession(sessionId).getInfo();
     }
 
     private joinSessionBySessionId(sessionId: string, applicant: User): Promise<any> {

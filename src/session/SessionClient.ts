@@ -44,6 +44,13 @@ export class DefaultSessionClient implements SessionClient {
         });
     }
 
+    getSingleSessionInfo(sessionId: string): Promise<SessionInfo> {
+        return this.handler.invokeWithMessage<SessionMessage>({
+            sessionCommand: SessionCommand.getOne,
+            sessionId: sessionId
+        });
+    }
+
     allSessions(): Promise<SessionInfo[]> {
         return this.handler.invokeWithMessage<SessionMessage>({
             sessionCommand: SessionCommand.getList
