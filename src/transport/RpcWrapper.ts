@@ -59,13 +59,16 @@ export class RpcWrapper {
 
             // Case 2, it's a fresh invocation so we invoke user logic, 
             // then dispatch result to client, if any
-            return callback(data).then((result => {
-                if (result) {
-                    this.internalSend(header, result, { hash });
-                }
-            }), (error) => {
-                // TODO: log, etc
-            });
+            let callbackResult = callback(data);
+            return callbackResult
+                ? callbackResult.then((result => {
+                    if (result) {
+                        this.internalSend(header, result, { hash });
+                    }
+                    }), (error) => {
+                        // TODO: log, etc
+                  })
+                : Promise.resolve(0)
         };
     }
 
