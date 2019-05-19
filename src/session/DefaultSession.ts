@@ -12,6 +12,16 @@ const playerLeft = 'playerLeft';
 const messageRecieved = 'messageRecieved';
 const started = 'started';
 
+const legalSessionStateTransitions: { [key: string]: SessionState[] } = {
+    [SessionState.waiting]: [SessionState.running, SessionState.finished],
+    [SessionState.running]: [SessionState.finished],
+    [SessionState.finished]: []
+}
+
+function canChangeSessionState(previousState: SessionState, nextState: SessionState): boolean {
+    return legalSessionStateTransitions[previousState.toString()].some(s => s === nextState);
+}
+
 export class DefaultSession extends EventEmitter implements SessionHandler, Session {
 
     private log: ScopedLogger;
@@ -57,7 +67,8 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     }
 
     close() {
-        this.state = SessionState.finished;
+        this.moveToState(SessionState.finished);
+        
         this.localGroup.close(`Session ${this.id} is finished!`);
         this.disposeCallback && this.disposeCallback();
     }
@@ -94,9 +105,22 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     }
 
     start(): void {
-        this.state = SessionState.running;
+
+        this.moveToState(SessionState.running);
         this.startTime = new Date();
         this.emit(started);
+    }
+
+    private moveToState(nextState: SessionState) {
+        this.ensureTransitionAvailable(nextState);
+
+        this.state = nextState;
+    }
+
+    private ensureTransitionAvailable(nextState: SessionState): void {
+        if (!canChangeSessionState(this.state, nextState)) {
+            throw new ServerError(`Cannot move session ${this} from state ${this.state} to ${nextState}`)
+        }
     }
 
     private getConnectedUser(nickname: string): User {
