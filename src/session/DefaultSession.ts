@@ -173,6 +173,10 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
 
     async incomingMessage(message: any, from: User): Promise<any> {
 
+        if (!this.getConnectedUser(from.nickname)) {
+            throw new ServerError(`User ${from} cannot send messages to session ${this} because they are not joined!`);
+        }
+        
         this.log.info(`Message from ${from}, contents = ${JSON.stringify(message)}`);
         let result = await this.messageFromPlayerCallback(message, from);
         
