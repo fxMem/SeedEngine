@@ -21,6 +21,9 @@ export class DefaultSessionManager implements SessionManager {
     }
 
     getSession(sessionId: string): DefaultSession {
+        // TODO: should we add here simular claim for viewing individual sessions?
+        // Or maybe just remove 'view claims' altogether?
+
         return this.sessions.get(sessionId);
     }
 
