@@ -1,6 +1,7 @@
 export enum SessionState {
     waiting,
     running,
+    halted,
     finished
 }
 
