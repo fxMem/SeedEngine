@@ -4,6 +4,10 @@ import { OperationResult } from "../core";
 import { Group } from "../groups";
 import { ClientMessage, TargetBuilder } from "../server";
 
+export type GenericClientMessage<T> = {
+    header: string,
+    payload: T
+}
 
 // This interface is used by server
 export interface SessionHandler {
@@ -20,10 +24,10 @@ export interface SessionHandler {
     removePlayer(user: User): void;
 
     halt(by: User, reason: string): void;
-    
+
     start(): void;
 
-    sendMessage(message: ClientMessage): void;
+    sendMessage<T>(message: GenericClientMessage<T>): void;
 }
 
 // This interface is handed to game implementation

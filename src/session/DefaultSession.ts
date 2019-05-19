@@ -1,4 +1,4 @@
-import { SessionHandler, Session, SessionEvents } from "./Session";
+import { SessionHandler, Session, SessionEvents, GenericClientMessage } from "./Session";
 import { EventEmitter } from "events";
 import { ScopedLogger, createLocalLogScope } from "../log";
 import { User, Claims } from "../users";
@@ -112,7 +112,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         callback && this.on(started, callback);
     }
 
-    sendMessage(message: ClientMessage): void {
+    sendMessage<T>(message: GenericClientMessage<T>): void {
         return this.messageSender.send(message).toGroups(this.localGroup).go();
     }
 
