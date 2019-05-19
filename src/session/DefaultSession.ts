@@ -6,6 +6,7 @@ import { GroupHandle, Group } from "../groups";
 import { MessageSender, ClientMessage, TargetBuilder, ServerError, DeniedError } from "../server";
 import { SessionState, SessionInfo } from "./SessionInfo";
 import { OperationResult, SuccessPromise } from "../core";
+import { SessionStateChangedNotificationHeader, SessionStateChangedNotification } from "./SessionMessage";
 
 const playerJoined = 'playerJoined';
 const playerLeft = 'playerLeft';
@@ -116,10 +117,18 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         return this.messageSender.send(message).toGroups(this.localGroup).go();
     }
 
-    private moveToState(nextState: SessionState) {
+    private moveToState(nextState: SessionState, data?: any) {
         this.ensureTransitionAvailable(nextState);
 
         this.state = nextState;
+        this.sendMessage<SessionStateChangedNotification>({
+            header: SessionStateChangedNotificationHeader,
+            payload: {
+                sessionId: this.sessionId,
+                nextState,
+                data
+            }
+        });
     }
 
     private ensureTransitionAvailable(nextState: SessionState): void {
