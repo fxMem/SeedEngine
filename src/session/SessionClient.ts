@@ -1,4 +1,4 @@
-import { SessionCommand, SessionMessage } from "./SessionMessage";
+import { SessionCommand, SessionMessage, SessionStateChangedNotificationHeader, SessionStateChangedNotification } from "./SessionMessage";
 import { SessionInfo } from "./SessionInfo";
 import { OperationResult } from "../core";
 import { ClientConnectionHandler, Client } from "../client";
@@ -48,5 +48,9 @@ export class DefaultSessionClient implements SessionClient {
         return this.handler.invokeWithMessage<SessionMessage>({
             sessionCommand: SessionCommand.getList
         });
+    }
+
+    onSessionNotification(callback: (data: SessionStateChangedNotification)=> void): void {
+        this.handler.subscribeToTitledMessage(SessionStateChangedNotificationHeader, callback);
     }
 }
