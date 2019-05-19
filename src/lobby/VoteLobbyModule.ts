@@ -40,13 +40,12 @@ export class VoteLobbyModule implements LobbyModule {
 
         this.log.info(`User ${from} have voted as ${VoteType[vote]}`);
 
-        let payload: VotesNotification = {
-            voted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.Vote)).length,
-            unvoted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.UnVote)).length,
-        };
-        session.sendMessage({
+        session.sendMessage<VotesNotification>({
             header: VoteNotificationHeader, 
-            payload
+            payload: {
+                voted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.Vote)).length,
+                unvoted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.UnVote)).length,
+            }
         });
         
         if (this.checkIfAllVoted(allVotes, sessionId)) {
