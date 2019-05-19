@@ -102,6 +102,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
     private getConnectedUser(nickname: string): User {
         return this.connectedPlayers.filter(p => p.nickname === nickname)[0];
     }
+    
     addPlayer(user: User): Promise<OperationResult> {
 
         if (!user.haveClaim(Claims.joinSession)) {
