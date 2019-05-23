@@ -18,7 +18,7 @@ export class VoteLobbyClient implements Client {
 
     private voteInternal(sessionId: string, vote: VoteType): Promise<OperationResult> {
         return this.handler.invokeWithMessage<VoteMessage & LobbyMessage>({
-            sessionId: sessionId,
+            sessionId,
             vote
         });
     }
