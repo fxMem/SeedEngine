@@ -45,7 +45,7 @@ export interface Session {
     subscribe(subscriber: SessionEvents): void;
 
     // Sends message to session client(s)
-    sendMessage(message: ClientMessage): void;
+    sendMessage(data: any, targetPlayer?: User): void;
 
     // Temporary halt session
     halt(by: User, reason: string): void;

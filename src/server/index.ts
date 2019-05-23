@@ -56,7 +56,7 @@ function buildTestServer(): Instance {
     }
 
     function createSessionRelatedHandlers(_: CoreDependencies): MessageHandler[] {
-        let sessionManager = new DefaultSessionManager(_.messageSender, _.groups, _.game);
+        let sessionManager = new DefaultSessionManager({ allowJoinAfterSessionStart: false }, _.messageSender, _.groups, _.game);
 
         let sessionPipeline = makeRegularHandler(new SessionPipeline(sessionManager));
 
