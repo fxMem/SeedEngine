@@ -15,6 +15,7 @@ import { DefaultSessionManager, SessionPipeline } from '../session';
 import { VoteLobbyModule, LobbyPipeline } from '../lobby';
 
 import { InvitationManager, KeyInvitationMethod, InvitesPipeline } from '../invite';
+import { MinerGameFactory } from '../miner/MinerGameFactory';
 
 export * from '../session';
 export * from '../transport';
@@ -38,7 +39,8 @@ function buildTestServer(): Instance {
         .withStorage(SimpleIdentity.WithSuperUser(new InMemoryUserStorage()))
         .add(_ => createSessionRelatedHandlers(_))
         .add(_ => createGroupsHandler(_))
-        .add(_ => createChatHandler(_));
+        .add(_ => createChatHandler(_))
+        .withGame(new MinerGameFactory());
 
     return bootstrapper.build();
 
