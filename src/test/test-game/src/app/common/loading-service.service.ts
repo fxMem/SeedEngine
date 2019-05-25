@@ -7,32 +7,51 @@ import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
 type Status = { pending: boolean, error?: string, code?: ErrorCode };
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PendingService {
-  
-  private operations$ = new Subject<Status>();
-  
 
-  constructor() { }
+    private operations$ = new Subject<Status>();
+    private lastOperationCount = 0;
 
-  getPending(): Observable<Status> {
-    return this.operations$;
-  }
+    constructor() { }
 
-
-  async reportProgress<T>(input: Promise<T>): Promise<T> {
-    this.operations$.next({ pending: true });
-    try {
-      let result = await input;
-      this.operations$.next({ pending: false });
-      return result;
+    getPending(): Observable<Status> {
+        return this.operations$;
     }
-    catch (e) {
-      let serverError = e as ServerError;
-      this.operations$.next({ pending: false, error: (serverError).message, code: serverError.code });
-      throw e;
+
+
+    async reportProgress<T>(input: Promise<T>): Promise<T> {
+        this.reportStartPending();
+        try {
+            let result = await input;
+            this.reportEndPending();
+            return result;
+        }
+        catch (e) {
+            let serverError = e as ServerError;
+            this.reportEndPending({ error: (serverError).message, code: serverError.code });
+
+            throw e;
+        }
     }
-  }
+
+    private reportStartPending() {
+        this.lastOperationCount++;
+        if (this.lastOperationCount === 1) {
+            this.operations$.next({ pending: true });
+        }
+    }
+
+    private reportEndPending(data?: { error, code }) {
+        const { error = null, code = null } = data || {};
+        this.lastOperationCount--;
+        if (this.lastOperationCount === 0) {
+            this.operations$.next({ pending: false, error, code });
+        }
+        else if (error) {
+            this.operations$.next({ pending: true, error, code });
+        }
+    }
 
 }
