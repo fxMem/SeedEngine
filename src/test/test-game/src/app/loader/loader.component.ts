@@ -3,6 +3,7 @@ import { ClientServiceService } from '../common/client-service.service';
 import { debounceTime } from 'rxjs/operators';
 import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
 import { Router } from '@angular/router';
+import { PendingService } from '../common/loading-service.service';
 
 @Component({
   selector: 'app-loader',
@@ -13,10 +14,10 @@ export class LoaderComponent implements OnInit {
 
   loading: boolean;
   errorMessage: string;
-  constructor(private client: ClientServiceService, private router: Router) { }
+  constructor(private pending: PendingService, private router: Router) { }
 
   ngOnInit() {
-    this.client.getPending().pipe(
+    this.pending.getPending().pipe(
       debounceTime(500)
     ).subscribe(p => {
       this.loading = p.pending;

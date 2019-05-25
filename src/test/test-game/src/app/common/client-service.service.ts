@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { SimpleIdentityClient, DefaultSessionClient, VoteLobbyClient, KeyInvitationClient, GroupClient, ChatClient, ClientBuilder } from 'seedengine.client';
+import { MinerClient, SimpleIdentityClient, DefaultSessionClient, VoteLobbyClient, KeyInvitationClient, GroupClient, ChatClient, ClientBuilder } from 'seedengine.client';
 import { SessionInfo } from 'seedengine.client/session/SessionInfo';
 import { OperationResult } from 'seedengine.client/core';
 import { ServerError } from 'seedengine.client/server';
 import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
 import { VotesNotification } from 'seedengine.client/lobby/VoteMessage';
 import { SessionStateChangedNotification } from 'seedengine.client/session/SessionMessage';
+import { MinerGameState } from 'seedengine.client/miner/MinerGame';
+import { Coordinates, TileActionResult } from 'seedengine.client/miner/Field';
+import { PendingService } from './loading-service.service';
 
 
 type ClientType = {
@@ -15,7 +18,8 @@ type ClientType = {
   votes: VoteLobbyClient,
   invites: KeyInvitationClient,
   groups: GroupClient,
-  chat: ChatClient
+  chat: ChatClient,
+  game: MinerClient
 }
 // type SessionInfo = {};
 // type OperationResult = {};
@@ -27,17 +31,17 @@ type Status = { pending: boolean, error?: string, code?: ErrorCode };
 })
 export class ClientServiceService {
   private connected: boolean;
-  private operations$ = new Subject<Status>();
+  nickname: string;
+
   private votes$ = new Subject<VotesNotification>();
   private sessionUpdates$ = new Subject<SessionStateChangedNotification>();
+  private gameUpdates$ = new Subject<MinerGameState>();
 
   client: ClientType & ClientBuilder;
 
-  constructor() { }
+  constructor(private pending: PendingService) { }
 
-  getPending(): Observable<Status> {
-    return this.operations$;
-  }
+  
 
   getVotes(): Observable<VotesNotification> {
     return this.votes$;
@@ -47,8 +51,31 @@ export class ClientServiceService {
     return this.sessionUpdates$;
   }
 
+  getGameStateChanges(): Observable<MinerGameState> {
+    return this.gameUpdates$;
+  }
+
   async connect(nickname: string, password?: string): Promise<boolean> {
-    return this.reportProgress((await this.connectedClient()).auth.authenticate(nickname, password));
+    var res = await this.reportProgress((await this.connectedClient()).auth.authenticate(nickname, password));
+    this.nickname = nickname;
+
+    return res;
+  }
+
+  async getMinerState(): Promise<MinerGameState> {
+    return this.reportProgress((await this.connectedClient()).game.getState(this.nickname));
+  }
+
+  async probe(pos: Coordinates): Promise<TileActionResult> {
+    return this.reportProgress((await this.connectedClient()).game.probe(this.nickname, pos));
+  }
+
+  async open(pos: Coordinates): Promise<TileActionResult> {
+    return this.reportProgress((await this.connectedClient()).game.open(this.nickname, pos));
+  }
+
+  async flag( pos: Coordinates): Promise<TileActionResult> {
+    return this.reportProgress((await this.connectedClient()).game.flag(this.nickname, pos));
   }
 
   async getSessions(): Promise<SessionInfo[]> {
@@ -81,17 +108,7 @@ export class ClientServiceService {
   }
 
   private async  reportProgress<T>(input: Promise<T>): Promise<T> {
-    this.operations$.next({ pending: true });
-    try {
-      let result = await input;
-      this.operations$.next({ pending: false });
-      return result;
-    }
-    catch (e) {
-      let serverError = e as ServerError;
-      this.operations$.next({ pending: false, error: (serverError).message, code: serverError.code });
-      throw e;
-    }
+    return this.pending.reportProgress(input);
   }
 
   private async connectedClient(): Promise<ClientType> {
@@ -102,7 +119,8 @@ export class ClientServiceService {
         .addClientInterface({ votes: new VoteLobbyClient() })
         .addClientInterface({ invites: new KeyInvitationClient() })
         .addClientInterface({ groups: new GroupClient() })
-        .addClientInterface({ chat: new ChatClient() });
+        .addClientInterface({ chat: new ChatClient() })
+        .addClientInterface({ game: new MinerClient() });
 
       client.onMessage((message) => {
 
@@ -116,6 +134,10 @@ export class ClientServiceService {
       client.sessions.onSessionNotification((d) => {
         this.sessionUpdates$.next(d);
       });
+
+      client.game.onGameStateUpdate((d) => {
+        this.gameUpdates$.next(d);
+      })
 
       this.client = await client.connect();
 
