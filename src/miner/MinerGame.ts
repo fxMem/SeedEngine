@@ -27,6 +27,8 @@ export interface MinerMessage {
 
 export interface MinerPlayerState {
     map: TileInfo[][];
+    fieldSize: { width: number, height: number };
+
     remainigLives: number;
     remainingFlags: number;
 
@@ -61,7 +63,7 @@ export class MinerGame {
     }
 
     message({ nickname }: User, data: MinerMessage): TileActionResult | MinerGameState {
-        
+
         if (data.action === MinerPlayerAction.checkState) {
             return this.buildGameState();
         }
@@ -97,18 +99,22 @@ export class MinerGame {
 
         return {
             data: Array.from(this.fields).map
-            (
-                f => 
-                ({
-                    name: f[0],
-                    state: {
-                        remainigLives: f[1].remainigLives,
-                        remainingFlags: f[1].field.flagsRemain,
-                        isAlive: f[1].isAlive,
-                        map: f[1].field.getAllTilesData()
-                    }
-                })
-            ), 
+                (
+                    f =>
+                        ({
+                            name: f[0],
+                            state: {
+                                remainigLives: f[1].remainigLives,
+                                remainingFlags: f[1].field.flagsRemain,
+                                isAlive: f[1].isAlive,
+                                map: f[1].field.getAllTilesData(),
+                                fieldSize: {
+                                    width: f[1].field.width,
+                                    height: f[1].field.height,
+                                }
+                            }
+                        })
+                ),
             winner: {
                 name: this.winner
             }
