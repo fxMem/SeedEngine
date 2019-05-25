@@ -16,7 +16,8 @@ export interface MinerGameOptions {
 export enum MinerPlayerAction {
     open,
     flag,
-    probe
+    probe,
+    checkState
 }
 
 export interface MinerMessage {
@@ -59,9 +60,24 @@ export class MinerGame {
         this.fields.delete(nickname);
     }
 
-    message({ nickname }: User, data: MinerMessage): TileActionResult {
+    message({ nickname }: User, data: MinerMessage): TileActionResult | MinerGameState {
+        
+        if (data.action === MinerPlayerAction.checkState) {
+            return this.buildGameState();
+        }
+
         let field = this.fields.get(nickname).field;
+        let result = this.makeMove(field, data);
+        result.win && (this.winner = nickname);
+        this.send(this.buildGameState());
+
+        return result;
+    }
+
+
+    private makeMove(field: Field, data: MinerMessage): TileActionResult {
         let result: TileActionResult = null;
+
         switch (data.action) {
             case MinerPlayerAction.open:
                 result = field.open(data.pos);
@@ -74,8 +90,6 @@ export class MinerGame {
                 break;
         }
 
-        result.win && (this.winner = nickname);
-        this.send(this.buildGameState());
         return result;
     }
 

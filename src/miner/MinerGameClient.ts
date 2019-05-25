@@ -8,18 +8,22 @@ export class MinerClient implements Client {
     handler: ClientConnectionHandler;
 
     flag(sessionId: string, pos: Coordinates): Promise<TileActionResult> {
-        return this.invokeMinerMessage(sessionId, pos, MinerPlayerAction.flag);
+        return this.invokeMinerMessage(sessionId,  MinerPlayerAction.flag, pos);
     }
 
     probe(sessionId: string, pos: Coordinates): Promise<TileActionResult> {
-        return this.invokeMinerMessage(sessionId, pos, MinerPlayerAction.probe);
+        return this.invokeMinerMessage(sessionId, MinerPlayerAction.probe, pos );
     }
 
     open(sessionId: string, pos: Coordinates): Promise<TileActionResult> {
-        return this.invokeMinerMessage(sessionId, pos, MinerPlayerAction.open);
+        return this.invokeMinerMessage(sessionId, MinerPlayerAction.open, pos );
     }
 
-    private invokeMinerMessage(sessionId: string, pos: Coordinates, action: MinerPlayerAction): Promise<TileActionResult> {
+    getState(sessionId: string, pos: Coordinates): Promise<MinerGameState> {
+        return this.invokeMinerMessage(sessionId, MinerPlayerAction.checkState);
+    }
+
+    private invokeMinerMessage(sessionId: string,  action: MinerPlayerAction, pos?: Coordinates,): Promise<any> {
         return this.handler.invokeWithMessage<SessionMessage>({
             sessionCommand: SessionCommand.message,
             sessionId,
