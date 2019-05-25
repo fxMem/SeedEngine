@@ -19,7 +19,7 @@ export class MinerClient implements Client {
         return this.invokeMinerMessage(sessionId, MinerPlayerAction.open, pos );
     }
 
-    getState(sessionId: string, pos: Coordinates): Promise<MinerGameState> {
+    getState(sessionId: string): Promise<MinerGameState> {
         return this.invokeMinerMessage(sessionId, MinerPlayerAction.checkState);
     }
 
