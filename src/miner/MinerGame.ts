@@ -70,12 +70,24 @@ export class MinerGame {
 
         let field = this.fields.get(nickname).field;
         let result = this.makeMove(field, data);
-        result.win && (this.winner = nickname);
+        this.updateResultForPlayer(nickname, result);
+
         this.send(this.buildGameState());
 
         return result;
     }
 
+    private updateResultForPlayer(nickname : string, result: TileActionResult) {
+        result.win && (this.winner = nickname);
+
+        if (result.blewOver) {
+            let fieldData = this.fields.get(nickname);
+
+            // TODO: Refactor to separate class
+            fieldData.remainigLives--;
+            fieldData.isAlive = fieldData.remainigLives > 0;
+        }
+    }
 
     private makeMove(field: Field, data: MinerMessage): TileActionResult {
         let result: TileActionResult = null;

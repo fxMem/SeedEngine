@@ -16,7 +16,7 @@ export interface Coordinates {
 }
 
 export interface TileActionResult {
-    gameOver: boolean;
+    blewOver: boolean;
     win: boolean;
 }
 
@@ -166,21 +166,21 @@ export class Field {
     probe(pos: Coordinates): TileActionResult {
 
         let tile = this.getTile(pos);
-        let gameOver = tile.do(TileAction.Open);
+        let blewOver = tile.do(TileAction.Open);
         if (tile.value !== 0) {
-            gameOver = true;
+            blewOver = true;
         }
 
-        if (!gameOver) {
+        if (!blewOver) {
             this.openSegment(pos);
         }
 
-        return this.getResult(gameOver);
+        return this.getResult(blewOver);
     }
 
-    private getResult(gameOver: boolean): TileActionResult {
+    private getResult(blewOver: boolean): TileActionResult {
         return {
-            gameOver,
+            blewOver,
             win: this.hiddenBombs === 0
         };
     }
