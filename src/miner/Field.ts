@@ -47,7 +47,7 @@ class Tile {
         }
 
         let gameOver = false;
-        function openTile() {
+        const openTile = () => {
             this.bomb ? (gameOver = true, this.state = TileState.Open) : (this.state = TileState.Exploded);
         }
 
