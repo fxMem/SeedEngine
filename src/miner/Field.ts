@@ -33,7 +33,7 @@ const possibleActionsMap = {
 }
 
 function canPerformTileAction(state: TileState, action: TileAction): boolean {
-    return possibleActionsMap[this.state].some(a => a === action);
+    return possibleActionsMap[state].some(a => a === action);
 }
 
 class Tile {
@@ -110,9 +110,9 @@ export class Field {
             return count;
         }
 
-        this.grid = new Tile[height];
+        this.grid = [];
         for (let i = 0; i < height; i++) {
-            this.grid[i] = new Tile[width];
+            this.grid[i] = [];
             for (let j = 0; j < this.width; j++) {
                 this.grid[i][j] = new Tile(TileState.Closed, map[i][j], countNearBombs(j, i));
             }
