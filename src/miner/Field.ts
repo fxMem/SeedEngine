@@ -138,7 +138,13 @@ export class Field {
     open(pos: Coordinates): TileActionResult {
 
         let tile = this.getTile(pos);
-        return this.getResult(tile.do(TileAction.Open));
+        let blewOver = tile.do(TileAction.Open);
+
+        if (!blewOver) {
+            this.openSegment(pos);
+        }
+        
+        return this.getResult(blewOver);
     }
 
     flag(pos: Coordinates): TileActionResult {
@@ -199,14 +205,14 @@ export class Field {
                     continue;
                 }
 
-                let tile = this.grid[y][x];
-
-                if (tile.value === 0) {
-                    q.push({ y, x });
-                }
+                let tile = this.grid[next.y][next.x];
 
                 if (tile.state === TileState.Closed) {
                     tile.do(TileAction.Open);
+
+                    if (tile.value === 0) {
+                        q.push({ y: next.y, x: next.x });
+                    }
                 }
             }
         }
