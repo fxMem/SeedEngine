@@ -62,20 +62,20 @@ export class ClientServiceService {
     return res;
   }
 
-  async getMinerState(): Promise<MinerGameState> {
-    return this.reportProgress((await this.connectedClient()).game.getState(this.nickname));
+  async getMinerState(sessionId: string): Promise<MinerGameState> {
+    return this.reportProgress((await this.connectedClient()).game.getState(sessionId));
   }
 
-  async probe(pos: Coordinates): Promise<TileActionResult> {
-    return this.reportProgress((await this.connectedClient()).game.probe(this.nickname, pos));
+  async probe(sessionId: string, pos: Coordinates): Promise<TileActionResult> {
+    return this.reportProgress((await this.connectedClient()).game.probe(sessionId, pos));
   }
 
-  async open(pos: Coordinates): Promise<TileActionResult> {
-    return this.reportProgress((await this.connectedClient()).game.open(this.nickname, pos));
+  async open(sessionId: string, pos: Coordinates): Promise<TileActionResult> {
+    return this.reportProgress((await this.connectedClient()).game.open(sessionId, pos));
   }
 
-  async flag( pos: Coordinates): Promise<TileActionResult> {
-    return this.reportProgress((await this.connectedClient()).game.flag(this.nickname, pos));
+  async flag(sessionId: string, pos: Coordinates): Promise<TileActionResult> {
+    return this.reportProgress((await this.connectedClient()).game.flag(sessionId, pos));
   }
 
   async getSessions(): Promise<SessionInfo[]> {

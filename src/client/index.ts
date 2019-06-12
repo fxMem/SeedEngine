@@ -7,6 +7,7 @@ export * from '../lobby/VoteLobbyClient';
 export * from '../session/SessionClient';
 export * from '../users/AuthClient';
 export * from '../chat/ChatClient';
+export * from '../miner/MinerGameClient';
 
 
 

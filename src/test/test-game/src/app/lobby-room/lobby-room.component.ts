@@ -17,7 +17,7 @@ export class LobbyRoomComponent implements OnInit {
   switchVoteText: string = voteText;
   vote: boolean = false;
   gameActive: boolean;
-  private sessionId: string;
+  sessionId: string;
   private gameState: SessionState;
 
   constructor(

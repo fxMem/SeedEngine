@@ -7,7 +7,7 @@
 </div>
 <span class='button' (click)="switchVote()">{{switchVoteText}}</span>
 <div id='game' *ngIf="gameActive">
-  <app-game></app-game>
+  <app-game [sessionId]='sessionId'></app-game>
 </div>
 <div id='chat'>
 
