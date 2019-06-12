@@ -218,7 +218,7 @@ export class Field {
     }
 
     private isInsideGrid({ y, x }: Coordinates): boolean {
-        return 0 <= y && y < this.height && x <= 0 && x < this.width;
+        return 0 <= y && y < this.height && 0 <= x && x < this.width;
     }
 
     private ensureInsideGrid(pos: Coordinates) {
