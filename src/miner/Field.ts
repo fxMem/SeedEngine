@@ -102,7 +102,7 @@ export class Field {
                 let nextY = y + move[0];
                 let nextX = x + move[1];
 
-                if (this.isInsideGrid({ y: nextY, x: nextX }) && map[y][x]) {
+                if (this.isInsideGrid({ y: nextY, x: nextX }) && map[nextY][nextX]) {
                     count++;
                 }
             }
