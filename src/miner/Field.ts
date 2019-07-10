@@ -97,12 +97,8 @@ export class Field {
         const countNearBombs = (x: number, y: number): number => {
             let count = 0;
 
-            // For now I don't want to encapsulate 'nearCells' method
-            for (const move of moves) {
-                let nextY = y + move[0];
-                let nextX = x + move[1];
-
-                if (this.isInsideGrid({ y: nextY, x: nextX }) && map[nextY][nextX]) {
+            for (const coords of this.getNearTiles({ y, x })) {
+                if (map[coords.y][coords.x]) {
                     count++;
                 }
             }
@@ -199,23 +195,31 @@ export class Field {
             }
 
             let { y, x } = q.shift();
-            for (const move of moves) {
-                let next = { y: y + move[0], x: x + move[1] };
-                if (!this.isInsideGrid(next)) {
-                    continue;
-                }
-
-                let tile = this.grid[next.y][next.x];
-
+            for (const coords of this.getNearTiles({ y, x })) {
+                let tile = this.grid[coords.y][coords.x];
                 if (tile.state === TileState.Closed) {
                     tile.do(TileAction.Open);
 
                     if (tile.value === 0) {
-                        q.push({ y: next.y, x: next.x });
+                        q.push({ y: coords.y, x: coords.x });
                     }
                 }
             }
         }
+    }
+
+    private getNearTiles({ x, y }: Coordinates): Coordinates[] {
+        let result = [];
+        for (const move of moves) {
+            let next = { y: y + move[0], x: x + move[1] };
+            if (!this.isInsideGrid(next)) {
+                continue;
+            }
+
+            result.push({ x: next.x, y: next.y });
+        }
+
+        return result;
     }
 
     private getTile(pos: Coordinates): Tile {
