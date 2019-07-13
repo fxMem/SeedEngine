@@ -37,7 +37,7 @@ function canPerformTileAction(state: TileState, action: TileAction): boolean {
 }
 
 class Tile {
-    constructor(public state: TileState, public bomb: boolean, public value?: number) {
+    constructor(public pos: Coordinates, public state: TileState, public bomb: boolean, public value?: number) {
 
     }
 
@@ -110,7 +110,7 @@ export class Field {
         for (let i = 0; i < height; i++) {
             this.grid[i] = [];
             for (let j = 0; j < this.width; j++) {
-                this.grid[i][j] = new Tile(TileState.Closed, map[i][j], countNearBombs(j, i));
+                this.grid[i][j] = new Tile({ y: i, x: j }, TileState.Closed, map[i][j], countNearBombs(j, i));
             }
         }
     }
