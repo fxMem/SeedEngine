@@ -97,7 +97,7 @@ export class Field {
         const countNearBombs = (x: number, y: number): number => {
             let count = 0;
 
-            for (const coords of this.getNearTiles({ y, x })) {
+            for (const coords of this.getNearTileCoordinates({ y, x })) {
                 if (map[coords.y][coords.x]) {
                     count++;
                 }
@@ -132,15 +132,7 @@ export class Field {
     }
 
     open(pos: Coordinates): TileActionResult {
-
-        let tile = this.getTile(pos);
-        let blewOver = tile.do(TileAction.Open);
-
-        if (!blewOver) {
-            this.openSegment(pos);
-        }
-        
-        return this.getResult(blewOver);
+        return this.getResult(this.openSegment(pos));
     }
 
     flag(pos: Coordinates): TileActionResult {
@@ -187,7 +179,14 @@ export class Field {
         };
     }
 
-    private openSegment(pos: Coordinates) {
+    private openSegment(pos: Coordinates): boolean {
+        let tile = this.getTile(pos);
+        if (tile.do(TileAction.Open)) {
+            // we got blown up on the first tile.
+            return true;
+        }
+
+        // Otherwise, we're good. We only open free tiles so we can't lose here.
         let q = [pos];
         while (true) {
             if (q.length == 0) {
@@ -195,20 +194,26 @@ export class Field {
             }
 
             let { y, x } = q.shift();
-            for (const coords of this.getNearTiles({ y, x })) {
-                let tile = this.grid[coords.y][coords.x];
+            for (const tile of this.getNearTiles({ y, x })) {
+                
                 if (tile.state === TileState.Closed) {
                     tile.do(TileAction.Open);
 
                     if (tile.value === 0) {
-                        q.push({ y: coords.y, x: coords.x });
+                        q.push(tile.pos);
                     }
                 }
             }
         }
+
+        return false;
     }
 
-    private getNearTiles({ x, y }: Coordinates): Coordinates[] {
+    private getNearTiles({ x, y }: Coordinates): Tile[] {
+        return this.getNearTileCoordinates({ y, x }).map(c => this.grid[c.y][c.x]);
+    }
+
+    private getNearTileCoordinates({ x, y }: Coordinates): Coordinates[] {
         let result = [];
         for (const move of moves) {
             let next = { y: y + move[0], x: x + move[1] };
