@@ -22,12 +22,13 @@ export interface TileActionResult {
 
 enum TileAction {
     Open,
-    Flag
+    Flag,
+    Probe
 }
 
 const possibleActionsMap = {
     [TileState.Closed]: [TileAction.Open, TileAction.Flag],
-    [TileState.Open]: [],
+    [TileState.Open]: [TileAction.Probe],
     [TileState.Flagged]: [TileAction.Flag],
     [TileState.Exploded]: []
 }
@@ -43,7 +44,7 @@ class Tile {
 
     do(action: TileAction): boolean {
         if (!canPerformTileAction(this.state, action)) {
-            throw new Error('Cant do requested action!')
+            throw new Error('Can\'t do requested action!')
         }
 
         let gameOver = false;
@@ -56,7 +57,11 @@ class Tile {
                 openTile();
                 break;
             case TileAction.Flag:
-                this.state == TileState.Flagged ? this.state = TileState.Open : this.state = TileState.Flagged;
+                this.state == TileState.Flagged ? this.state = TileState.Closed : this.state = TileState.Flagged;
+                break;
+            case TileAction.Probe:
+                // we don't do anything here as probing logic requeres managing all field
+                // this method just ensures that probing is allowed.
                 break;
             default:
                 throw new Error(`Incorrect tile action ${action}`);
@@ -132,20 +137,21 @@ export class Field {
     }
 
     open(pos: Coordinates): TileActionResult {
-        return this.getResult(this.openSegment(pos));
+        let tile = this.getTile(pos);
+        return this.getResult(this.openSegmentWithCenter(tile));
     }
 
     flag(pos: Coordinates): TileActionResult {
 
         let tile = this.getTile(pos);
 
-        if (tile.state === TileState.Open && this.flagsRemain === 0) {
+        if (tile.state === TileState.Closed && this.flagsRemain === 0) {
             throw new Error(`There is no flags left to put!`);
         }
 
         tile.do(TileAction.Flag);
 
-        if (tile.state === TileState.Open) {
+        if (tile.state === TileState.Flagged) {
             this.flagsRemain--;
             tile.bomb && this.flaggedBombs++;
         }
@@ -160,13 +166,15 @@ export class Field {
     probe(pos: Coordinates): TileActionResult {
 
         let tile = this.getTile(pos);
-        let blewOver = tile.do(TileAction.Open);
-        if (tile.value !== 0) {
-            blewOver = true;
-        }
 
-        if (!blewOver) {
-            this.openSegment(pos);
+        // we have to call this in order to make sure action is allowed. 
+        let blewOver = tile.do(TileAction.Probe);
+        
+        // Open all nearby tiles
+        for (const nearTile of this.getNearTiles(pos)) {
+            if (nearTile.state === TileState.Closed) {
+                blewOver = this.openSegmentWithCenter(nearTile);
+            }
         }
 
         return this.getResult(blewOver);
@@ -179,15 +187,19 @@ export class Field {
         };
     }
 
-    private openSegment(pos: Coordinates): boolean {
-        let tile = this.getTile(pos);
+    private openSegmentWithCenter(tile: Tile): boolean {
         if (tile.do(TileAction.Open)) {
             // we got blown up on the first tile.
             return true;
         }
 
+        if (tile.value > 0) {
+            // We don't open nearby tiles if we have bomb in neighbor tile
+            return false;
+        }   
+
         // Otherwise, we're good. We only open free tiles so we can't lose here.
-        let q = [pos];
+        let q = [tile.pos];
         while (true) {
             if (q.length == 0) {
                 break;
