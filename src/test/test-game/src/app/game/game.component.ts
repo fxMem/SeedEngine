@@ -180,6 +180,7 @@ export class GameComponent implements OnInit {
         }
 
         this.tiles[i][j] = this.addSpriteForTile(newTile, { y: i, x: j }, offset);
+        currentMap[i][j] = newTile;
       }
     }
   }
