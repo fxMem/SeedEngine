@@ -9,8 +9,8 @@ import { Texture } from 'pixi.js';
 
 type ExtendedSprite = PIXI.Sprite & {
   coordinates?: Coordinates,
-  leftPressed?: boolean,
-  rightPressed?: boolean
+  probingCounter?: number;
+  probeInProcess?: boolean;
 };
 
 const tileSize = 40;
@@ -84,12 +84,14 @@ export class GameComponent implements OnInit {
 
       this.loader = new PIXI.Loader();
       (this.field.nativeElement as HTMLElement).insertAdjacentElement('beforeend', this.pixiApp.view);
-
-      // this.loader.add('assets/data.json').load(() => {
-      //   //let spr = new PIXI.Sprite(this.loader.resources["assets/data.json"].textures['1.jpg']);
-      //   let spr = new PIXI.Sprite(this.loader.resources["assets/data.json"].textures[assets.bomb]);
-      //   this.pixiApp.stage.addChild(spr);
-      // });
+      this.pixiApp.view.addEventListener('contextmenu', (e) => { e.preventDefault(); });
+      
+      // This code is requered in order to avoid pointers api limitations, for details see
+      // https://github.com/pixijs/pixi.js/issues/5625
+      const interactionDOMElement = (this.pixiApp.renderer.plugins.interaction as any).interactionDOMElement;
+      (this.pixiApp.renderer.plugins.interaction as any).removeEvents();
+      (this.pixiApp.renderer.plugins.interaction as any).supportsPointerEvents = false;
+      this.pixiApp.renderer.plugins.interaction.setTargetElement(interactionDOMElement);
 
       let loadingText = this.createLoadingSprite();
       this.pixiApp.stage.addChild(loadingText);
@@ -102,7 +104,6 @@ export class GameComponent implements OnInit {
         });
       });
 
-      //this.pixiApp.stage.addChild(new PIXI.Text("Foo"));
       this.updateAllFields(state);
       this.pixiApp.stage.removeChild(loadingText);
 
@@ -253,46 +254,56 @@ export class GameComponent implements OnInit {
     sprite.interactive = true;
     sprite.coordinates = coordinates;
     sprite.buttonMode = true;
-    
+    sprite.probingCounter = 0;
+    sprite.probeInProcess = false;
 
     let controller = this;
     return sprite;
 
     function leftDown() {
       let sprite = this as ExtendedSprite;
-      sprite.leftPressed = true;
+      sprite.probingCounter++;
+
+      if (sprite.probingCounter == 2) {
+        sprite.probeInProcess = true;
+      }
     }
 
-    function rightDown(e) {
+    function rightDown() {
       let sprite = this as ExtendedSprite;
-      sprite.rightPressed = true;
-      
+      sprite.probingCounter++;
+
+      if (sprite.probingCounter == 2) {
+        sprite.probeInProcess = true;
+      }
     }
 
     function leftUp() {
       let sprite = this as ExtendedSprite;
+      sprite.probingCounter--;
 
-      if (sprite.rightPressed) {
-        controller.probe(sprite.coordinates);
-      }
-      else {
+      if (!sprite.probeInProcess) {
         controller.open(sprite.coordinates);
+       
       }
-
-      sprite.leftPressed = false;
+      else if (sprite.probingCounter == 0){
+        controller.probe(sprite.coordinates);
+        sprite.probeInProcess = false;
+      }
     }
 
     function rightUp() {
       let sprite = this as ExtendedSprite;
+      sprite.probingCounter--;
 
-      if (sprite.leftPressed) {
-        controller.probe(sprite.coordinates);
-      }
-      else {
+      if (!sprite.probeInProcess) {
         controller.switchFlag(sprite.coordinates);
+       
       }
-
-      sprite.rightPressed = false;
+      else if (sprite.probingCounter == 0){
+        controller.probe(sprite.coordinates);
+        sprite.probeInProcess = false;
+      }
     }
   }
 
@@ -309,7 +320,7 @@ export class GameComponent implements OnInit {
         name = assets.flag;
         break;
       case TileState.Open:
-        name = assets[tile.value];// `pressed${tile.value ? tile.value : ''}.png`;
+        name = assets[tile.value];
         break;
     }
 
