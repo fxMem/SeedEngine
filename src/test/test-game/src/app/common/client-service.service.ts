@@ -3,7 +3,6 @@ import { Observable, Subject } from 'rxjs';
 import { MinerClient, SimpleIdentityClient, DefaultSessionClient, VoteLobbyClient, KeyInvitationClient, GroupClient, ChatClient, ClientBuilder } from 'seedengine.client';
 import { SessionInfo } from 'seedengine.client/session/SessionInfo';
 import { OperationResult } from 'seedengine.client/core';
-import { ServerError } from 'seedengine.client/server';
 import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
 import { VotesNotification } from 'seedengine.client/lobby/VoteMessage';
 import { SessionStateChangedNotification } from 'seedengine.client/session/SessionMessage';
