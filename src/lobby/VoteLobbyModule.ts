@@ -40,25 +40,23 @@ export class VoteLobbyModule implements LobbyModule {
 
         this.log.info(`User ${from} have voted as ${VoteType[vote]}`);
 
+        let voted = allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.Vote)).length;
+        let needToVote = allVotes.length;
+
         session.sendMessage<VotesNotification>({
             header: VoteNotificationHeader, 
             payload: {
-                voted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.Vote)).length,
-                unvoted: allVotes.filter(v => !!v.find(vote => vote.sessionId === sessionId && vote.vote === VoteType.UnVote)).length,
+                voted,
+                unvoted: needToVote - voted
             }
         });
         
-        if (this.checkIfAllVoted(allVotes, sessionId)) {
+        if (needToVote == voted) {
 
             this.log.info(`Everyone has voted! Starting session ${sessionId}`);
             session.start();
         }
 
         return Promise.resolve(Success);
-    }
-
-    private checkIfAllVoted(votes: UserInfoArray<SessionVote>[], sessionId: string): boolean {
-
-        return !votes.some(u => !!u.find(v => v.sessionId === sessionId && v.vote === VoteType.UnVote));
     }
 }
