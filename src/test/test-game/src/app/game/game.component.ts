@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy } from '@angular/core';
 import * as PIXI from 'pixi.js';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ClientServiceService } from '../common/client-service.service';
@@ -42,7 +42,8 @@ type Coordinates = {
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
+
 
   @Input() sessionId: string;
 
@@ -63,6 +64,11 @@ export class GameComponent implements OnInit {
     private pending: PendingService) {
   }
 
+  ngOnDestroy(): void {
+    this.pixiApp.destroy(true, { children: true, texture: true, baseTexture: true });
+    this.pixiApp = null;
+  }
+
   async ngOnInit() {
     this.pending.reportProgress((async () => {
 
@@ -79,13 +85,13 @@ export class GameComponent implements OnInit {
       this.pixiApp = new PIXI.Application({
         width: this.totalWidth,
         height: this.totalHeight,
-
+        backgroundColor: 0xFFFFFF
       });
 
       this.loader = new PIXI.Loader();
       (this.field.nativeElement as HTMLElement).insertAdjacentElement('beforeend', this.pixiApp.view);
       this.pixiApp.view.addEventListener('contextmenu', (e) => { e.preventDefault(); });
-      
+
       // This code is requered in order to avoid pointers api limitations, for details see
       // https://github.com/pixijs/pixi.js/issues/5625
       const interactionDOMElement = (this.pixiApp.renderer.plugins.interaction as any).interactionDOMElement;
@@ -284,9 +290,9 @@ export class GameComponent implements OnInit {
 
       if (!sprite.probeInProcess) {
         controller.open(sprite.coordinates);
-       
+
       }
-      else if (sprite.probingCounter == 0){
+      else if (sprite.probingCounter == 0) {
         controller.probe(sprite.coordinates);
         sprite.probeInProcess = false;
       }
@@ -298,9 +304,9 @@ export class GameComponent implements OnInit {
 
       if (!sprite.probeInProcess) {
         controller.switchFlag(sprite.coordinates);
-       
+
       }
-      else if (sprite.probingCounter == 0){
+      else if (sprite.probingCounter == 0) {
         controller.probe(sprite.coordinates);
         sprite.probeInProcess = false;
       }
