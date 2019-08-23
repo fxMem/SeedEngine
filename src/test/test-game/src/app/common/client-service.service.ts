@@ -61,6 +61,17 @@ export class ClientServiceService {
     return res;
   }
 
+  async createInvite(sessionId: string): Promise<{
+    success: boolean;
+    inviteKey: string;
+}> {
+    return this.reportProgress((await this.connectedClient()).invites.createInvite(sessionId));
+  }
+
+  async useInvite(key: string): Promise<OperationResult> {
+    return this.reportProgress((await this.connectedClient()).invites.acceptInvite(key));
+  }
+
   async getMinerState(sessionId: string): Promise<MinerGameState> {
     return this.reportProgress((await this.connectedClient()).game.getState(sessionId));
   }
@@ -94,7 +105,7 @@ export class ClientServiceService {
     );
   }
 
-  async joinSession(sessionId: string) {
+  async joinSession(sessionId: string): Promise<OperationResult> {
     return this.reportProgress(
       (await this.connectedClient()).sessions.joinSession(sessionId)
     );
