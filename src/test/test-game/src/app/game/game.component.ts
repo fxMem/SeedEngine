@@ -48,7 +48,7 @@ export class GameComponent implements OnInit, OnDestroy {
   @Input() sessionId: string;
 
   private fields: { [key: string]: MinerPlayerState } = {};
-  private tiles: PIXI.Sprite[][] = [];
+  private tiles: { [key: string]: PIXI.Sprite[][] } = {};
   private pixiApp: PIXI.Application;
   private loader: PIXI.Loader;
   @ViewChild('field') field: ElementRef;
@@ -157,26 +157,21 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private updateField(stateId: string, state: MinerPlayerState, offset: Coordinates) {
-    let currentState = this.fields[stateId];
-
-    if (!currentState) {
-      this.fields[stateId] = state;
-      currentState = state;
-    }
+    let currentState = this.fields[stateId] || (this.fields[stateId] = state);
+    let currentTileMap = this.tiles[stateId] || (this.tiles[stateId] = []);
 
     let currentMap = currentState.map;
     let newMap = state.map;
-
     for (let i = 0; i < currentMap.length; i++) {
       for (let j = 0; j < currentMap[i].length; j++) {
         let currentTile = currentMap[i][j];
         let newTile = newMap[i][j];
 
-        if (!this.tiles[i]) {
-          this.tiles[i] = []
+        if (!currentTileMap[i]) {
+          currentTileMap[i] = [];
         }
 
-        let sprite = this.tiles[i][j];
+        let sprite = currentTileMap[i][j];
 
         if (currentTile && currentTile.state === newTile.state && sprite) {
           continue;
@@ -186,7 +181,7 @@ export class GameComponent implements OnInit, OnDestroy {
           this.removeSprite(sprite);
         }
 
-        this.tiles[i][j] = this.addSpriteForTile(newTile, { y: i, x: j }, offset);
+        currentTileMap[i][j] = this.addSpriteForTile(newTile, { y: i, x: j }, offset);
         currentMap[i][j] = newTile;
       }
     }
