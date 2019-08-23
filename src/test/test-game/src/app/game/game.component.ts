@@ -13,7 +13,8 @@ type ExtendedSprite = PIXI.Sprite & {
   probeInProcess?: boolean;
 };
 
-const tileSize = 40;
+const tileSize = 35;
+const headerHeight = 40;
 const tileAtlas = 'assets/data.json';
 const assets = {
   flag: 1,
@@ -77,10 +78,10 @@ export class GameComponent implements OnInit, OnDestroy {
 
       this.fieldWidth = playerState.fieldSize.width * tileSize;
 
-      this.enemyFieldOffset = { x: this.fieldWidth + 100, y: 0 };
+      this.enemyFieldOffset = { x: this.fieldWidth + 100, y: headerHeight };
 
       this.totalWidth = this.enemyFieldOffset.x + this.fieldWidth + 100;
-      this.totalHeight = playerState.fieldSize.height * tileSize + 100;
+      this.totalHeight = headerHeight + playerState.fieldSize.height * tileSize + 100;
 
       this.pixiApp = new PIXI.Application({
         width: this.totalWidth,
@@ -121,7 +122,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   }
 
-  private createLoadingSprite() {
+  private createLoadingSprite(): PIXI.Text {
     let loadingText = new PIXI.Text('Loading...', new PIXI.TextStyle({
       fontFamily: "Arial",
       fontSize: 36,
@@ -137,6 +138,35 @@ export class GameComponent implements OnInit, OnDestroy {
     return loadingText;
   }
 
+  private createHeaderText(text: string, { x, y }: Coordinates): PIXI.Text {
+    let pixiText = new PIXI.Text(text, new PIXI.TextStyle({
+      fontFamily: "times",
+      fontSize: 18,
+      fill: "black",
+      stroke: '#ff3300',
+      strokeThickness: 2,
+    }));
+    pixiText.height = headerHeight * 0.75;
+    //pixiText.width = 200;
+    pixiText.y = y;
+    pixiText.x = x;
+
+    return pixiText;
+  }
+
+  private headers: { [key: string]: PIXI.Text } = {};
+  private updateHeaderText(stateId: string, text: string, offset: Coordinates) {
+    const headerText = this.createHeaderText(text, { x: offset.x, y: offset.y - headerHeight });
+
+    const existingHeader = this.headers[stateId];
+    if (existingHeader) {
+      this.pixiApp.stage.removeChild(existingHeader);
+    }
+
+    this.pixiApp.stage.addChild(headerText);
+    this.headers[stateId] = headerText;
+  }
+
   private getPlayerState(state: MinerGameState, player?: string): MinerPlayerState {
     player = player || this.client.nickname;
     return state.data.find(s => s.name === player).state;
@@ -150,13 +180,15 @@ export class GameComponent implements OnInit, OnDestroy {
   private updateAllFields(state: MinerGameState) {
     for (let prop in state.data) {
       let playerState = state.data[prop];
-      let offset = playerState.name === this.client.nickname ? { x: 0, y: 0 } : this.enemyFieldOffset;
+      let offset = playerState.name === this.client.nickname ? { x: 0, y: headerHeight } : this.enemyFieldOffset;
 
       this.updateField(playerState.name, playerState.state, offset);
     }
   }
 
   private updateField(stateId: string, state: MinerPlayerState, offset: Coordinates) {
+    this.updateHeaderText(stateId, stateId, offset);
+
     let currentState = this.fields[stateId] || (this.fields[stateId] = state);
     let currentTileMap = this.tiles[stateId] || (this.tiles[stateId] = []);
 
