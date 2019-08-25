@@ -61,11 +61,11 @@ export class ClientServiceService {
     return res;
   }
 
-  async createInvite(sessionId: string): Promise<{
+  async createInvite(sessionId: string, note?: string): Promise<{
     success: boolean;
     inviteKey: string;
 }> {
-    return this.reportProgress((await this.connectedClient()).invites.createInvite(sessionId));
+    return this.reportProgress((await this.connectedClient()).invites.createInvite(sessionId, null, null, note));
   }
 
   async useInvite(key: string): Promise<OperationResult> {
