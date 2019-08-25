@@ -13,9 +13,9 @@ export class Invite {
     id: string;
     constructor(
         public sessionId: string,
+        public note: string,
         private restrictedTo: User[],
         private expires?: Date,
-        private note?: string,
         private useCount?: number) {
 
         if (!useCount) {
@@ -87,6 +87,6 @@ export class InviteBuilder {
     }
 
     build(): Invite {
-        return new Invite(this.sessionId, this.users, this.expires, this.note, this.useCount);
+        return new Invite(this.sessionId, this.note, this.users, this.expires, this.useCount);
     }
 }
