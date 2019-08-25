@@ -15,6 +15,7 @@ export class Invite {
         public sessionId: string,
         private restrictedTo: User[],
         private expires?: Date,
+        private note?: string,
         private useCount?: number) {
 
         if (!useCount) {
@@ -55,6 +56,7 @@ export class InviteBuilder {
     private useCount: number;
     private users: User[] = [];
     private expires: Date;
+    private note: string;
 
     constructor (private sessionId: string) {
 
@@ -75,11 +77,16 @@ export class InviteBuilder {
         return this;
     }
 
+    withNote(note: string): this {
+        this.note = note;
+        return this;
+    }
+
     static forSession(sessionId: string): InviteBuilder {
         return new InviteBuilder(sessionId);
     }
 
     build(): Invite {
-        return new Invite(this.sessionId, this.users, this.expires, this.useCount);
+        return new Invite(this.sessionId, this.users, this.expires, this.note, this.useCount);
     }
 }

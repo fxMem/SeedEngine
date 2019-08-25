@@ -1,5 +1,6 @@
 export interface CreateInviteMessage {
     inviteToSession: string,
+    note: string;
     expires: Date,
     attemptsCount: number;
     userIds: string[];
