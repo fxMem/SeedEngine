@@ -1,9 +1,10 @@
-import { createLocalLogScope } from "../log";
+import { createLocalLogScope, initializeLogger } from "../log";
 import { Invite } from "./Invite";
 import { SessionManager } from "../session";
 import { User, Claims } from "../users";
 import { ServerError, DeniedError } from "../transport";
 import { OperationResult } from "../core";
+import { InviteInfo } from "./InviteInfo";
 
 export class InvitationManager {
 
@@ -31,6 +32,22 @@ export class InvitationManager {
 
     getInvite(key: string): Invite {
         return this.invites.get(key);
+    }
+
+    getInviteInfo(key: string): InviteInfo {
+        const invite = this.invites.get(key);
+        const session = this.sessionManager.getSession(invite.sessionId);
+        if (!session) {
+            throw new ServerError(`Requested invite info for non excisting or removed session, sessionId = ${invite.sessionId}, inviteId = ${invite.id}`)
+        }
+
+        const sessionInfo = session.getInfo();
+
+        return {
+            sessionDescription: sessionInfo.description,
+            note: invite.note,
+            invitedBy: invite.from.nickname
+        }
     }
 
     useInvite(invite: Invite, user: User): Promise<OperationResult> {

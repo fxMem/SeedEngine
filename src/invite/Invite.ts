@@ -12,6 +12,7 @@ export class Invite {
 
     id: string;
     constructor(
+        public from: User,
         public sessionId: string,
         public note: string,
         private restrictedTo: User[],
@@ -58,7 +59,7 @@ export class InviteBuilder {
     private expires: Date;
     private note: string;
 
-    constructor (private sessionId: string) {
+    constructor (private sessionId: string, private from: User) {
 
     }
 
@@ -82,11 +83,11 @@ export class InviteBuilder {
         return this;
     }
 
-    static forSession(sessionId: string): InviteBuilder {
-        return new InviteBuilder(sessionId);
+    static forSession(sessionId: string, from: User): InviteBuilder {
+        return new InviteBuilder(sessionId, from);
     }
 
     build(): Invite {
-        return new Invite(this.sessionId, this.note, this.users, this.expires, this.useCount);
+        return new Invite(this.from, this.sessionId, this.note, this.users, this.expires, this.useCount);
     }
 }
