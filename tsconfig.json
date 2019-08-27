@@ -6,7 +6,7 @@
       "module": "ES2015",
       "target": "es5",
       "sourceMap": true,
-      "outDir": "src/test/test-game/node_modules/seedengine.client",
+      "outDir": "distr/seedengine.client",
       "lib": [ "es2015" ]
     },
     "exclude": [

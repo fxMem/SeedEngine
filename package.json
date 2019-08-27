@@ -7,9 +7,9 @@
   "scripts": {
     "ba": "webpack",
     "bs": "config=server.js webpack",
-    "bc": "config=client.js webpack",
+    "bc": "tsc -p tsconfig-client.json",
     "bt": "config=test.js webpack",
-    "server": "node ./distr/server.js",
+    "server": "node ./distr/server/server.js",
     "client": "node ./distr/client.js",
     "test": "node ./distr/test.js",
     "ds": "npm run bs && nodemon ./distr/server.js",
