@@ -1,4 +1,8 @@
-import { MessageContext, Message, User, Users, MessageSender } from "../server";
+import { MessageContext } from "./MessagePipeline";
+import { Message } from "./Message";
+import { User } from "../users/User";
+import { Users } from "../users/Users";
+import { MessageSender } from "./MessageSender";
 
 // This object passed to pipeline when user disconnects, naturally its
 // message property is null. There was another possibiilty to handle diconeectes - 

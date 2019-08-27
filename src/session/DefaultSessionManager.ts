@@ -1,11 +1,14 @@
 import { SessionManager } from "./SessionManager";
-import { createLocalLogScope } from "../log";
-import { DefaultSession, SessionHandler } from ".";
-import { MessageSender, ServerError, DeniedError, DefaultSessionOptions } from "../server";
-import { GroupManager } from "../groups";
-import { Game } from "../game";
-import { User, Claims } from "../users";
+import { createLocalLogScope } from "../log/LoggerScopes";
+import { DefaultSession, DefaultSessionOptions } from "./DefaultSession";
+import { MessageSender } from "../transport/MessageSender";
+import { GroupManager } from "../groups/GroupManager";
+import { Game } from "../game/Game";
+import { User } from "../users/User";
 import { SessionInfo } from "./SessionInfo";
+import { Claims } from "../users/Claims";
+import { DeniedError } from "../transport/ServerError";
+import { SessionHandler } from "./Session";
 
 export class DefaultSessionManager implements SessionManager {
 

@@ -1,6 +1,9 @@
-import { Game } from "../game";
-import { Session } from "../session";
-import { MinerGame, MinerGameOptions, MinerGameStateUpdateHeader } from "./MinerGame";
+import { Game } from "../game/Game";
+import { Session } from "../session/Session";
+import { MinerGame } from "./MinerGame";
+import { MinerGameStateUpdateHeader } from "./MinerGameState";
+import { MinerGameOptions } from "./MinerPlayerAction";
+
 
 export class MinerGameFactory implements Game {
     create(session: Session): () => void {

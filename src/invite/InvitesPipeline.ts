@@ -2,9 +2,11 @@ import { InvitationMethod } from "./InvitationMethod";
 import { isCreateInviteMessage, CreateInviteMessage } from "./InviteMessage";
 import { InviteBuilder } from "./Invite";
 import { InvitationManager } from "./InvitationManager";
-import { SpecificMessageTypeHandler, Message, MessageContext } from "../transport";
-import { User, Users } from "../users";
 import { isInviteInfoMessage } from "./InviteInfoMessage";
+import { SpecificMessageTypeHandler } from "../transport/SpecificMessageTypeHandler";
+import { MessageContext } from "../transport/MessagePipeline";
+import { User } from "../users/User";
+import { Users } from "../users/Users";
 
 export class InvitesPipeline implements SpecificMessageTypeHandler {
 

@@ -1,8 +1,7 @@
 import { SessionCommand, SessionMessage, SessionStateChangedNotificationHeader, SessionStateChangedNotification } from "./SessionMessage";
 import { SessionInfo } from "./SessionInfo";
-import { OperationResult } from "../core";
-import { ClientConnectionHandler, Client } from "../client";
-
+import { Client, ClientConnectionHandler } from "../client/ClientConnectionHandler";
+import { OperationResult } from "../core/OperationResult";
 
 export interface SessionClient extends Client {
     createSession(sessionDescription?: string, join?: boolean): Promise<{

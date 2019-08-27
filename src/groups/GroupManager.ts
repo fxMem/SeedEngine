@@ -1,9 +1,11 @@
 import { DefaultGroup, Group, GroupHandle } from "./Group";
 import { GroupIdGenerator } from "./GroupIdGenerator";
-import { createLocalLogScope } from "../log";
-import { Users, User, nickname, Claims } from "../users";
-import { ServerError, DeniedError } from "../transport";
 import { getUserInfoArray } from "../users/UserInfoArray";
+import { createLocalLogScope } from "../log/LoggerScopes";
+import { Users } from "../users/Users";
+import { User, nickname } from "../users/User";
+import { Claims } from "../users/Claims";
+import { DeniedError, ServerError } from "../transport/ServerError";
 
 export interface Groups {
     getGroup(groupId: string): Group;

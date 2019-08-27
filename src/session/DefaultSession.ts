@@ -1,12 +1,15 @@
 import { SessionHandler, Session, SessionEvents, GenericClientMessage } from "./Session";
 import { EventEmitter } from "events";
-import { ScopedLogger, createLocalLogScope } from "../log";
-import { User, Claims } from "../users";
-import { GroupHandle, Group } from "../groups";
-import { MessageSender, ClientMessage, TargetBuilder, ServerError, DeniedError } from "../server";
 import { SessionState, SessionInfo } from "./SessionInfo";
-import { OperationResult, SuccessPromise } from "../core";
 import { SessionStateChangedNotificationHeader, SessionStateChangedNotification } from "./SessionMessage";
+import { ScopedLogger } from "../log/Logger";
+import { User } from "../users/User";
+import { GroupHandle, Group } from "../groups/Group";
+import { MessageSender } from "../transport/MessageSender";
+import { createLocalLogScope } from "../log/LoggerScopes";
+import { ServerError, DeniedError } from "../transport/ServerError";
+import { OperationResult, SuccessPromise } from "../core/OperationResult";
+import { Claims } from "../users/Claims";
 
 const playerJoined = 'playerJoined';
 const playerLeft = 'playerLeft';

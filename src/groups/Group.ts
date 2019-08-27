@@ -1,5 +1,6 @@
-import { User, nickname } from "../users";
+
 import { EventEmitter } from "events";
+import { User, nickname } from "../users/User";
 
 const onUserAdded = 'onUserAdded';
 const onUserRemoved = 'onUserRemoved';

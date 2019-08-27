@@ -3,9 +3,8 @@ import { UserStorage } from "./UserStorage";
 import { UserManager } from './Users';
 import { User, DefaultUser } from './User';
 import { isNicknameValid } from './UserValidator';
-import { createLocalLogScope } from '../log';
-import { ServerError } from '../server';
-
+import { createLocalLogScope } from '../log/LoggerScopes';
+import { ServerError } from '../transport/ServerError';
 
 export class AuthModule {
 

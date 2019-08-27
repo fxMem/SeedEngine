@@ -1,4 +1,5 @@
-import { Server } from "../transport";
+import { Server } from "../transport/Server";
+
 
 export interface InstanceOptions {
     port?: number

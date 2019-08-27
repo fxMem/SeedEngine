@@ -1,7 +1,9 @@
 import { isLobbyMessage } from "./LobbyMessage";
-import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from "../transport";
-import { LobbyModule } from ".";
-import { SessionManager } from "../session";
+import { SpecificMessageTypeHandler } from "../transport/SpecificMessageTypeHandler";
+import { LobbyModule } from "./LobbyModule";
+import { SessionManager } from "../session/SessionManager";
+import { MessageContext } from "../transport/MessagePipeline";
+import { ServerError } from "../transport/ServerError";
 
 export class LobbyPipeline implements SpecificMessageTypeHandler {
 

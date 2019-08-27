@@ -1,8 +1,7 @@
 import { SessionInfo } from "./SessionInfo";
-import { User } from "../users";
-import { OperationResult } from "../core";
-import { Group } from "../groups";
-import { ClientMessage, TargetBuilder } from "../server";
+import { User } from "../users/User";
+import { Group } from "../groups/Group";
+import { OperationResult } from "../core/OperationResult";
 
 export type GenericClientMessage<T> = {
     header: string,

@@ -1,11 +1,14 @@
-import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from "../server";
-import { SessionManager, SessionHandler } from ".";
 import { isSessionMessage, SessionCommand, SessionMessage } from "./SessionMessage";
-import { User } from "../users";
-import { OperationResult } from "../core";
 import { SessionInfo } from "./SessionInfo";
 import { UserDisconnectedContext } from "../transport/UserDisconnectedContext";
 import { getUserInfoArray } from "../users/UserInfoArray";
+import { SpecificMessageTypeHandler } from "../transport/SpecificMessageTypeHandler";
+import { SessionManager } from "./SessionManager";
+import { MessageContext } from "../transport/MessagePipeline";
+import { ServerError } from "../transport/ServerError";
+import { User } from "../users/User";
+import { OperationResult } from "../core/OperationResult";
+import { SessionHandler } from "./Session";
 
 const userSessionsKey = '__sessions';
 export class SessionPipeline implements SpecificMessageTypeHandler {

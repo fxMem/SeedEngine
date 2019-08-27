@@ -1,9 +1,9 @@
 import { KeyInvitationMessage } from "./KeyInvitationMessage";
 import { CreateInviteMessage } from "./InviteMessage";
-import { Client, ClientConnectionHandler } from "../client";
-import { OperationResult } from "../core";
 import { InviteInfo } from "./InviteInfo";
 import { InviteInfoMessage } from "./InviteInfoMessage";
+import { Client, ClientConnectionHandler } from "../client/ClientConnectionHandler";
+import { OperationResult } from "../core/OperationResult";
 
 export class KeyInvitationClient implements Client {
     handler: ClientConnectionHandler;

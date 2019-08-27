@@ -3,7 +3,7 @@ import { SeedMessage, DefaultSeedNamespace } from './Headers';
 import { HttpFacade } from './HttpFacade';
 import { Transport, TransportMessage, TransportClient } from './Transport';
 import { MessageTarget } from './MessageTarget';
-import { ServerError } from '../server';
+import { ServerError } from './ServerError';
 
 // Wraps socket.IO connection (server)
 export class SocketIOServerTransport implements Transport {

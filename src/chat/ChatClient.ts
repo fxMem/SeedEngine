@@ -1,6 +1,6 @@
 import { ChatMessage } from "./ChatMessage";
-import { Client, ClientConnectionHandler } from "../client";
-import { OperationResult } from "../core";
+import { Client, ClientConnectionHandler } from "../client/ClientConnectionHandler";
+import { OperationResult } from "../core/OperationResult";
 
 export class ChatClient implements Client {
     handler: ClientConnectionHandler;

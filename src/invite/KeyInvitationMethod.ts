@@ -1,10 +1,9 @@
 import { InvitationMethod } from "./InvitationMethod";
 import { isKeyInvitationMessage } from "./KeyInvitationMessage";
-import { InvitationManager } from ".";
-import { User } from "../users";
-import { OperationResult } from "../core";
-import { ServerError } from "../transport";
-
+import { InvitationManager } from "./InvitationManager";
+import { User } from "../users/User";
+import { OperationResult } from "../core/OperationResult";
+import { ServerError } from "../transport/ServerError";
 
 export class KeyInvitationMethod implements InvitationMethod {
 

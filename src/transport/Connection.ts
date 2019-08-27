@@ -1,7 +1,7 @@
 import { RpcWrapper } from './RpcWrapper';
 import { Transport } from './Transport';
-import { Action } from '../utils';
 import { MessageTarget } from './MessageTarget';
+import { Action } from '../utils/DelegateTypes';
 
 export type ClientCallback = (message: ClientMessage) => Promise<any>;
 export type ClientMessage = {

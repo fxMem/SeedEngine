@@ -1,8 +1,10 @@
-import { createLocalLogScope } from "../log";
-import { MessageSender, ServerError, DeniedError } from "../transport";
-import { User, Claims } from "../users";
 import { MessageTarget } from "../transport/MessageTarget";
-import { Group } from "../groups";
+import { createLocalLogScope } from "../log/LoggerScopes";
+import { MessageSender } from "../transport/MessageSender";
+import { User } from "../users/User";
+import { Group } from "../groups/Group";
+import { Claims } from "../users/Claims";
+import { DeniedError } from "../transport/ServerError";
 
 
 export const chatMessageClientHeader = 'chat';

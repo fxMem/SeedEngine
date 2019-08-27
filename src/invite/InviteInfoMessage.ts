@@ -1,4 +1,6 @@
-export interface InviteInfoMessage {
+import { Message } from "../transport/Message";
+
+export interface InviteInfoMessage extends Message {
     getInfoForInviteKey: string;
 }
 

@@ -1,9 +1,11 @@
-import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from "../transport";
-import { ChatManager } from ".";
-import { Users } from "../users";
-import { Groups } from "../groups";
 import { isChatMessage } from "./ChatMessage";
-import { OperationResult, Success } from "../core";
+import { SpecificMessageTypeHandler } from "../transport/SpecificMessageTypeHandler";
+import { ChatManager } from "./ChatManager";
+import { Users } from "../users/Users";
+import { Groups } from "../groups/GroupManager";
+import { MessageContext } from "../transport/MessagePipeline";
+import { OperationResult, Success } from "../core/OperationResult";
+import { ServerError } from "../transport/ServerError";
 
 export class ChatPipeline implements SpecificMessageTypeHandler {
 

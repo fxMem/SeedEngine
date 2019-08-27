@@ -1,6 +1,7 @@
 import { MessageSender } from "./MessageSender";
 import { Message } from "./Message";
-import { User, Users } from "../users";
+import { User } from "../users/User";
+import { Users } from "../users/Users";
 
 export interface MessageContext {
     message: Message;

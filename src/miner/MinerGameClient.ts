@@ -1,8 +1,8 @@
-import { Client, ClientConnectionHandler } from "../client";
-import { MinerGameStateUpdateHeader, MinerGameState, MinerPlayerAction } from "./MinerGame";
 import { Coordinates, TileActionResult } from "./Field";
-import { OperationResult } from "../core";
 import { SessionMessage, SessionCommand } from "../session/SessionMessage";
+import { Client, ClientConnectionHandler } from "../client/ClientConnectionHandler";
+import { MinerPlayerAction } from "./MinerPlayerAction";
+import { MinerGameState, MinerGameStateUpdateHeader } from "./MinerGameState";
 
 export class MinerClient implements Client {
     handler: ClientConnectionHandler;

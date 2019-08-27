@@ -1,10 +1,13 @@
 import { MessagePipelineCallback } from "./MessagePipeline";
 import { MessageSender } from "./MessageSender";
 import { ServerError, UnauthorizedError } from "./ServerError";
-import { createLocalLogScope } from "../log";
-import { Connection, ConnectedClient, Header } from ".";
-import { Users, AuthModule, User } from "../users";
 import { UserDisconnectedContext } from "./UserDisconnectedContext";
+import { createLocalLogScope } from "../log/LoggerScopes";
+import { Connection, ConnectedClient } from "./Connection";
+import { Users } from "../users/Users";
+import { AuthModule } from "../users/AuthModule";
+import { User } from "../users/User";
+import { Header } from "./Headers";
 
 // Facade class tying together connection, authentication and messaging logic
 export class Server {

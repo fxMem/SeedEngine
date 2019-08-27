@@ -1,5 +1,5 @@
-import { ClientConnectionHandler, Client } from "../client";
 import { Header } from "../transport/Headers";
+import { Client, ClientConnectionHandler } from "../client/ClientConnectionHandler";
 
 
 export interface AuthClient extends Client {

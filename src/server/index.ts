@@ -1,32 +1,24 @@
-import { Instance, Bootstrapper, CoreDependencies } from '../core';
 
-import { initializeLogger, Log, DefaultConsoleLogger } from '../log';
-
-import { ExpressFacadeFactory, MessageHandler, makeRegularHandler } from '../transport';
-
-import { SimpleIdentity, InMemoryUserStorage } from '../users';
-
-import { GroupPipeline } from '../groups';
-
-import { ChatManager, ChatPipeline } from '../chat';
-
-import { DefaultSessionManager, SessionPipeline } from '../session';
-
-import { VoteLobbyModule, LobbyPipeline } from '../lobby';
-
-import { InvitationManager, KeyInvitationMethod, InvitesPipeline } from '../invite';
 import { MinerGameFactory } from '../miner/MinerGameFactory';
-
-export * from '../session';
-export * from '../transport';
-export * from '../users';
-export * from '../groups';
-export * from '../game';
-export * from '../invite';
-export * from '../chat';
-export * from '../lobby';
-export * from '../log';
-export * from '../core';
+import { Instance } from '../core/Instance';
+import { initializeLogger } from '../log/LoggerScopes';
+import { Log, DefaultConsoleLogger } from '../log/Logger';
+import { Bootstrapper, CoreDependencies } from '../core/Bootstrapper';
+import { ExpressFacadeFactory } from '../transport/HttpFacade';
+import { SimpleIdentity } from '../users/SimpleIdentity';
+import { InMemoryUserStorage } from '../users/InMemoryUserStorage';
+import { MessageHandler } from '../transport/MessagePipeline';
+import { makeRegularHandler } from '../transport/SpecificMessageTypeHandler';
+import { GroupPipeline } from '../groups/GroupPipeline';
+import { ChatManager } from '../chat/ChatManager';
+import { ChatPipeline } from '../chat/ChatPipeline';
+import { DefaultSessionManager } from '../session/DefaultSessionManager';
+import { SessionPipeline } from '../session/SessionPipeline';
+import { VoteLobbyModule } from '../lobby/VoteLobbyModule';
+import { LobbyPipeline } from '../lobby/LobbyPipeline';
+import { InvitationManager } from '../invite/InvitationManager';
+import { KeyInvitationMethod } from '../invite/KeyInvitationMethod';
+import { InvitesPipeline } from '../invite/InvitesPipeline';
 
 function buildTestServer(): Instance {
 

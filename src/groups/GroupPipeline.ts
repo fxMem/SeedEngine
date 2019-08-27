@@ -1,15 +1,15 @@
 import { isGroupMessage, GroupCommand } from "./GroupMessage";
 import { GroupManager } from "./GroupManager";
-import { SpecificMessageTypeHandler, Message, MessageContext, ServerError } from "../transport";
-import { Success } from "../core";
-
-
+import { SpecificMessageTypeHandler } from "../transport/SpecificMessageTypeHandler";
+import { MessageContext } from "../transport/MessagePipeline";
+import { ServerError } from "../transport/ServerError";
+import { Success } from "../core/OperationResult";
 
 export class GroupPipeline implements SpecificMessageTypeHandler {
 
-    name: 'groupHandler';
+    name = 'groupHandler';
     constructor(private groupManager: GroupManager) {
-
+        
     }
 
     canHandle({ message }: MessageContext): boolean {

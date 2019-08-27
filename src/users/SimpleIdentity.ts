@@ -2,7 +2,7 @@ import { Claims, haveClaim } from "./Claims";
 import { UserStorage, UserInfo } from "./UserStorage";
 import { IdentityChecker } from "./IdentityChecker";
 import { AuthMethod } from "./AuthMethod";
-import { ServerError } from "../transport";
+import { ServerError } from "../transport/ServerError";
 
 export namespace SimpleIdentity {
 

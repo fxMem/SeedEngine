@@ -1,5 +1,5 @@
-import { LogFriendly } from "../log";
 import { ErrorCode } from "./ErrorCodes";
+import { LogFriendly } from "../log/LogFriendly";
 
 export class ServerError implements LogFriendly {
 

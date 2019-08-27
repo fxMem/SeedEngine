@@ -1,6 +1,6 @@
-import { User } from "../users";
-import { SessionHandler } from "../session";
-import { MessageSender } from "../server";
+import { User } from "../users/User";
+import { SessionHandler } from "../session/Session";
+import { MessageSender } from "../transport/MessageSender";
 
 export interface LobbyContext {
     message: any,
@@ -11,7 +11,6 @@ export interface LobbyContext {
 
 export interface LobbyModule {
     
-
     isModuleCommand(message: any): boolean;
 
     handle(context: LobbyContext): Promise<any>;

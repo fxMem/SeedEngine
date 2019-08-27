@@ -1,9 +1,9 @@
 import { TransportMessageSender } from "./Transport";
 import { ClientMessage } from "./Connection";
 import { MessageTarget } from "./MessageTarget";
-import { User } from "../users";
-import { Group } from "../groups";
-import { createLocalLogScope } from "../log";
+import { createLocalLogScope } from "../log/LoggerScopes";
+import { User } from "../users/User";
+import { Group } from "../groups/Group";
 
 export class TargetBuilder {
     private log = createLocalLogScope('MessageSender');

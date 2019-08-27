@@ -1,44 +1,7 @@
-import { User } from "../users";
 import { Field, Coordinates, TileActionResult, TileInfo } from "./Field";
-
-
-export const MinerGameStateUpdateHeader = 'minerUpdate';
-
-export interface MinerGameOptions {
-    map: boolean[][];
-
-    height: number;
-    width: number;
-    flagsAvailable: number;
-    lives: number;
-}
-
-export enum MinerPlayerAction {
-    open,
-    flag,
-    probe,
-    checkState
-}
-
-export interface MinerMessage {
-    pos: Coordinates;
-    action: MinerPlayerAction
-}
-
-export interface MinerPlayerState {
-    map: TileInfo[][];
-    fieldSize: { width: number, height: number };
-
-    remainigLives: number;
-    remainingFlags: number;
-
-    isAlive: boolean;
-}
-
-export type MinerGameState = {
-    data: { name: string, state: MinerPlayerState }[],
-    winner: { name: string }
-}
+import { User } from "../users/User";
+import { MinerGameOptions, MinerMessage, MinerPlayerAction } from "./MinerPlayerAction";
+import { MinerGameState } from "./MinerGameState";
 
 export class MinerGame {
 

@@ -1,4 +1,4 @@
-import { Message } from "../transport";
+import { Message } from "../transport/Message";
 
 export interface LobbyMessage extends Message {
     sessionId: string;

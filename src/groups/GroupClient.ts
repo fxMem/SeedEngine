@@ -1,7 +1,6 @@
-import { ClientConnectionHandler, Client } from "../client";
 import { GroupMessage, GroupCommand } from "./GroupMessage";
-import { OperationResult } from "../core";
-
+import { Client, ClientConnectionHandler } from "../client/ClientConnectionHandler";
+import { OperationResult } from "../core/OperationResult";
 
 export class GroupClient implements Client {
     handler: ClientConnectionHandler;

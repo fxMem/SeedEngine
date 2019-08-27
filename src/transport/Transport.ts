@@ -1,6 +1,6 @@
 import { MessageTarget } from "./MessageTarget";
-import { ClientMessage } from ".";
-import { Action } from "../utils";
+import { ClientMessage } from "./Connection";
+import { Action } from "../utils/DelegateTypes";
 
 export type TransportMessageCallbackAsync = (message: TransportMessage) => Promise<any>;
 export type TransportMessageCallback = (message: TransportMessage) => void;

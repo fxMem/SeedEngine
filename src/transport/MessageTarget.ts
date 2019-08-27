@@ -1,5 +1,5 @@
-import { User } from "../users";
-import { Group } from "../server";
+import { User } from "../users/User";
+import { Group } from "../groups/Group";
 
 export class MessageTarget {
 
