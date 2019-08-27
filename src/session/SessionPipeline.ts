@@ -88,7 +88,7 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     }
 
     private getOne(sessionId: string): SessionInfo {
-        return this.getSession(sessionId).getInfo();
+        return this.getSession(sessionId).info;
     }
 
     private joinSessionBySessionId(sessionId: string, applicant: User): Promise<any> {

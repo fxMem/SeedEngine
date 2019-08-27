@@ -36,7 +36,7 @@ export class DefaultSessionManager implements SessionManager {
             throw new DeniedError(`User ${user} does not have sufficient rights to view sessions list!`);
         }
         
-        return Array.from((this.sessions as any).values()).map((s: DefaultSession) => s.getInfo());
+        return Array.from((this.sessions as any).values()).map((s: DefaultSession) => s.info);
     }
 
     createSession(options: { owner: User, description?: string }): SessionHandler {

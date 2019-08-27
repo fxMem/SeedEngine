@@ -4,6 +4,7 @@ import { getUserInfoArray, UserInfoArray } from "../users/UserInfoArray";
 import { createLocalLogScope } from "../log/LoggerScopes";
 import { OperationResult, Success } from "../core/OperationResult";
 import { ServerError } from "../transport/ServerError";
+import { SessionState } from "../session/SessionInfo";
 
 function isVoteMessage(message: any): message is VoteMessage {
     return message.vote !== undefined && message.sessionId != undefined;
@@ -26,6 +27,10 @@ export class VoteLobbyModule implements LobbyModule {
 
         if (!isVoteMessage(message)) {
             throw new ServerError(`Message ${JSON.stringify(message)} is not vote message!`);
+        }
+
+        if (session.info.state === SessionState.running) {
+            throw new ServerError(`Session ${session} already started, cannot vote!`);
         }
 
         let { vote } = message;

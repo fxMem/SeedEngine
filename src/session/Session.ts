@@ -12,7 +12,7 @@ export type GenericClientMessage<T> = {
 export interface SessionHandler {
     id(): string;
 
-    getInfo(): SessionInfo;
+    info: SessionInfo;
 
     players(): User[];
 

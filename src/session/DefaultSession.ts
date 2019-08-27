@@ -58,7 +58,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         return this.sessionId;
     }
 
-    getInfo(): SessionInfo {
+    get info(): SessionInfo {
         return {
             id: this.sessionId,
             state: this.state,

@@ -46,7 +46,7 @@ export class InvitationManager {
             throw new ServerError(`Requested invite info for non excisting or removed session, sessionId = ${invite.sessionId}, inviteId = ${invite.id}`)
         }
 
-        const sessionInfo = session.getInfo();
+        const sessionInfo = session.info;
 
         return {
             sessionId: invite.sessionId,
