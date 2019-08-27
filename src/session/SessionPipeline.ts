@@ -94,7 +94,11 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
 
     private joinSessionBySessionId(sessionId: string, applicant: User): Promise<any> {
 
-        let session = this.getSession(sessionId);
+        const session = this.getSession(sessionId);
+        if (session.info.private) {
+            throw new ServerError(`Cannot join ${session} cause it's private!`);
+        }
+
         return this.joinSession(session, applicant);
     }
 
