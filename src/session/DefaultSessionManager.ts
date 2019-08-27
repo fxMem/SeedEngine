@@ -39,15 +39,23 @@ export class DefaultSessionManager implements SessionManager {
         return Array.from((this.sessions as any).values()).map((s: DefaultSession) => s.info);
     }
 
-    createSession(options: { owner: User, description?: string }): SessionHandler {
-        let { owner, description } = options;
+    createSession(options: { owner: User, isPrivate: boolean, description?: string }): SessionHandler {
+        let { owner, description, isPrivate } = options;
         if (!owner.haveClaim(Claims.createSession)) {
             throw new DeniedError(`User ${owner} does not have sufficient rights to create sessions!`);
         }
 
         let sessionId = this.sessionIdCounter++ + '';
         let sessionGroup = this.groupsManager.createGroup(owner, null, `Group for session ${sessionId}`);
-        let session = new DefaultSession(sessionGroup, this.messageSender, this.sessionOptions, sessionId, description);
+        let session = new DefaultSession
+            (
+                sessionGroup, 
+                this.messageSender, 
+                this.sessionOptions, 
+                sessionId, 
+                isPrivate, 
+                description
+            );
 
         if (this.game) {
             // should we populate fresh object here instead of passing the whole session?

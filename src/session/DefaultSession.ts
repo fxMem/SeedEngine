@@ -10,6 +10,8 @@ import { createLocalLogScope } from "../log/LoggerScopes";
 import { ServerError, DeniedError } from "../transport/ServerError";
 import { OperationResult, SuccessPromise } from "../core/OperationResult";
 import { Claims } from "../users/Claims";
+import { getUserInfoArray } from "../users/UserInfoArray";
+import { getUserSessions } from "./UserSessions";
 
 const playerJoined = 'playerJoined';
 const playerLeft = 'playerLeft';
@@ -45,6 +47,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         private messageSender: MessageSender,
         private options: DefaultSessionOptions,
         private sessionId: string,
+        private isPrivate: boolean,
         private description?: string) {
 
         super();
@@ -58,10 +61,15 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         return this.sessionId;
     }
 
+    get private(): boolean {
+        return this.isPrivate;
+    }
+
     get info(): SessionInfo {
         return {
             id: this.sessionId,
             state: this.state,
+            private: this.isPrivate,
 
             playersCount: this.connectedPlayers.length,
             timePassed: this.startTime,
@@ -164,6 +172,9 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
 
         this.connectedPlayers.push(user);
         this.localGroup.addUser(user);
+        
+        const userSessionData = getUserSessions(user);
+        userSessionData.add(this.sessionId);
 
         this.emit(playerJoined, user);
         this.log.info(`Player ${user} joined!`);
@@ -179,6 +190,9 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
         this.connectedPlayers = this.connectedPlayers.filter(p => p.nickname !== user.nickname);
         this.localGroup.removeUser(user);
 
+        const userSessionData = getUserSessions(user);
+        userSessionData.remove(this.sessionId);
+        
         this.log.info(`Player ${user} has left!`);
         this.emit(playerLeft, user);
     }

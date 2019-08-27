@@ -8,6 +8,7 @@ export enum SessionState {
 export interface SessionInfo {
     id: string;
     state: SessionState;
+    private: boolean;
 
     playersCount: number;
     timePassed: Date;

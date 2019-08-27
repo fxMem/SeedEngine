@@ -9,8 +9,9 @@ import { ServerError } from "../transport/ServerError";
 import { User } from "../users/User";
 import { OperationResult } from "../core/OperationResult";
 import { SessionHandler } from "./Session";
+import { getUserSessions } from "./UserSessions";
 
-const userSessionsKey = '__sessions';
+
 export class SessionPipeline implements SpecificMessageTypeHandler {
 
     name = 'sessionHandler';
@@ -98,18 +99,12 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     }
 
     private async joinSession(session: SessionHandler, applicant: User): Promise<OperationResult> {
-
-        let result = await session.addPlayer(applicant);
-        
-        let userSessionData = getUserInfoArray<string>(applicant, userSessionsKey);
-        userSessionData.add(session.id());
-
-        return result;
+        return await session.addPlayer(applicant);
     }
 
     private leaveAllSessions(applicant: User) {
 
-        let userSessionData = getUserInfoArray<string>(applicant, userSessionsKey);
+        const userSessionData = getUserSessions(applicant);
         for (const sessionId of userSessionData.values) {
             this.leaveSession(sessionId, applicant);
         }
@@ -119,11 +114,8 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
     // so we should know which one he leaves, hence sessionId parameter
     private leaveSession(sessionId: string, applicant: User): any {
 
-        let session = this.getSession(sessionId);
+        const session = this.getSession(sessionId);
         session.removePlayer(applicant);
-
-        let userSessionData = getUserInfoArray<string>(applicant, userSessionsKey);
-        userSessionData.remove(sessionId);
     }
 
     private getSession(sessionId: string): SessionHandler {
