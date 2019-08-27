@@ -30,6 +30,10 @@ export class LobbyPipeline implements SpecificMessageTypeHandler {
             throw new ServerError(`Session with id ${sessionId} does not exist!`);
         }
 
+        if (!session.players().find(u => u.nickname === from.nickname)) {
+            throw new ServerError(`Player ${from} doesn't belong to session ${session} therefor cannot participate in lobby activities!`);
+        }
+
         return this.module.handle({
             message,
             from,
