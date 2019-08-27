@@ -13,9 +13,9 @@ import { SessionHandler } from "./Session";
 const userSessionsKey = '__sessions';
 export class SessionPipeline implements SpecificMessageTypeHandler {
 
-    name: 'sessionHandler';
+    name = 'sessionHandler';
     constructor(private sessionManager: SessionManager) {
-
+        
     }
 
     canHandle(context: MessageContext): boolean {

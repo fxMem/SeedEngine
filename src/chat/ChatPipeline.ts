@@ -9,7 +9,7 @@ import { ServerError } from "../transport/ServerError";
 
 export class ChatPipeline implements SpecificMessageTypeHandler {
 
-    name: 'chatPipeline';
+    name = 'chatPipeline';
     constructor(private chatManager: ChatManager, private users: Users, private groups: Groups) {
 
     }

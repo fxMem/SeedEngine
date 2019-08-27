@@ -10,7 +10,7 @@ import { Users } from "../users/Users";
 
 export class InvitesPipeline implements SpecificMessageTypeHandler {
 
-    name: 'invitesHander';
+    name = 'invitesHander';
     constructor(private methods: InvitationMethod[], private inviteManager: InvitationManager) {
 
     }

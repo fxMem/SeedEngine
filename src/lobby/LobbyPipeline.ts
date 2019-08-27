@@ -7,7 +7,7 @@ import { ServerError } from "../transport/ServerError";
 
 export class LobbyPipeline implements SpecificMessageTypeHandler {
 
-    name: 'LobbyHandler';
+    name = 'LobbyHandler';
     constructor(private module: LobbyModule, private sessionManager: SessionManager) {
 
     }
