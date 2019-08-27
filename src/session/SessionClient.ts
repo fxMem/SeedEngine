@@ -4,7 +4,7 @@ import { Client, ClientConnectionHandler } from "../client/ClientConnectionHandl
 import { OperationResult } from "../core/OperationResult";
 
 export interface SessionClient extends Client {
-    createSession(sessionDescription?: string, join?: boolean): Promise<{
+    createSession(isPrivate: boolean, sessionDescription?: string, join?: boolean): Promise<{
         sessionId: string,
         joined?: OperationResult
     }>;
@@ -19,11 +19,12 @@ export interface SessionClient extends Client {
 export class DefaultSessionClient implements SessionClient {
     handler: ClientConnectionHandler;
 
-    createSession(sessionDescription?: string, join?: boolean): Promise<{ 
+    createSession(isPrivate: boolean, sessionDescription?: string, join?: boolean): Promise<{ 
         sessionId: string; joined?: OperationResult; 
     }> {
         return this.handler.invokeWithMessage<SessionMessage>({
             sessionCommand: SessionCommand.create,
+            isPrivate,
             sessionDescription,
             join
         });

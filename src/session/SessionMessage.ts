@@ -23,7 +23,7 @@ interface SessionSelectionOptions {
 
 interface SessionCreationOptions {
     sessionDescription?: string;
-    private?: boolean;
+    isPrivate?: boolean;
     join?: boolean;
 }
 

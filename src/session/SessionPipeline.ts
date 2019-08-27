@@ -73,7 +73,8 @@ export class SessionPipeline implements SpecificMessageTypeHandler {
 
         let session = this.sessionManager.createSession({
             owner: creator,
-            description: message.sessionDescription
+            description: message.sessionDescription,
+            isPrivate: message.isPrivate
         });
 
         let joiningResult = message.join ? await this.joinSession(session, creator) : null;
