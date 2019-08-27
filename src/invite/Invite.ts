@@ -1,5 +1,5 @@
-import { User } from "../users";
 import { v1 as uuid } from "uuid";
+import { User } from "../users/User";
 
 const FarFuture = new Date(2100, 1, 1);
 
@@ -32,7 +32,9 @@ export class Invite {
 
     isValid(context: InvitationContext): boolean {
 
-        let userFits = !this.restrictedTo || this.restrictedTo.some(u => u.nickname === context.user.nickname);
+        let userFits = (!this.restrictedTo || this.restrictedTo.length === 0) || 
+            this.restrictedTo.some(u => u.nickname === context.user.nickname);
+            
         return this.expires >= context.requestedTime
             && this.useCount > 0
             && userFits;
