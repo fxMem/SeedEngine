@@ -18,13 +18,15 @@ export class LobbyComponent implements OnInit {
   private loader = new BehaviorSubject(0);
   private description: FormControl;
 
+  public lastInvite: string;
+
   constructor
     (
       private client: ClientServiceService,
       private router: Router
-    ) { 
-      this.description = new FormControl('');
-    }
+    ) {
+    this.description = new FormControl('');
+  }
 
   ngOnInit() {
     let sessions = defer(() => this.client.getSessions());
@@ -57,6 +59,23 @@ export class LobbyComponent implements OnInit {
         this.router.navigate(['room', sessionId]);
       }
     })
+  }
+
+  createInvite(sessionId: string) {
+    const inviteError = () => {
+      this.lastInvite = `Couldn't create invite!`;
+    }
+    this.client.createInvite(sessionId, `${this.client.nickname} invites you to join the game!`).then(res => {
+      if (res.success) {
+        this.lastInvite = `${window.location.host}/invite/${res.inviteKey}`;
+      }
+      else {
+        inviteError();
+      }
+
+    }, (e) => { inviteError(); });
+
+
   }
 
 }

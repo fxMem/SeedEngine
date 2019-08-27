@@ -2,7 +2,10 @@
   <p>List of active sessions <span class='refresh-button button' (click)="reload()">(Update)</span></p>
   <ng-container *ngFor='let s of sessions$ | async'>
     <div>
-        {{s.id}} | {{s.description}} (Players count: {{s.playersCount}}) <span class="join-session button" (click)="join(s.id)">Join</span>
+        {{s.id}} | {{s.description}} (Players count: {{s.playersCount}}) 
+        <span class="join-session button" (click)="join(s.id)">Join</span>
+        <span class="green button" (click)="createInvite(s.id)">Create invite</span>
+        <span *ngIf="lastInvite">{{lastInvite}}</span>
     </div>
     
   </ng-container>

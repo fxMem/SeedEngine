@@ -1,3 +1,22 @@
-<p>
-  invites works!
-</p>
+<h3>
+  Welcome!
+</h3>
+
+<p class='red' *ngIf="message">{{message}}</p>
+
+<ng-container *ngIf="data">
+  <p>
+    You was invited to play by {{data.invitedBy}}:
+  </p>
+  <p>
+    {{data.note}}
+  </p>
+  <p>
+    to the game session 
+    <span>'{{data.sessionDescription}}'</span>
+  </p>
+  
+  <span class='button' (click)='join()'>JOIN!</span>
+</ng-container>
+
+

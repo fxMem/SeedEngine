@@ -3,9 +3,9 @@ import * as PIXI from 'pixi.js';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ClientServiceService } from '../common/client-service.service';
 import { PendingService } from '../common/loading-service.service';
-import { MinerGameState, MinerPlayerState } from 'seedengine.client/miner/MinerGame';
 import { TileInfo, TileState } from 'seedengine.client/miner/Field';
 import { Texture } from 'pixi.js';
+import { MinerPlayerState, MinerGameState } from 'seedengine.client/miner/MinerGameState';
 
 type ExtendedSprite = PIXI.Sprite & {
   coordinates?: Coordinates,

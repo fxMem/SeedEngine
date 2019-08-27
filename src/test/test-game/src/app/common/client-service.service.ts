@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { MinerClient, SimpleIdentityClient, DefaultSessionClient, VoteLobbyClient, KeyInvitationClient, GroupClient, ChatClient, ClientBuilder } from 'seedengine.client';
+import { MinerClient, SimpleIdentityClient, DefaultSessionClient, VoteLobbyClient, KeyInvitationClient, GroupClient, ChatClient, ClientBuilder } from 'seedengine.client/client';
 import { SessionInfo } from 'seedengine.client/session/SessionInfo';
-import { OperationResult } from 'seedengine.client/core';
-import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
 import { VotesNotification } from 'seedengine.client/lobby/VoteMessage';
 import { SessionStateChangedNotification } from 'seedengine.client/session/SessionMessage';
-import { MinerGameState } from 'seedengine.client/miner/MinerGame';
-import { Coordinates, TileActionResult } from 'seedengine.client/miner/Field';
 import { PendingService } from './loading-service.service';
+import { OperationResult } from 'seedengine.client/core/OperationResult';
+import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
+import { MinerGameState } from 'seedengine.client/miner/MinerGameState';
+import { InviteInfo } from 'seedengine.client/invite/InviteInfo';
+import { TileActionResult, Coordinates } from 'seedengine.client/miner/Field';
+
 
 
 type ClientType = {
@@ -38,6 +40,10 @@ export class ClientServiceService {
 
   client: ClientType & ClientBuilder;
 
+  get isConnected() {
+    return this.connected;
+  }
+
   constructor(private pending: PendingService) { }
 
   
@@ -59,6 +65,10 @@ export class ClientServiceService {
     this.nickname = nickname;
 
     return res;
+  }
+
+  async getInviteInfo(key: string): Promise<InviteInfo> {
+    return this.reportProgress((await this.connectedClient()).invites.getInviteInfo(key));
   }
 
   async createInvite(sessionId: string, note?: string): Promise<{
@@ -117,7 +127,7 @@ export class ClientServiceService {
     );
   }
 
-  private async  reportProgress<T>(input: Promise<T>): Promise<T> {
+  private async reportProgress<T>(input: Promise<T>): Promise<T> {
     return this.pending.reportProgress(input);
   }
 

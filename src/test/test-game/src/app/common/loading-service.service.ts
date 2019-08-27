@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { ServerError } from 'seedengine.client/server';
 import { ErrorCode } from 'seedengine.client/transport/ErrorCodes';
+import { ServerError } from 'seedengine.client/transport/ServerError';
 
 
 type Status = { pending: boolean, error?: string, code?: ErrorCode };
