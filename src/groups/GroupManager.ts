@@ -15,7 +15,7 @@ const groupsKeyId = '__groups';
 
 export class GroupManager implements Groups {
 
-    private log = createLocalLogScope(nameof(GroupManager));
+    private log = createLocalLogScope('GroupManager');
     private groups = new Map<string, GroupHandle>();
 
     // TODO: create means to 'reload' existing groups after server restart

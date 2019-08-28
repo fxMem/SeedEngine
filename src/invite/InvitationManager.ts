@@ -9,7 +9,7 @@ import { OperationResult } from "../core/OperationResult";
 
 export class InvitationManager {
 
-    private log = createLocalLogScope(nameof(InvitationManager));
+    private log = createLocalLogScope('InvitationManager');
 
     // TODO: remove expired invites
     private invites = new Map<string, Invite>();

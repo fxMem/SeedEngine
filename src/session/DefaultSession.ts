@@ -54,7 +54,7 @@ export class DefaultSession extends EventEmitter implements SessionHandler, Sess
 
         this.state = SessionState.waiting;
         this.log = createLocalLogScope(
-            `${nameof(DefaultSession)} / ${this.sessionId} [${this.description || 'No description'}]`);
+            `${'DefaultSession'} / ${this.sessionId} [${this.description || 'No description'}]`);
     }
 
     id() {

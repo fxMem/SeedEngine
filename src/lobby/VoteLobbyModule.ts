@@ -13,7 +13,7 @@ function isVoteMessage(message: any): message is VoteMessage {
 type SessionVote = { sessionId: string, vote: VoteType };
 
 export class VoteLobbyModule implements LobbyModule {
-    private log = createLocalLogScope(nameof(VoteLobbyModule));
+    private log = createLocalLogScope('VoteLobbyModule');
 
     constructor() {
 

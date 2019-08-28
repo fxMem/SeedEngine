@@ -8,7 +8,7 @@ import { ServerError } from '../transport/ServerError';
 
 export class AuthModule {
 
-    private log = createLocalLogScope(nameof(AuthModule));
+    private log = createLocalLogScope('AuthModule');
     constructor
         (
             private userManager: UserManager,

@@ -12,7 +12,7 @@ import { SessionHandler } from "./Session";
 
 export class DefaultSessionManager implements SessionManager {
 
-    private log = createLocalLogScope(nameof(DefaultSessionManager));
+    private log = createLocalLogScope('DefaultSessionManage');
     private sessionIdCounter = 0;
     private sessions = new Map<string, DefaultSession>();
 

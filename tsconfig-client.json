@@ -4,7 +4,6 @@
       "outDir": "distr/seedengine.client",
     },
     "files": [
-      "src/client/index.ts",
-      "globals.d.ts"
+      "src/client/index.ts"
     ]
 }

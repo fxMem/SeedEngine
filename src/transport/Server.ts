@@ -12,7 +12,7 @@ import { Header } from "./Headers";
 // Facade class tying together connection, authentication and messaging logic
 export class Server {
 
-    private log = createLocalLogScope(nameof(Server));
+    private log = createLocalLogScope('Server');
     constructor(
         private connection: Connection,
         private users: Users,

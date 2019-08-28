@@ -6,13 +6,10 @@
       "module": "ES2015",
       "target": "es5",
       "sourceMap": true,
-      "outDir": "distr/seedengine.client",
       "lib": [ "es2015" ]
     },
     "exclude": [
-      "src/test",
-      "distr",
-      "ts-build"
+      "distr"
     ]
     
 }

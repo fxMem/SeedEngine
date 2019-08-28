@@ -2,7 +2,7 @@ import { MessagePipeline, MessageHandler, MessagePipelineCallback } from "./Mess
 import { createLocalLogScope } from "../log/LoggerScopes";
 
 export class DefaulMessagePipeline implements MessagePipeline {
-    private log = createLocalLogScope(nameof(DefaulMessagePipeline));
+    private log = createLocalLogScope('DefaulMessagePipeline');
     private callbacks: (() => MessageHandler[])[] = [];
 
     build(): MessagePipelineCallback {

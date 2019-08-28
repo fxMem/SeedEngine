@@ -5,19 +5,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "ba": "webpack",
-    "bs": "config=server.js webpack",
-    "bc": "tsc -p tsconfig-client.json",
-    "bt": "config=test.js webpack",
-    "server": "node ./distr/server/server.js",
-    "client": "node ./distr/client.js",
-    "test": "node ./distr/test.js",
-    "ds": "npm run bs && nodemon ./distr/server.js",
-    "dc": "npm run bc && npm run client",
-    "wbs": "config=server.js webpack --watch",
-    "ws": "nodemon \"./distr/server/server.js\" --watch \"./distr/server/server.js\"",
-    "ss": "npm-run-all --parallel ws wbs",
-    "sc": "webpack-dev-server --open"
+    "bs": "tsc -p tsconfig-server.json",
+    "bc": "tsc -p tsconfig-client.json"
   },
   "author": "Mem",
   "license": "MIT",
@@ -26,17 +15,7 @@
     "@types/node": "^10.12.18",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
-    "@types/uuid": "^3.4.4",
-    "html-webpack-plugin": "^3.2.0",
-    "nodemon": "^1.18.10",
-    "npm-run-all": "^4.1.5",
-    "ts-loader": "^5.3.3",
-    "ts-nameof": "^2.0.0",
-    "typescript": "^3.2.4",
-    "webpack": "^4.28.4",
-    "webpack-cli": "^3.2.1",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-node-externals": "^1.7.2"
+    "@types/uuid": "^3.4.4"
   },
   "dependencies": {
     "express": "^4.16.4",

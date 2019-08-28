@@ -10,7 +10,7 @@ import { DeniedError } from "../transport/ServerError";
 export const chatMessageClientHeader = 'chat';
 export class ChatManager {
 
-    private log = createLocalLogScope(nameof(ChatManager));
+    private log = createLocalLogScope('ChatManager');
     constructor(private messageSender: MessageSender) {
 
     }
