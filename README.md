@@ -16,29 +16,4 @@ npm run bs
 npm run bc
 ```
 
-### Build all
-```bash
-npm run ba
-```
-
-### Build server and run webpack in watch mode
-```bash
-npm run wbs
-```
-
-### Run server and watch for changes in webpack-generated bundle
-```bash
-npm run ws
-```
-
-### Start server (Watches for changes in source code and rebuilds server)
-```bash
-npm run ss
-```
-
-### Start client (Runs webpack dev-server for client)
-```bash
-npm run sc
-```
-
 For usage examples see included test project [TestGame.ts](https://github.com/fxMem/SeedEngine/blob/master/src/test/TestGame.ts)
