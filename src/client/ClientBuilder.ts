@@ -23,8 +23,11 @@ export class ClientBuilder {
         this.handler.onMessage(callback);
     }
 
-    async connect(): 
-    Promise<this> {
+    onConnectionError(callback: () => void) {
+        this.handler.onConnectionError(callback);
+    }
+
+    async connect(): Promise<this> {
         
         await this.handler.connect();
         return this;

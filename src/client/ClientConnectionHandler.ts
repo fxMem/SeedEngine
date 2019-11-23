@@ -11,13 +11,15 @@ export interface Client {
 }
 
 export class ClientConnectionHandler {
+    private transport: SocketIOClientTransport;
     private connection: Connection;
     private client: ConnectedClient;
     private messageCallback: any = (message) => { };
     private callbacks = new Map<string, any>();
 
     constructor() {
-        this.connection = new Connection(new SocketIOClientTransport());
+        this.transport = new SocketIOClientTransport();
+        this.connection = new Connection(this.transport);
     }
 
     connect(): Promise<void> {
@@ -40,6 +42,10 @@ export class ClientConnectionHandler {
 
             this.connection.start();
         });
+    }
+
+    onConnectionError(callback: () => void) {
+        this.transport.onConnectionError(callback);
     }
 
     onMessage(callback: (message) => {}): void {
