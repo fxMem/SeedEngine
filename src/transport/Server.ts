@@ -21,8 +21,8 @@ export class Server {
         private authModule: AuthModule) { }
 
     listen(port: number): void {
-        this.connection.onConnected(this.handleClient.bind(this));
         this.connection.start({ port });
+        this.connection.onConnected(this.handleClient.bind(this));
     }
 
     private handleClient(client: ConnectedClient): void {

@@ -14,7 +14,7 @@ export class ClientConnectionHandler {
     private transport: SocketIOClientTransport;
     private connection: Connection;
     private client: ConnectedClient;
-    private messageCallback: any = (message) => { };
+    private messageCallback: any = () => { };
     private callbacks = new Map<string, any>();
 
     constructor() {
@@ -24,6 +24,8 @@ export class ClientConnectionHandler {
 
     connect(): Promise<void> {
         return new Promise((resolve, reject) => {
+            this.connection.start();
+
             this.connection.onConnected((connectedClient) => {
                 this.client = connectedClient;
 
@@ -39,8 +41,6 @@ export class ClientConnectionHandler {
 
                 resolve();
             });
-
-            this.connection.start();
         });
     }
 

@@ -22,23 +22,15 @@ export type ClientConnectedCallback = (client: ConnectedClient) => void;
 // Adds RPC logic (MessageSender) on top of transport connection
 export class Connection {
 
-    private userCallback: (client: ConnectedClient) => void;
-
     constructor(private transport: Transport) {
 
     }
 
     start(options?: { port?: number }) {
         this.transport.start(options);
-        this.userCallback && this.onConnected(this.userCallback);
     }
 
     onConnected(userCallback: ClientConnectedCallback) {
-        if (!this.transport.isStarted()) {
-            this.userCallback = userCallback;
-            return;
-        }
-
         this.transport.onConnected((transportClient) => {
             let sender = new RpcWrapper((message) => this.transport.send(message, { targets: [new MessageTarget([transportClient.id])] }));
 
