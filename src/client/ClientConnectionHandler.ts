@@ -15,6 +15,7 @@ export class ClientConnectionHandler {
     private connection: Connection;
     private client: ConnectedClient;
     private messageCallback: any = () => { };
+    private errorCallback = () => { };
     private callbacks = new Map<string, any>();
 
     constructor() {
@@ -41,11 +42,13 @@ export class ClientConnectionHandler {
 
                 resolve();
             });
+
+            this.transport.onConnectionError(this.errorCallback);
         });
     }
 
     onConnectionError(callback: () => void) {
-        this.transport.onConnectionError(callback);
+        this.errorCallback = callback;
     }
 
     onMessage(callback: (message) => {}): void {
