@@ -3,7 +3,7 @@ import * as express from 'express';
 import { createLocalLogScope } from '../log/LoggerScopes';
 
 export interface HttpFacade {
-    listen(port: number, callback: (error: any) => void): void;
+    listen(port: number, callback: () => void): void;
 }
 
 export interface HttpFacadeFactory {
