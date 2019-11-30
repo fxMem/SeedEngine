@@ -1,10 +1,11 @@
-export enum VoteType {
+export enum VoteCommand {
     Vote,
-    UnVote
+    UnVote,
+    GetVotes
 }
 
 export interface VoteMessage {
-    vote: VoteType;
+    vote: VoteCommand;
 }
 
 export const VoteNotificationHeader = 'vote';
